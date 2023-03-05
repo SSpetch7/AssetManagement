@@ -15,28 +15,25 @@ const Sidebar = () => {
         <div class="px-6 pt-4">
           <ul class="flex flex-col space-y-2">
             <li class="relative text-gray-500 hover:text-white focus-within:text-white">
-              <div class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-1.5 pointer-events-none">
                 <HomeIcon />
               </div>
               <a
                 href="#"
-                class="inline-block w-full py-2 pl-8 pr-4 text-xs rounded hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:bg-gray-800"
+                class="inline-block w-full py-2 pl-8 pr-4 text-xs rounded hover:bg-kmuttColor-800 focus:outline-none focus:ring-1 focus:ring-kmuttColor-500 focus:bg-kmuttColor-800"
               >
                 หน้าแรก
               </a>
             </li>
             <li class="">
-              <div
-                class="relative flex justify-between text-gray-500 hover:text-white focus-within:text-white"
-                onclick="dropdown"
-              >
+              <div class="relative flex justify-between text-gray-500 hover:text-white focus-within:text-white">
                 <div class="flex items-center w-full">
-                  <div class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-1.5 pointer-events-none">
                     <DevicesOtherIcon />
                   </div>
                   <a
                     href="#"
-                    class="inline-block w-full py-2 pl-8 pr-4 text-xs rounded hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:bg-gray-800"
+                    class="inline-block w-full py-2 pl-8 pr-4 text-xs rounded hover:bg-kmuttColor-800 focus:outline-none focus:ring-1 focus:ring-kmuttColor-500 focus:bg-kmuttColor-800"
                   >
                     จัดการครุภัณฑ์
                   </a>
@@ -69,7 +66,7 @@ const Sidebar = () => {
                   <li>
                     <a
                       href="#"
-                      class="inline-block w-full px-4 py-2 text-xs rounded hover:bg-gray-800 hover:text-white focus:outline-none focus:ring-1 focus:ring-gray-500 focus:text-white"
+                      class="inline-block w-full px-4 py-2 text-xs rounded hover:bg-kmuttColor-800 hover:text-kmuttColor-500 focus:outline-none focus:ring-1 focus:ring-kmuttColor-500 focus:text-kmuttColor-800"
                     >
                       ครุภัณฑ์ทั้งหมด
                     </a>
@@ -77,7 +74,7 @@ const Sidebar = () => {
                   <li>
                     <a
                       href="#"
-                      class="inline-block w-full px-4 py-2 text-xs rounded hover:bg-gray-800 hover:text-white focus:outline-none focus:ring-1 focus:ring-gray-500 focus:text-white"
+                      class="inline-block w-full px-4 py-2 text-xs rounded hover:bg-kmuttColor-800 hover:text-kmuttColor-500 focus:outline-none focus:ring-1 focus:ring-kmuttColor-500 focus:text-kmuttColor-800"
                     >
                       ตรวจเช็คครุภัณฑ์
                     </a>
@@ -86,45 +83,45 @@ const Sidebar = () => {
               </div>
             </li>
             <li class="relative text-gray-500 hover:text-white focus-within:text-white">
-              <div class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-1.5 pointer-events-none">
                 <InsertChartIcon />
               </div>
               <a
                 href="#"
-                class="inline-block w-full py-2 pl-8 pr-4 text-xs rounded hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:bg-gray-800"
+                class="inline-block w-full py-2 pl-8 pr-4 text-xs rounded hover:bg-kmuttColor-800 focus:outline-none focus:ring-1 focus:ring-kmuttColor-500 focus:bg-kmuttColor-800"
               >
                 สรุปรวม
               </a>
             </li>
             <li class="relative text-gray-500 hover:text-white focus-within:text-white">
-              <div class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-1.5 pointer-events-none">
                 <HistoryIcon />
               </div>
               <a
                 href="#"
-                class="inline-block w-full py-2 pl-8 pr-4 text-xs rounded hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:bg-gray-800"
+                class="inline-block w-full py-2 pl-8 pr-4 text-xs rounded hover:bg-kmuttColor-800 focus:outline-none focus:ring-1 focus:ring-kmuttColor-500 focus:bg-kmuttColor-800"
               >
                 ประวัติการยืม
               </a>
             </li>
             <li class="relative text-gray-500 hover:text-white focus-within:text-white">
-              <div class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-1.5 pointer-events-none">
                 <AccountBoxIcon />
               </div>
               <a
                 href="#"
-                class="inline-block w-full py-2 pl-8 pr-4 text-xs rounded hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:bg-gray-800"
+                class="inline-block w-full py-2 pl-8 pr-4 text-xs rounded hover:bg-kmuttColor-800 focus:outline-none focus:ring-1 focus:ring-kmuttColor-500 focus:bg-kmuttColor-800"
               >
                 ข้อมูลผู้ยืม
               </a>
             </li>
             <li class="relative text-gray-500 hover:text-white focus-within:text-white">
-              <div class="absolute inset-y-0 left-0 flex items-center pl-2 pointer-events-none">
+              <div class="absolute inset-y-0 left-0 flex items-center pl-1.5 pointer-events-none">
                 <AdminPanelSettingsIcon />
               </div>
               <a
                 href="#"
-                class="inline-block w-full py-2 pl-8 pr-4 text-xs rounded hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-gray-500 focus:bg-gray-800"
+                class="inline-block w-full py-2 pl-8 pr-4 text-xs rounded hover:bg-kmuttColor-800 focus:outline-none focus:ring-1 focus:ring-kmuttColor-500 focus:bg-kmuttColor-800"
               >
                 แอดมิน
               </a>
