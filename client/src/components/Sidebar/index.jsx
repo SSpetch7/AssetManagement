@@ -67,9 +67,12 @@ const Sidebar = () => {
 
   const subMenusList = [
     {
-      name: "จัดการครุภัณฑ์",
+      name: "management",
+      nameTh: "จัดการครุภัณฑ์",
       icon: DevicesOtherIcon,
-      menus: ["ครุภัณฑ์ทั้งหมด", "ตรวจเช็คครุภัณฑ์"],
+
+      menus: ["allAsset", "checkedAsset"],
+      menusTh: ["ครุภัณฑ์ทั้งหมด", "ตรวจเช็คครุภัณฑ์"],
     },
   ];
 
@@ -106,31 +109,32 @@ const Sidebar = () => {
               <div className="inline-block w-full py-1 pl-8 pr-4 text-base rounded text-gray-500 focus:outline-none focus:ring-1 focus:ring-kmuttColor-500 focus:bg-kmuttColor-800">
                 {subMenusList?.map((menu) => (
                   <div key={menu.name} className="flex flex-col gap-1">
+                    {console.log(menu)}
                     <SubMenu data={menu} />
                   </div>
                 ))}
               </div>
             )}
             <li class="inline-block w-full py-1 pl-8 pr-4 text-base rounded text-gray-500 hover:bg-kmuttColor-800 hover:text-white focus:outline-none focus:ring-1 focus:ring-kmuttColor-500 focus:bg-kmuttColor-800">
-              <NavLink to={"/authentication"} className="link">
+              <NavLink to={"/dashboard"} className="link">
                 <InsertChartIcon size={23} className="min-w-max" />
                 สรุปรวม
               </NavLink>
             </li>
             <li class="inline-block w-full py-1 pl-8 pr-4 text-base rounded text-gray-500 hover:bg-kmuttColor-800 hover:text-white focus:outline-none focus:ring-1 focus:ring-kmuttColor-500 focus:bg-kmuttColor-800">
-              <NavLink to={"/stroage"} className="link">
+              <NavLink to={"/borrowHistory"} className="link">
                 <HistoryIcon size={23} className="min-w-max" />
                 ประวัติการยืม
               </NavLink>
             </li>
             <li class="inline-block w-full py-1 pl-8 pr-4 text-base rounded text-gray-500 hover:bg-kmuttColor-800 hover:text-white focus:outline-none focus:ring-1 focus:ring-kmuttColor-500 focus:bg-kmuttColor-800">
-              <NavLink to={"/stroage"} className="link">
+              <NavLink to={"/borrower"} className="link">
                 <AccountBoxIcon size={23} className="min-w-max" />
                 ข้อมูลผู้ยืม
               </NavLink>
             </li>
             <li class="inline-block w-full py-1 pl-8 pr-4 text-base rounded text-gray-500 hover:bg-kmuttColor-800 hover:text-white focus:outline-none focus:ring-1 focus:ring-kmuttColor-500 focus:bg-kmuttColor-800">
-              <NavLink to={"/stroage"} className="link">
+              <NavLink to={"/admin"} className="link">
                 <AdminPanelSettingsIcon size={23} className="min-w-max" />
                 แอดมิน
               </NavLink>

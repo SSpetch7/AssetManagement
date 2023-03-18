@@ -17,7 +17,7 @@ const SubMenu = ({ data }) => {
         onClick={() => setSubMenuOpen(!subMenuOpen)}
       >
         <data.icon size={23} className="min-w-max" />
-        <p className="flex-1 capitalize">{data.name}</p>
+        <p className="flex-1 capitalize">{data.nameTh}</p>
         <KeyboardArrowDownIcon
           className={` ${subMenuOpen && "rotate-180"} duration-200 `}
         />
