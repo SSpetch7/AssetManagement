@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Box, useMediaQuery } from "@mui/material";
-import { Outlet } from "react-router-dom";
-import Navbar from "components/Navbar.jsx";
+
+import Navbar from "components/Navbar/Navbar.jsx";
 import Sidebar from "../../components/Sidebar/index.jsx";
 
 const Layout = () => {

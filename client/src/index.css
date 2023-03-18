@@ -3,11 +3,21 @@
 @tailwind components;
 @tailwind utilities;
 
-html,
-body,
-#root,
-.app {
-  /*   height: 100%;
-  width: 100%;
-   font-family: "Sarabun", sans-serif;*/
+@layer base {
+  html {
+  }
+  body {
+    background: #f1f1f1;
+  }
+  h1 {
+    @apply text-xl font-medium capitalize;
+  }
+}
+
+.link {
+  @apply p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium;
+}
+
+.active {
+  /* @apply text-kmuttColor-800; */
 }
