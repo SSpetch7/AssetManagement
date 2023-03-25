@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 
-import Navbar from "components/Navbar/Navbar.jsx";
+import Navbar from "components/Navbar.jsx";
 import Sidebar from "../../components/Sidebar/index.jsx";
 
 const Layout = () => {
