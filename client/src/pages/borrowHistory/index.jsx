@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
-const borrowHistory = () => {
+const BorrowHistory = () => {
   return <div>Borrow History</div>;
 };
 
-export default borrowHistory;
+export default BorrowHistory;

@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
-const borrower = () => {
+const Borrower = () => {
   return <div>borrower</div>;
 };
 
-export default borrower;
+export default Borrower;
