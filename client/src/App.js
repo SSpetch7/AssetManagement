@@ -14,8 +14,10 @@ import {
   CheckAsset,
 } from './pages/index';
 
+import { useStateContext } from './contexts/ContextProvider';
+
 const App = () => {
-  const activeMenu = true;
+  const { activeMenu } = useStateContext();
 
   return (
     <div>
@@ -43,7 +45,7 @@ const App = () => {
               <Route path="/" element={<Home />} />
               <Route path="/home" element={<Home />} />
               <Route path="/allAsset" element={<AllAsset />} />
-              <Route path="/checkedAsset" element={<CheckAsset />} />
+              <Route path="/checkAsset" element={<CheckAsset />} />
               <Route path="/dashboard" element={<Dashboard />} />
               {/* admin */}
               <Route path="/borrowHistory" element={<BorrowHistory />} />

@@ -1,7 +1,60 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import MenuIcon from '@mui/icons-material/Menu';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import avatar from '../assets/pic.jpg';
+import { useStateContext } from '../contexts/ContextProvider';
+import { Tooltip } from '@mui/material';
+import { Notification, AddminProfile } from '.';
+
+const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
+  <Tooltip title={title} placement="bottom" arrow>
+    <button
+      type="button"
+      onClick={customFunc}
+      style={{ color }}
+      className="relative text-1 rounded-full p-3 hover:bg-light-gray"
+    >
+      <span
+        style={{ background: dotColor }}
+        className="absolute inline-flex rounded-full h-2 w-2 right-2 top-2"
+      />
+      {icon}
+    </button>
+  </Tooltip>
+);
 
 const Navbar = () => {
-  return <div>Navbar</div>;
+  const { activeMenu, setActiveMenu, handleClick } = useStateContext();
+  return (
+    <div className="flex justify-between p-2 md:mx-6 relative">
+      <NavButton
+        title="Menu"
+        customFunc={() => setActiveMenu((prevActive) => !prevActive)}
+        color="#FF8261"
+        icon={<MenuIcon />}
+      />
+      <div className="flex ">
+        <NavButton
+          title="Notifications"
+          dotColor="#FFB39F"
+          customFunc={() => handleClick('notification')}
+          color="#FF8261"
+          icon={<NotificationsNoneIcon />}
+        />
+        <Tooltip title="Profile" placement="bottom" arrow>
+          <div
+            className="flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg "
+            onClick={() => handleClick('adminProfile')}
+          >
+            <img
+              className="rounded-full object-cover  w-10 h-10"
+              src={avatar}
+            />
+          </div>
+        </Tooltip>
+      </div>
+    </div>
+  );
 };
 
 export default Navbar;
