@@ -135,6 +135,9 @@ const Home = () => {
           </div>
         </div>
       </div>
+      <div className="m-24">
+        <p className="text-gray-700 text-center m-16"> 2023 Final Project </p>
+      </div>
     </div>
   );
 };
