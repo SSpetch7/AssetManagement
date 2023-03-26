@@ -15,6 +15,7 @@ module.exports = {
         kmuttColor: {
           500: '#FFB39F',
           800: '#FF8261',
+          'bg-menu': '#DCDCDC',
         },
       },
       borderWidth: {

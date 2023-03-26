@@ -38,7 +38,7 @@ const Sidebar = () => {
                   onClick={() =>
                     setActiveMenu((prevActiveMenu) => !prevActiveMenu)
                   }
-                  className="rounded-full p-3 hover:bg-light-gray mt-4 block "
+                  className="rounded-full p-3 hover:bg-light-gray mt-4 block md:hidden"
                 >
                   <CloseIcon />
                 </button>

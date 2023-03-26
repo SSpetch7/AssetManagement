@@ -38,20 +38,21 @@ const App = () => {
             <div className="fixed md:static bg-main-bg navbar w-full">
               <Navbar />
             </div>
-          </div>
-          <div>
-            <Routes>
-              {/* general user */}
-              <Route path="/" element={<Home />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/allAsset" element={<AllAsset />} />
-              <Route path="/checkAsset" element={<CheckAsset />} />
-              <Route path="/dashboard" element={<Dashboard />} />
-              {/* admin */}
-              <Route path="/borrowHistory" element={<BorrowHistory />} />
-              <Route path="/borrower" element={<Borrower />} />
-              <Route path="/admin" element={<Admin />} />
-            </Routes>
+
+            <div>
+              <Routes>
+                {/* general user */}
+                <Route path="/" element={<Home />} />
+                <Route path="/home" element={<Home />} />
+                <Route path="/allAsset" element={<AllAsset />} />
+                <Route path="/checkAsset" element={<CheckAsset />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                {/* admin */}
+                <Route path="/borrowHistory" element={<BorrowHistory />} />
+                <Route path="/borrower" element={<Borrower />} />
+                <Route path="/admin" element={<Admin />} />
+              </Routes>
+            </div>
           </div>
         </div>
       </Router>
