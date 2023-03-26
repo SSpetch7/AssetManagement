@@ -3,7 +3,7 @@ import AppBlockingIcon from '@mui/icons-material/AppBlocking';
 import BuildCircleIcon from '@mui/icons-material/BuildCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import notebook from '../assets/notebook.jpg';
-import tablet from '../assets/tablet.png';
+import tablet from '../assets/tablet.jpg';
 
 export const overviewAsset = [
   {
@@ -75,6 +75,43 @@ export const mostActivity = [
   },
   {
     title: 'Tablet',
+    image: tablet,
+    borrowed: 12,
+    useable: 15,
+    all: 20,
+  },
+];
+export const roomAtAsset = [
+  {
+    number: 'ห้อง SCL607',
+    image: notebook,
+    borrowed: 15,
+    useable: 24,
+    all: 30,
+  },
+  {
+    number: 'ห้อง SCL608',
+    image: tablet,
+    borrowed: 12,
+    useable: 15,
+    all: 20,
+  },
+  {
+    number: 'ห้อง SCL609',
+    image: notebook,
+    borrowed: 15,
+    useable: 24,
+    all: 30,
+  },
+  {
+    number: 'ห้อง SCL610',
+    image: tablet,
+    borrowed: 12,
+    useable: 15,
+    all: 20,
+  },
+  {
+    number: 'ห้อง SCL611',
     image: tablet,
     borrowed: 12,
     useable: 15,
