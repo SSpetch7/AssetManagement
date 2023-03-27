@@ -77,7 +77,7 @@ const Navbar = () => {
               src={avatar}
             />
             <p>
-              <span className="text-gray-400 font-bold ml-1 font-kmuttDB text-20 ">
+              <span className="text-gray-400 font-bold ml-1  text-20 ">
                 Admin
               </span>
             </p>
