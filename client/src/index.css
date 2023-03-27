@@ -4,9 +4,27 @@
 @tailwind utilities;
 
 @layer base {
-  html {
+  @font-face {
+    font-family: 'kmuttDB';
+    font-weight: 700;
+    src: local('DB Heavent'),
+      url('/src/assets/font/DBHeavent-Bold.woff') format('woff'),
+      url('/src/assets/font/DBHeavent-Bold.woff2') format('woff2');
   }
-
+  @font-face {
+    font-family: 'kmuttDB';
+    font-weight: 500;
+    src: local('DB Heavent'),
+      url('/src/assets/font/DBHeavent-Med.woff') format('woff'),
+      url('/src/assets/font/DBHeavent-Med.woff2') format('woff2');
+  }
+  @font-face {
+    font-family: 'kmuttDB';
+    font-weight: 400;
+    src: local('DB Heavent'),
+      url('/src/assets/font/DBHeavent.woff') format('woff'),
+      url('/src/assets/font/DBHeavent.woff2') format('woff2');
+  }
   body {
     margin: 0;
     padding: 0;

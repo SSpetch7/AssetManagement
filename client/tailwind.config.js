@@ -7,8 +7,8 @@ module.exports = {
         14: '14px',
       },
       fontFamily: {
-        kmuttDB: ['DB Heavent', 'sans-serif'],
-        kmuttSB: ['Sarabun', 'sans-serif'],
+        kmuttDB: ['DB Heavent'],
+        kmuttSB: ['Sarabun'],
       },
       backgroundColor: {
         'main-bg': '#FAFBFB',
