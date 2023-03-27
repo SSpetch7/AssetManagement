@@ -6,10 +6,6 @@ module.exports = {
       fontSize: {
         14: '14px',
       },
-      fontFamily: {
-        kmuttDB: ['kmuttDB'],
-        kmuttSB: ['Sarabun'],
-      },
       backgroundColor: {
         'main-bg': '#FAFBFB',
         'light-gray': '#F7F7F7',
