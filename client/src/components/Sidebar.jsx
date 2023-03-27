@@ -63,7 +63,9 @@ const Sidebar = () => {
                     }
                   >
                     {link.icon}
-                    <span className="text-xl font-bold ">{link.nameTh}</span>
+                    <span className="text-xl font-bold font-kmuttDB">
+                      {link.nameTh}
+                    </span>
                   </NavLink>
                 ))}
               </div>
