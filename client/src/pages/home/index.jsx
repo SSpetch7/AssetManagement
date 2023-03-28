@@ -1,6 +1,5 @@
 import React from 'react';
 import { overviewAsset, mostActivity, roomAtAsset } from '../../assets/dummy';
-import notebook from '../../assets/notebook.jpg';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const Home = () => {

@@ -7,7 +7,8 @@ module.exports = {
         14: '14px',
       },
       backgroundColor: {
-        'main-bg': '#FAFBFB',
+        'main-bg': '#EFEFF0',
+        'second-bg': '#FAFBFB',
         'light-gray': '#F7F7F7',
         'half-transparent': 'rgba(0, 0, 0, 0.5)',
       },

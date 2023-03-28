@@ -15,7 +15,7 @@
     margin: 0;
     padding: 0;
     font-family: 'kmuttDB';
-    background: #f1f1f1;
+    background: #efeff0;
   }
   h1 {
     @apply text-xl font-medium capitalize;

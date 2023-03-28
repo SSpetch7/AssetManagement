@@ -1,23 +1,5 @@
-import React, { useMemo, useState, useReducer, useRef } from 'react';
-// import MaterialReactTable from 'material-react-table';
-import MaterialReactTable, {
-  MRT_FullScreenToggleButton,
-  MRT_GlobalFilterTextField,
-  MRT_ShowHideColumnsButton,
-  MRT_TablePagination,
-  MRT_ToggleDensePaddingButton,
-  MRT_ToggleFiltersButton,
-  MRT_ToolbarAlertBanner,
-} from 'material-react-table';
-import {
-  alpha,
-  Box,
-  Button,
-  IconButton,
-  Toolbar,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import React, { useMemo, useState } from 'react';
+import MaterialReactTable from 'material-react-table';
 import Pagination from '@mui/material/Pagination';
 
 const data = [
@@ -124,15 +106,6 @@ const data = [
 ];
 
 const AllAsset = () => {
-  //we need a table instance ref to pass as a prop to the MRT Toolbar buttons
-  const tableInstanceRef = useRef(null);
-
-  //we will also need some weird re-render hacks to force the MRT_ components to re-render since ref changes do not trigger a re-render
-  const rerender = useReducer(() => ({}), {})[1];
-
-  //we need to manage the state that should trigger the MRT_ components in our custom toolbar to re-render
-  const [pagination, setPagination] = useState({ pageIndex: 0, pageSize: 10 });
-  const [showColumnFilters, setShowColumnFilters] = useState(false);
   const columns = useMemo(
     () => [
       {
@@ -168,24 +141,6 @@ const AllAsset = () => {
         <span className="text-gray-400  pl-2">ครุภัณฑ์ทั้งหมด</span>
         <div className="flex justify-center h-full ">
           <div className=" bg-white h-5/6 rounded-xl w-9/12  px-8 pt-8 m-3 ">
-            {tableInstanceRef.current && (
-              <Toolbar
-                sx={(theme) => ({
-                  //   backgroundColor: 'white',
-                  borderRadius: '4px',
-                  display: 'flex',
-                  flexDirection: {
-                    xs: 'column',
-                    lg: 'row',
-                  },
-                  gap: '1rem',
-                  justifyContent: 'space-between',
-                  p: '1.5rem 0',
-                })}
-              >
-                <MRT_GlobalFilterTextField table={tableInstanceRef.current} />
-              </Toolbar>
-            )}
             <MaterialReactTable
               columns={columns}
               data={data}
@@ -201,43 +156,7 @@ const AllAsset = () => {
               muiTableContainerProps={{
                 sx: { maxHeight: '600px', minHeight: '600px' },
               }}
-              onPaginationChange={(updater) => {
-                setPagination((prev) =>
-                  updater instanceof Function ? updater(prev) : updater
-                );
-                queueMicrotask(rerender); //hack to rerender after state update
-              }}
-              onShowFiltersChange={(updater) => {
-                setShowColumnFilters((prev) =>
-                  updater instanceof Function ? updater(prev) : updater
-                );
-                queueMicrotask(rerender); //hack to rerender after state update
-              }}
-              state={{
-                pagination,
-                showColumnFilters,
-              }}
-              tableInstanceRef={tableInstanceRef} //get access to the underlying table instance ref
             />
-            {/* Our Custom Bottom Toolbar */}
-            {tableInstanceRef.current && (
-              <Toolbar
-                sx={{
-                  display: 'flex',
-                  alignItems: 'flex-end',
-                  flexDirection: 'column',
-                }}
-              >
-                <MRT_TablePagination table={tableInstanceRef.current} />
-                <Box sx={{ display: 'grid', width: '100%' }}>
-                  <MRT_ToolbarAlertBanner
-                    stackAlertBanner
-                    table={tableInstanceRef.current}
-                  />
-                </Box>
-                {/* <Pagination count={5} shape="rounded" /> */}
-              </Toolbar>
-            )}
           </div>
         </div>
       </div>

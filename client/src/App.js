@@ -24,7 +24,7 @@ const App = () => {
       <Router>
         <div className="flex relative">
           {activeMenu ? (
-            <div className="w-72 fixed sidebar bg-main-bg ">
+            <div className="w-72 fixed sidebar bg-second-bg">
               <Sidebar />
             </div>
           ) : (
