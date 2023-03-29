@@ -17,6 +17,8 @@ module.exports = {
           500: '#FFB39F',
           800: '#FF8261',
           'bg-menu': '#DCDCDC',
+          borrowBt: '#FF8261',
+          editBt: '#547AFF',
         },
       },
       borderWidth: {

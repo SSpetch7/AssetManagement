@@ -19,109 +19,8 @@ import {
   Typography,
 } from '@mui/material';
 import Pagination from '@mui/material/Pagination';
-
-const data = [
-  {
-    name: {
-      firstName: 'John',
-      lastName: 'Doe',
-    },
-    address: '261 Erdman Ford',
-    city: 'East Daphne',
-    state: 'Kentucky',
-  },
-  {
-    name: {
-      firstName: 'John',
-      lastName: 'Doe',
-    },
-    address: '261 Erdman Ford',
-    city: 'East Daphne',
-    state: 'Kentucky',
-  },
-  {
-    name: {
-      firstName: 'John',
-      lastName: 'Doe',
-    },
-    address: '261 Erdman Ford',
-    city: 'East Daphne',
-    state: 'Kentucky',
-  },
-  {
-    name: {
-      firstName: 'John',
-      lastName: 'Doe',
-    },
-    address: '261 Erdman Ford',
-    city: 'East Daphne',
-    state: 'Kentucky',
-  },
-  {
-    name: {
-      firstName: 'John',
-      lastName: 'Doe',
-    },
-    address: '261 Erdman Ford',
-    city: 'East Daphne',
-    state: 'Kentucky',
-  },
-  {
-    name: {
-      firstName: 'John',
-      lastName: 'Doe',
-    },
-    address: '261 Erdman Ford',
-    city: 'East Daphne',
-    state: 'Kentucky',
-  },
-  {
-    name: {
-      firstName: 'John',
-      lastName: 'Doe',
-    },
-    address: '261 Erdman Ford',
-    city: 'East Daphne',
-    state: 'Kentucky',
-  },
-
-  {
-    name: {
-      firstName: 'Jane',
-      lastName: 'Doe',
-    },
-    address: '769 Dominic Grove',
-    city: 'Columbus',
-    state: 'Ohio',
-  },
-  {
-    name: {
-      firstName: 'Joe',
-      lastName: 'Doe',
-    },
-    address: '566 Brakus Inlet',
-    city: 'South Linda',
-    state: 'West Virginia',
-  },
-  {
-    name: {
-      firstName: 'Kevin',
-      lastName: 'Vandy',
-    },
-    address: '722 Emie Stream',
-    city: 'Lincoln',
-    state: 'Nebraska',
-  },
-  {
-    name: {
-      firstName: 'Joshua',
-      lastName: 'Rolluffs',
-    },
-    address: '32188 Larkin Turnpike',
-    city: 'Charleston',
-    state: 'South Carolina',
-  },
-];
+import { Delete, Edit } from '@mui/icons-material';
+import { dataTable } from '../../assets/dummy';
 
 const AllAsset = () => {
   //we need a table instance ref to pass as a prop to the MRT Toolbar buttons
@@ -136,24 +35,38 @@ const AllAsset = () => {
   const columns = useMemo(
     () => [
       {
-        accessorKey: 'name.firstName', //access nested data with dot notation
-        header: 'First Name',
+        accessorKey: 'order',
+        header: 'ลำดับที่',
+        size: 40,
       },
       {
-        accessorKey: 'name.lastName',
-        header: 'Last Name',
+        accessorKey: 'asset_id',
+        header: 'หมายเลขครุภัณฑ์',
       },
       {
-        accessorKey: 'address', //normal accessorKey
-        header: 'Address',
+        accessorKey: 'name',
+        header: 'ชื่อรายการ',
+        size: 250,
       },
       {
-        accessorKey: 'city',
-        header: 'City',
+        accessorKey: 'year',
+        header: 'ปี',
+        size: 120,
       },
       {
-        accessorKey: 'state',
-        header: 'State',
+        accessorKey: 'status',
+        header: 'สภาพ',
+        size: 120,
+      },
+      {
+        accessorKey: 'useable',
+        header: 'การใช้',
+        size: 120,
+      },
+      {
+        accessorKey: 'room_id',
+        header: 'ประจำที่',
+        size: 120,
       },
     ],
     []
@@ -186,39 +99,67 @@ const AllAsset = () => {
                 <MRT_GlobalFilterTextField table={tableInstanceRef.current} />
               </Toolbar>
             )}
-            <MaterialReactTable
-              columns={columns}
-              data={data}
-              enableBottomToolbar={false}
-              enableTopToolbar={false}
-              enableColumnActions={false}
-              initialState={{
-                showGlobalFilter: true,
-              }}
-              muiTablePaginationProps={{
-                rowsPerPageOptions: false,
-              }}
-              muiTableContainerProps={{
-                sx: { maxHeight: '600px', minHeight: '600px' },
-              }}
-              onPaginationChange={(updater) => {
-                setPagination((prev) =>
-                  updater instanceof Function ? updater(prev) : updater
-                );
-                queueMicrotask(rerender); //hack to rerender after state update
-              }}
-              onShowFiltersChange={(updater) => {
-                setShowColumnFilters((prev) =>
-                  updater instanceof Function ? updater(prev) : updater
-                );
-                queueMicrotask(rerender); //hack to rerender after state update
-              }}
-              state={{
-                pagination,
-                showColumnFilters,
-              }}
-              tableInstanceRef={tableInstanceRef} //get access to the underlying table instance ref
-            />
+            <>
+              <MaterialReactTable
+                columns={columns}
+                data={dataTable}
+                enableRowActions
+                positionActionsColumn="last"
+                enableBottomToolbar={false}
+                enableTopToolbar={false}
+                enableColumnActions={false}
+                initialState={{
+                  showGlobalFilter: true,
+                }}
+                muiTablePaginationProps={{
+                  rowsPerPageOptions: false,
+                }}
+                muiTableContainerProps={{
+                  sx: { maxHeight: '650px', minHeight: '650px' },
+                }}
+                onPaginationChange={(updater) => {
+                  setPagination((prev) =>
+                    updater instanceof Function ? updater(prev) : updater
+                  );
+                  queueMicrotask(rerender); //hack to rerender after state update
+                }}
+                onShowFiltersChange={(updater) => {
+                  setShowColumnFilters((prev) =>
+                    updater instanceof Function ? updater(prev) : updater
+                  );
+                  queueMicrotask(rerender); //hack to rerender after state update
+                }}
+                state={{
+                  pagination,
+                  showColumnFilters,
+                }}
+                tableInstanceRef={tableInstanceRef}
+                renderRowActions={({ row, table }) => (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      //   gap: '8px',
+                    }}
+                  >
+                    <div className="flex pr-2">
+                      {/* <IconButton>
+                        <Edit />
+                    </IconButton> */}
+                      <button className="bg-kmuttColor-borrowBt text-white rounded-full w-10">
+                        ยืม
+                      </button>
+                    </div>
+                    <div className="flex pr-2">
+                      {/* <IconButton color="success"> */}
+                      <button className="bg-kmuttColor-editBt text-white rounded-full w-10">
+                        แก้ไข
+                      </button>
+                      {/* </IconButton> */}
+                    </div>
+                  </Box>
+                )}
+              />
+            </>
             {/* Our Custom Bottom Toolbar */}
             {tableInstanceRef.current && (
               <Toolbar
@@ -229,7 +170,13 @@ const AllAsset = () => {
                 }}
               >
                 <MRT_TablePagination table={tableInstanceRef.current} />
-                <Box sx={{ display: 'grid', width: '100%' }}>
+                <Box
+                  sx={{
+                    display: 'grid',
+                    width: '100%',
+                    backgroundColor: 'red',
+                  }}
+                >
                   <MRT_ToolbarAlertBanner
                     stackAlertBanner
                     table={tableInstanceRef.current}
