@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-
+import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
@@ -28,6 +28,13 @@ export default function ProductsDemo() {
     rating: 0,
     inventoryStatus: 'INSTOCK',
   };
+
+  const [productStatus, setProductStatus] = useState(null);
+    const status = [
+        { name: 'มีให้ตรวจสอบ', code: 'HP' },
+        { name: 'ไม่มี', code: 'NP' },
+        { name: 'ระหว่างซ่อม', code: 'FIX' }
+    ];
 
   const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
@@ -424,9 +431,9 @@ export default function ProductsDemo() {
 
       <Dialog
         visible={productDialog}
-        style={{ width: '32rem' }}
+        style={{ width: '64rem' }}
         breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header="Product Details"
+        header="รายละเอียดครุภัณฑ์"
         modal
         className="p-fluid"
         footer={productDialogFooter}
@@ -439,9 +446,27 @@ export default function ProductsDemo() {
             className="product-image block m-auto pb-3"
           />
         )}
+
+          <div className="field">
+            <label htmlFor="name" className="font-bold">
+            ลำดับที่
+            </label>
+          <InputText
+            id="no"
+            value={product.number}
+            onChange={(e) => onInputChange(e, 'number')}
+            required
+            autoFocus
+            className={classNames({ 'p-invalid': submitted && !product.number })}
+          />
+          {submitted && !product.number && (
+            <small className="p-error">No. is required.</small>
+          )}
+        </div>
+        
         <div className="field">
           <label htmlFor="name" className="font-bold">
-            ชื่อ
+            ชื่อรายการ
           </label>
           <InputText
             id="name"
@@ -455,9 +480,62 @@ export default function ProductsDemo() {
             <small className="p-error">Name is required.</small>
           )}
         </div>
+        
+        <div className="field">
+          <label htmlFor="id" className="font-bold">
+            หมายเลขครุภัณฑ์
+          </label>
+          <InputText
+            id="id"
+            value={product.id}
+            onChange={(e) => onInputChange(e, 'id')}
+            required
+            autoFocus
+            className={classNames({ 'p-invalid': submitted && !product.id })}
+          />
+          {submitted && !product.id && (
+            <small className="p-error">ProductID is required.</small>
+          )}
+        </div>
+
+        <div className="formgrid grid">
+          <div className="field col">
+            <label htmlFor="price" className="font-bold">
+              ราคา
+            </label>
+            <InputNumber
+              id="price"
+              value={product.price}
+              onValueChange={(e) => onInputNumberChange(e, 'price')}
+              mode="currency"
+              currency="USD"
+              locale="en-US"
+            />
+          </div>
+          <div className="field col">
+            <label htmlFor="quantity" className="font-bold">
+              จำนวน
+            </label>
+            <InputNumber
+              id="quantity"
+              value={product.quantity}
+              onValueChange={(e) => onInputNumberChange(e, 'quantity')}
+            />
+          </div>
+        </div>
+
+        <div className="card flex justify-content-center">
+        <label htmlFor="description" className="font-bold">
+            สถานะ
+          </label>
+            <Dropdown value={productStatus} onChange={(e) => setProductStatus(e.value)} options={status} optionLabel="name" 
+                placeholder="เลือกสถานะ" className="w-full md:w-14rem" />
+        </div>
+
+        
         <div className="field">
           <label htmlFor="description" className="font-bold">
-            Description
+            หมายเหตุ
           </label>
           <InputTextarea
             id="description"
@@ -515,31 +593,7 @@ export default function ProductsDemo() {
           </div>
         </div>
 
-        <div className="formgrid grid">
-          <div className="field col">
-            <label htmlFor="price" className="font-bold">
-              Price
-            </label>
-            <InputNumber
-              id="price"
-              value={product.price}
-              onValueChange={(e) => onInputNumberChange(e, 'price')}
-              mode="currency"
-              currency="USD"
-              locale="en-US"
-            />
-          </div>
-          <div className="field col">
-            <label htmlFor="quantity" className="font-bold">
-              Quantity
-            </label>
-            <InputNumber
-              id="quantity"
-              value={product.quantity}
-              onValueChange={(e) => onInputNumberChange(e, 'quantity')}
-            />
-          </div>
-        </div>
+        
       </Dialog>
 
       <Dialog
