@@ -25,10 +25,10 @@ export default function BasicDemo() {
       <Dialog
         header="ข้อมูลผู้ใช้"
         visible={visible}
-        style={{ width: "50vw" ,height: "75vh" }}
+        style={{ width: "50vw" }}
         onHide={() => setVisible(false)} footer={footerContent}
       >
-        <div className="card">
+        
         <TabView>
             <TabPanel header="ข้อมูลผู้ใช้">
               <div className="flex flex-col">
@@ -45,8 +45,8 @@ export default function BasicDemo() {
               </div>
               
              
-                <div className="content-evenly bg-kmuttColor-800 grow">
-                  <div className="flex justify-evenly">
+                <div className="content-evenly mt-4">
+                  <div className="flex justify-evenly py-4">
                     <div className="mb-2 lg:col-6 lg:mb-0">
                       <span className="p-input-icon-left">
                         <i className="pi pi-user" />
@@ -61,7 +61,7 @@ export default function BasicDemo() {
                     </div>
                   </div>
 
-                  <div className="flex justify-evenly">
+                  <div className="flex justify-evenly py-4">
                     <div className="col-6 mb-2 lg:col-6 lg:mb-0">
                       <span className="p-input-icon-left">
                         <i className="pi pi-user" />
@@ -83,7 +83,7 @@ export default function BasicDemo() {
               <p>Table</p>
             </TabPanel>
           </TabView>
-        </div>
+        
   
       </Dialog>
     </div>
