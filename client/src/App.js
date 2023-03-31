@@ -16,9 +16,9 @@ import {
 
 import { useStateContext } from './contexts/ContextProvider';
 
-import "primereact/resources/primereact.min.css";
-import "primereact/resources/themes/tailwind-light/theme.css";
-import "primeicons/primeicons.css"; 
+import 'primereact/resources/primereact.min.css';
+import 'primereact/resources/themes/tailwind-light/theme.css';
+import 'primeicons/primeicons.css';
 
 const App = () => {
   const { activeMenu } = useStateContext();
@@ -28,7 +28,7 @@ const App = () => {
       <Router>
         <div className="flex relative">
           {activeMenu ? (
-            <div className="w-72 fixed sidebar bg-second-bg">
+            <div className="w-72 labtop:w-60 fixed sidebar bg-second-bg">
               <Sidebar />
             </div>
           ) : (
@@ -38,7 +38,9 @@ const App = () => {
           )}
           <div
             className={`min-h-screen w-full ${
-              activeMenu ? '  bg-main-bg  md:ml-72 ' : 'bg-main-bg flex-2'
+              activeMenu
+                ? '  bg-main-bg labtop:ml-60 md:ml-72 '
+                : 'bg-main-bg flex-2'
             }`}
           >
             <div className="fixed md:static bg-main-bg navbar w-full">
