@@ -341,9 +341,9 @@ export default function Admin() {
       <div className="mt-12">
         <div className="pb-10">
           <span className="pl-32 font-bold  text-4xl text-gray-600 items-start">
-            All Asset
+            Admin Management
           </span>
-          <span className="pl-2  text-gray-400">ครุภัณฑ์ทั้งหมด</span>
+          <span className="pl-2  text-gray-400">จัดการแอดมิน</span>
         </div>
         <div className="flex justify-center h-full ">
           <div className=" bg-white h-5/6 rounded-xl w-9/12   px-8 pt-8 m-3 ">
@@ -377,20 +377,20 @@ export default function Admin() {
                 field="email"
                 header="E-mail"
                 sortable
-                style={{ minWidth: '16rem', width: '20rem' }}
+                style={{ minWidth: '16rem' }}
               ></Column>
 
               <Column
                 header="Role"
                 body={statusBodyTemplate}
                 // sortable
-                style={{ Width: '5rem', textAlign: 'start' }}
+                style={{ minWidth: '8rem', textAlign: 'start' }}
               ></Column>
               <Column
                 field="date"
                 header="วันที่เพิ่มเข้าสู่ระบบ"
                 sortable
-                style={{ minWidth: '12rem', width: '12rem' }}
+                style={{ minWidth: '12rem' }}
               ></Column>
               <Column
                 body={actionBodyTemplate}

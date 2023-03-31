@@ -369,19 +369,19 @@ export default function Admin() {
                 header="ชื่อ"
                 sortable
                 // body={imageBodyTemplate}
-                style={{ minWidth: '15px', width: '15rem' }}
+                style={{ minWidth: '15rem' }}
               ></Column>
               <Column
                 field="email"
                 header="E-mail"
                 sortable
-                style={{ minWidth: '20rem', width: '20rem' }}
+                style={{ minWidth: '20rem' }}
               ></Column>
               <Column
                 field="major"
                 header="สาขาวิชา"
                 sortable
-                style={{ minWidth: '16rem', width: '15rem' }}
+                style={{ minWidth: '15rem' }}
               ></Column>
 
               <Column
@@ -390,7 +390,7 @@ export default function Admin() {
                 // body={statusBodyTemplate}
                 // headerStyle={{ minWidth: '10rem' }}
                 sortable
-                style={{ Width: '5rem', textAlign: 'center' }}
+                style={{ minWidth: '12rem', textAlign: 'center' }}
               ></Column>
 
               <Column
