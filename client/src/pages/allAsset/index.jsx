@@ -6,26 +6,22 @@ import { Paginator } from 'primereact/paginator';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
-import { Rating } from 'primereact/rating';
-import { Toolbar } from 'primereact/toolbar';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { RadioButton } from 'primereact/radiobutton';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
-import { Tag } from 'primereact/tag';
 import { dataTable } from '../../assets/dummy';
 
 export default function AllAsset() {
-  let emptyProduct = {
-    id: null,
+  let emptydataTable = {
+    order: '',
+    asset_id: '',
     name: '',
-    image: null,
-    description: '',
-    category: null,
-    price: 0,
-    quantity: 0,
-    rating: 0,
+    year: null,
+    status: '',
+    useable: '',
+    room_id: '',
     inventoryStatus: 'INSTOCK',
   };
 
@@ -33,7 +29,7 @@ export default function AllAsset() {
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-  const [product, setProduct] = useState(emptyProduct);
+  const [product, setProduct] = useState(emptydataTable);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
@@ -53,7 +49,7 @@ export default function AllAsset() {
   };
 
   const openNew = () => {
-    setProduct(emptyProduct);
+    setProduct(emptydataTable);
     setSubmitted(false);
     setProductDialog(true);
   };
@@ -102,7 +98,7 @@ export default function AllAsset() {
 
       setProducts(_products);
       setProductDialog(false);
-      setProduct(emptyProduct);
+      setProduct(emptydataTable);
     }
   };
 
@@ -121,7 +117,7 @@ export default function AllAsset() {
 
     setProducts(_products);
     setDeleteProductDialog(false);
-    setProduct(emptyProduct);
+    setProduct(emptydataTable);
     toast.current.show({
       severity: 'success',
       summary: 'Successful',
@@ -233,7 +229,7 @@ export default function AllAsset() {
           icon="pi pi-pencil"
           //   rounded
           outlined
-          className="mr-2"
+          className="editBnt mr-2"
           onClick={() => editProduct(rowData)}
         />
       </React.Fragment>
@@ -275,12 +271,14 @@ export default function AllAsset() {
           icon="pi pi-plus"
           severity="success"
           //   onClick={openNew}
+          style={{ paddingRight: '13px', paddingLeft: '13px' }}
         />
         <Button
           label="Export"
           icon="pi pi-upload"
           className="p-button-help"
           //   onClick={exportCSV}
+          style={{ width: '120px' }}
         />
       </div>
     </div>
@@ -332,7 +330,7 @@ export default function AllAsset() {
           <span className="pl-32 font-bold  text-4xl text-gray-600 items-start">
             All Asset
           </span>
-          <span className="pl-2">ครุภัณฑ์ทั้งหมด</span>
+          <span className="pl-2  text-gray-400">ครุภัณฑ์ทั้งหมด</span>
         </div>
         <div className="flex justify-center h-full ">
           <div className=" bg-white h-5/6 rounded-xl w-9/12   px-8 pt-8 m-3 ">
@@ -347,6 +345,7 @@ export default function AllAsset() {
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
               globalFilter={globalFilter}
               header={header}
+              className="actionRow"
             >
               <Column
                 field="order"
@@ -562,6 +561,9 @@ export default function AllAsset() {
           )}
         </div>
       </Dialog>
+      <div className="m-16">
+        <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
+      </div>
     </div>
   );
 }

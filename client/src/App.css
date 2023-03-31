@@ -78,7 +78,7 @@
 .p-datatable-tbody .p-button:focus:first-child {
   box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #ff8261, 0 1px 2px 0 rgba(0, 0, 0, 0) !important;
 }
-.p-datatable-tbody .p-button:focus:last-child {
+.p-datatable-tbody .editBnt.p-button:focus {
   box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #547aff, 0 1px 2px 0 rgba(0, 0, 0, 0) !important;
 }
 /* bnt hover */
@@ -86,13 +86,19 @@
 .p-button.p-button-outlined:not(button):not(a):not(.p-disabled):hover {
   background: rgb(111 111 111 / 4%) !important;
 }
-.p-datatable-tbody .p-button.p-button-outlined:last-child {
+.p-datatable-tbody .editBnt.p-button.p-button-outlined {
   color: #547aff !important ;
 }
-/* last row */
-.p-datatable .p-datatable-tbody > tr > td:last-child {
+/* table have action last row */
+.actionRow.p-datatable .p-datatable-tbody > tr > td:last-child {
   padding: 0 !important;
 }
+/* status last row */
+.statusRow.p-datatable .p-datatable-tbody > tr > td:last-child {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
 /* font in table */
 .p-paginator .p-paginator-pages .p-paginator-page,
 .p-component {
@@ -144,7 +150,20 @@
   box-shadow: 0 0 0 1px #ff8261 !important;
 }
 
-/* end */
+/* end all asset*/
+
+/*================== borrow history =================== */
+.p-tag.p-component {
+  height: 20px !important;
+}
+.p-tag.p-component .p-tag-value {
+  font-weight: 500 !important;
+  font-size: 18px !important;
+}
+/* row action */
+
+/* end borrow history */
+
 ::-webkit-scrollbar {
   width: 6px;
 }
