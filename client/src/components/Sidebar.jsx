@@ -16,9 +16,9 @@ const Sidebar = () => {
   };
 
   const activeLink =
-    'flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg  text-white  text-md m-2';
+    'flex items-center  gap-5 pl-4 pt-3 pb-2.5 rounded-lg  text-white  text-md m-2';
   const normalLink =
-    'flex items-center gap-5 pl-4 pt-3 pb-2.5 rounded-lg text-md text-gray-500  hover:bg-light-gray m-2';
+    'flex items-center  gap-5 pl-4  pt-3 pb-2.5 rounded-lg text-md text-gray-500  hover:bg-light-gray m-2';
 
   return (
     <div className="w-64 ml-3 h-screen md:overflow-hidden overflow-auto md:hover:overflow-auto pb-10">
@@ -30,7 +30,11 @@ const Sidebar = () => {
               onClick={() => handleCloseSidebar}
               className="items-center gap-3 ml-3 mt-4 flex "
             >
-              <img src={Logo} width="100%" alt="sci-kmutt" />
+              <img
+                src={Logo}
+                className="w-9/12 labtop:w-1/2 "
+                alt="sci-kmutt"
+              />
             </Link>
             <div className="items-start">
               <Tooltip title="ปิด">

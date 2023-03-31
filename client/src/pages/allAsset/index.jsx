@@ -271,7 +271,11 @@ export default function AllAsset() {
           icon="pi pi-plus"
           severity="success"
           //   onClick={openNew}
-          style={{ paddingRight: '13px', paddingLeft: '13px' }}
+          style={{
+            minWidth: '2rem',
+            paddingRight: '13px',
+            paddingLeft: '13px',
+          }}
         />
         <Button
           label="Export"
@@ -333,7 +337,7 @@ export default function AllAsset() {
           <span className="pl-2  text-gray-400">ครุภัณฑ์ทั้งหมด</span>
         </div>
         <div className="flex justify-center h-full ">
-          <div className=" bg-white h-5/6 rounded-xl w-9/12   px-8 pt-8 m-3 ">
+          <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
             <DataTable
               ref={dt}
               value={products}
@@ -346,49 +350,52 @@ export default function AllAsset() {
               globalFilter={globalFilter}
               header={header}
               className="actionRow"
+              scrollable
+              scrollHeight="700px"
+              tableStyle={{ minHeight: '10rem' }}
             >
               <Column
                 field="order"
                 header="ลำดับ"
                 sortable
-                style={{ minWidth: '20px', width: '10rem' }}
+                style={{ minWidth: '5rem' }}
               ></Column>
               <Column
                 field="asset_id"
                 header="หมายเลขครุภัณฑ์"
                 sortable
-                style={{ minWidth: '12rem', width: '20rem' }}
+                style={{ minWidth: '11rem' }}
               ></Column>
               <Column
                 field="name"
                 header="ชื่อ"
                 sortable
-                style={{ minWidth: '16rem', width: '20rem' }}
+                style={{ minWidth: '16rem' }}
               ></Column>
 
               <Column
                 field="year"
                 header="ปี"
                 sortable
-                style={{ minWidth: '5rem', width: '5rem' }}
+                style={{ minWidth: '5rem' }}
               ></Column>
               <Column
                 field="status"
                 header="สภาพ"
                 sortable
-                style={{ minWidth: '5rem', width: '8rem' }}
+                style={{ minWidth: '4rem' }}
               ></Column>
               <Column
                 field="useable"
                 header="การใช้งาน"
                 sortable
-                style={{ minWidth: '9rem', width: '10rem' }}
+                style={{ minWidth: '9rem' }}
               ></Column>
               <Column
                 field="room_id"
                 header="ประจำที่"
                 sortable
-                style={{ minWidth: '8rem', width: '8rem' }}
+                style={{ minWidth: '8rem' }}
               ></Column>
               <Column
                 body={actionBodyTemplate}

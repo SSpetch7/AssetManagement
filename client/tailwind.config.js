@@ -4,7 +4,7 @@ module.exports = {
   theme: {
     extend: {
       screens: {
-        labtop: { max: '1414px' },
+        labtop: { max: '1415px' },
         // => @media (min-width: 640px and max-width: 767px) { ... }
         // md: { min: '768px', max: '1023px' },
         // // => @media (min-width: 768px and max-width: 1023px) { ... }
