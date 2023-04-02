@@ -31,9 +31,9 @@ export default function ProductsDemo() {
 
   const [productStatus, setProductStatus] = useState(null);
     const status = [
-        { name: 'มีให้ตรวจสอบ', code: 'HP' },
-        { name: 'ไม่มี', code: 'NP' },
-        { name: 'ระหว่างซ่อม', code: 'FIX' }
+        { name: 'ใช่งานได้', code: 'CU' },
+        { name: 'รอซ่อม', code: 'FX' },
+        { name: 'สิ้นสภาพ', code: 'BK' }
     ];
 
   const [products, setProducts] = useState(null);
@@ -291,13 +291,13 @@ export default function ProductsDemo() {
 
   const getSeverity = (product) => {
     switch (product.inventoryStatus) {
-      case 'ใช้จริง':
+      case 'ใช้งานได้':
         return 'success';
 
-      case 'ซ่อม':
+      case 'รอซ่อม':
         return 'warning';
 
-      case 'กำลังใช้งาน':
+      case 'สิ้นสภาพ':
         return 'danger';
 
       default:
@@ -321,7 +321,7 @@ export default function ProductsDemo() {
   const productDialogFooter = (
     <React.Fragment>
       <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
-      <Button label="Save" icon="pi pi-check" onClick={saveProduct} />
+      <Button label="Save" icon="pi pi-check" className='p-Testbutton' onClick={saveProduct} />
     </React.Fragment>
   );
   const deleteProductDialogFooter = (
@@ -446,8 +446,10 @@ export default function ProductsDemo() {
             className="product-image block m-auto pb-3"
           />
         )}
-
-          <div className="field">
+        <div className='card p-4'>
+          <h1 className='text-kmuttColor-800 py-2'>ข้อมูลครุภัณฑ์</h1>
+          <div className='grid grid-cols-4 gap-4'>
+          <div className="field col-start-1">
             <label htmlFor="name" className="font-bold">
             ลำดับที่
             </label>
@@ -464,7 +466,7 @@ export default function ProductsDemo() {
           )}
         </div>
         
-        <div className="field">
+        <div className="field col-start-2 col-end-5">
           <label htmlFor="name" className="font-bold">
             ชื่อรายการ
           </label>
@@ -508,32 +510,123 @@ export default function ProductsDemo() {
               value={product.price}
               onValueChange={(e) => onInputNumberChange(e, 'price')}
               mode="currency"
-              currency="USD"
+              currency="THB"
               locale="en-US"
-            />
-          </div>
-          <div className="field col">
-            <label htmlFor="quantity" className="font-bold">
-              จำนวน
-            </label>
-            <InputNumber
-              id="quantity"
-              value={product.quantity}
-              onValueChange={(e) => onInputNumberChange(e, 'quantity')}
             />
           </div>
         </div>
 
-        <div className="card flex justify-content-center">
-        <label htmlFor="description" className="font-bold">
+        <div className="field col-start-3 col-end-5">
+          <label htmlFor="room" className="font-bold">
+            ประจำที่
+          </label>
+          <InputText
+            id="room"
+            value={product.room}
+            onChange={(e) => onInputChange(e, 'room')}
+            required
+            autoFocus
+            className={classNames({ 'p-invalid': submitted && !product.room })}
+          />
+          {submitted && !product.room && (
+            <small className="p-error">ProductRoom is required.</small>
+          )}
+        </div>
+
+        <div className="field">
+<label htmlFor="description" className="font-bold">
             สถานะ
           </label>
+        <div className="card flex justify-content-center">
+        
             <Dropdown value={productStatus} onChange={(e) => setProductStatus(e.value)} options={status} optionLabel="name" 
                 placeholder="เลือกสถานะ" className="w-full md:w-14rem" />
+        </div></div>
+
+        <div className="field">
+        <label htmlFor="description" className="font-bold">
+            สภาพ
+          </label>
+        <div className="card flex justify-content-center">
+        
+            <Dropdown value={productStatus} onChange={(e) => setProductStatus(e.value)} options={status} optionLabel="name" 
+                placeholder="เลือกสถานะ" className="w-full md:w-14rem" />
+        </div></div>
+        
+        <div className="field">
+        <label htmlFor="description" className="font-bold">
+            การใช้งาน
+          </label>
+        <div className="card flex justify-content-center">
+        
+            <Dropdown value={productStatus} onChange={(e) => setProductStatus(e.value)} options={status} optionLabel="name" 
+                placeholder="เลือกสถานะ" className="w-full md:w-14rem" />
+        </div></div>
+        
+        <div className="field">
+        <label htmlFor="description" className="font-bold">
+            ประเภทครุภัณฑ์
+          </label>
+        <div className="card flex justify-content-center">
+        
+            <Dropdown value={productStatus} onChange={(e) => setProductStatus(e.value)} options={status} optionLabel="name" 
+                placeholder="เลือกสถานะ" className="w-full md:w-14rem" />
+        </div>
+        </div></div>
+        </div>
+
+        <div className='card p-4'>
+          <h1 className='text-kmuttColor-800 py-2'>ข้อมูลโครงการ</h1>
+          <div className='grid grid-cols-4 gap-4'>
+          
+        
+        <div className="field col-start-1 col-end-5">
+          <label htmlFor="project" className="font-bold">
+            ชื่อโครงการ
+          </label>
+          <InputText
+            id="project"
+            value={product.project}
+            onChange={(e) => onInputChange(e, 'ยพน่ำแะ')}
+            required
+            autoFocus
+            className={classNames({ 'p-invalid': submitted && !product.project })}
+          />
+          {submitted && !product.project && (
+            <small className="p-error">ProjectName is required.</small>
+          )}
+        </div>
+        
+
+        <div className="field col-start-1 col-end-5">
+          <label htmlFor="id" className="font-bold">
+            ชื่อแผนงาน
+          </label>
+          <InputText
+            id="plan"
+            value={product.plan}
+            onChange={(e) => onInputChange(e, 'plan')}
+            required
+            autoFocus
+            className={classNames({ 'p-invalid': submitted && !product.plan })}
+          />
+          {submitted && !product.plan && (
+            <small className="p-error">PlanName is required.</small>
+          )}
         </div>
 
         
         <div className="field">
+        <label htmlFor="description" className="font-bold">
+            ประเภทแผนงาน
+          </label>
+        <div className="card flex justify-content-center">
+        
+            <Dropdown value={productStatus} onChange={(e) => setProductStatus(e.value)} options={status} optionLabel="name" 
+                placeholder="เลือกสถานะ" className="w-full md:w-14rem" />
+        </div>
+        </div></div>
+ <div className="field">
           <label htmlFor="description" className="font-bold">
             หมายเหตุ
           </label>
@@ -547,51 +640,12 @@ export default function ProductsDemo() {
           />
         </div>
 
-        <div className="field">
-          <label className="mb-3 font-bold">Category</label>
-          <div className="formgrid grid">
-            <div className="field-radiobutton col-6">
-              <RadioButton
-                inputId="category1"
-                name="category"
-                value="Accessories"
-                onChange={onCategoryChange}
-                checked={product.category === 'Accessories'}
-              />
-              <label htmlFor="category1">Accessories</label>
-            </div>
-            <div className="field-radiobutton col-6">
-              <RadioButton
-                inputId="category2"
-                name="category"
-                value="Clothing"
-                onChange={onCategoryChange}
-                checked={product.category === 'Clothing'}
-              />
-              <label htmlFor="category2">Clothing</label>
-            </div>
-            <div className="field-radiobutton col-6">
-              <RadioButton
-                inputId="category3"
-                name="category"
-                value="Electronics"
-                onChange={onCategoryChange}
-                checked={product.category === 'Electronics'}
-              />
-              <label htmlFor="category3">Electronics</label>
-            </div>
-            <div className="field-radiobutton col-6">
-              <RadioButton
-                inputId="category4"
-                name="category"
-                value="Fitness"
-                onChange={onCategoryChange}
-                checked={product.category === 'Fitness'}
-              />
-              <label htmlFor="category4">Fitness</label>
-            </div>
-          </div>
         </div>
+
+        
+       
+
+       
 
         
       </Dialog>
