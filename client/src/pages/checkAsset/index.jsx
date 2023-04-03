@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-
+import { Dropdown } from 'primereact/dropdown';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
@@ -28,6 +28,13 @@ export default function ProductsDemo() {
     rating: 0,
     inventoryStatus: 'INSTOCK',
   };
+
+  const [productStatus, setProductStatus] = useState(null);
+  const status = [
+    { name: 'ใช่งานได้', code: 'CU' },
+    { name: 'รอซ่อม', code: 'FX' },
+    { name: 'สิ้นสภาพ', code: 'BK' },
+  ];
 
   const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
@@ -284,13 +291,13 @@ export default function ProductsDemo() {
 
   const getSeverity = (product) => {
     switch (product.inventoryStatus) {
-      case 'ใช้จริง':
+      case 'ใช้งานได้':
         return 'success';
 
-      case 'ซ่อม':
+      case 'รอซ่อม':
         return 'warning';
 
-      case 'กำลังใช้งาน':
+      case 'สิ้นสภาพ':
         return 'danger';
 
       default:
@@ -314,7 +321,12 @@ export default function ProductsDemo() {
   const productDialogFooter = (
     <React.Fragment>
       <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
-      <Button label="Save" icon="pi pi-check" onClick={saveProduct} />
+      <Button
+        label="Save"
+        icon="pi pi-check"
+        className="p-Testbutton"
+        onClick={saveProduct}
+      />
     </React.Fragment>
   );
   const deleteProductDialogFooter = (
@@ -350,5 +362,370 @@ export default function ProductsDemo() {
     </React.Fragment>
   );
 
-  return <div></div>;
+  return (
+    <div>
+      <Toast ref={toast} />
+      <div className="card">
+        <Toolbar
+          className="mb-4"
+          left={leftToolbarTemplate}
+          right={rightToolbarTemplate}
+        ></Toolbar>
+
+        <DataTable
+          ref={dt}
+          value={products}
+          selection={selectedProducts}
+          onSelectionChange={(e) => setSelectedProducts(e.value)}
+          dataKey="id"
+          paginator
+          rows={10}
+          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+          globalFilter={globalFilter}
+          header={header}
+        >
+          <Column
+            field="order"
+            header="ลำดับ"
+            sortable
+            style={{ minWidth: '20px', width: '10rem' }}
+          ></Column>
+          <Column
+            field="asset_id"
+            header="หมายเลขครุภัณฑ์"
+            sortable
+            style={{ minWidth: '5rem', width: '15rem' }}
+          ></Column>
+          <Column
+            field="name"
+            header="ชื่อ"
+            sortable
+            style={{ minWidth: '16rem', width: '20rem' }}
+          ></Column>
+
+          <Column
+            field="year"
+            header="ปี"
+            sortable
+            style={{ minWidth: '8rem', width: '8rem' }}
+          ></Column>
+          <Column
+            field="status"
+            header="สภาพ"
+            sortable
+            style={{ minWidth: '10rem', width: '8rem' }}
+          ></Column>
+          <Column
+            field="useable"
+            header="การใช้งาน"
+            sortable
+            style={{ minWidth: '10rem', width: '10rem' }}
+          ></Column>
+          <Column
+            field="room_id"
+            header="ประจำที่"
+            sortable
+            style={{ minWidth: '12rem', width: '8rem' }}
+          ></Column>
+          <Column
+            body={actionBodyTemplate}
+            headerStyle={{ minWidth: '10rem' }}
+          ></Column>
+        </DataTable>
+      </div>
+
+      <Dialog
+        visible={productDialog}
+        style={{ width: '64rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="รายละเอียดครุภัณฑ์"
+        modal
+        className="p-fluid"
+        footer={productDialogFooter}
+        onHide={hideDialog}
+      >
+        {product.image && (
+          <img
+            src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`}
+            alt={product.image}
+            className="product-image block m-auto pb-3"
+          />
+        )}
+        <div className="card p-4">
+          <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1">
+              <label htmlFor="name" className="font-bold">
+                ลำดับที่
+              </label>
+              <InputText
+                id="no"
+                value={product.number}
+                onChange={(e) => onInputChange(e, 'number')}
+                required
+                autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !product.number,
+                })}
+              />
+              {submitted && !product.number && (
+                <small className="p-error">No. is required.</small>
+              )}
+            </div>
+
+            <div className="field col-start-2 col-end-5">
+              <label htmlFor="name" className="font-bold">
+                ชื่อรายการ
+              </label>
+              <InputText
+                id="name"
+                value={product.name}
+                onChange={(e) => onInputChange(e, 'name')}
+                required
+                autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !product.name,
+                })}
+              />
+              {submitted && !product.name && (
+                <small className="p-error">Name is required.</small>
+              )}
+            </div>
+
+            <div className="field">
+              <label htmlFor="id" className="font-bold">
+                หมายเลขครุภัณฑ์
+              </label>
+              <InputText
+                id="id"
+                value={product.id}
+                onChange={(e) => onInputChange(e, 'id')}
+                required
+                autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !product.id,
+                })}
+              />
+              {submitted && !product.id && (
+                <small className="p-error">ProductID is required.</small>
+              )}
+            </div>
+
+            <div className="formgrid grid">
+              <div className="field col">
+                <label htmlFor="price" className="font-bold">
+                  ราคา
+                </label>
+                <InputNumber
+                  id="price"
+                  value={product.price}
+                  onValueChange={(e) => onInputNumberChange(e, 'price')}
+                  mode="currency"
+                  currency="THB"
+                  locale="en-US"
+                />
+              </div>
+            </div>
+
+            <div className="field col-start-3 col-end-5">
+              <label htmlFor="room" className="font-bold">
+                ประจำที่
+              </label>
+              <InputText
+                id="room"
+                value={product.room}
+                onChange={(e) => onInputChange(e, 'room')}
+                required
+                autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !product.room,
+                })}
+              />
+              {submitted && !product.room && (
+                <small className="p-error">ProductRoom is required.</small>
+              )}
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                สถานะ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={productStatus}
+                  onChange={(e) => setProductStatus(e.value)}
+                  options={status}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                สภาพ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={productStatus}
+                  onChange={(e) => setProductStatus(e.value)}
+                  options={status}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                การใช้งาน
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={productStatus}
+                  onChange={(e) => setProductStatus(e.value)}
+                  options={status}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                ประเภทครุภัณฑ์
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={productStatus}
+                  onChange={(e) => setProductStatus(e.value)}
+                  options={status}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card p-4">
+          <h1 className="text-kmuttColor-800 py-2">ข้อมูลโครงการ</h1>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1 col-end-5">
+              <label htmlFor="project" className="font-bold">
+                ชื่อโครงการ
+              </label>
+              <InputText
+                id="project"
+                value={product.project}
+                onChange={(e) => onInputChange(e, 'ยพน่ำแะ')}
+                required
+                autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !product.project,
+                })}
+              />
+              {submitted && !product.project && (
+                <small className="p-error">ProjectName is required.</small>
+              )}
+            </div>
+
+            <div className="field col-start-1 col-end-5">
+              <label htmlFor="id" className="font-bold">
+                ชื่อแผนงาน
+              </label>
+              <InputText
+                id="plan"
+                value={product.plan}
+                onChange={(e) => onInputChange(e, 'plan')}
+                required
+                autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !product.plan,
+                })}
+              />
+              {submitted && !product.plan && (
+                <small className="p-error">PlanName is required.</small>
+              )}
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                ประเภทแผนงาน
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={productStatus}
+                  onChange={(e) => setProductStatus(e.value)}
+                  options={status}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="field">
+            <label htmlFor="description" className="font-bold">
+              หมายเหตุ
+            </label>
+            <InputTextarea
+              id="description"
+              value={product.description}
+              onChange={(e) => onInputChange(e, 'description')}
+              required
+              rows={3}
+              cols={20}
+            />
+          </div>
+        </div>
+      </Dialog>
+
+      <Dialog
+        visible={deleteProductDialog}
+        style={{ width: '32rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="Confirm"
+        modal
+        footer={deleteProductDialogFooter}
+        onHide={hideDeleteProductDialog}
+      >
+        <div className="confirmation-content">
+          <i
+            className="pi pi-exclamation-triangle mr-3"
+            style={{ fontSize: '2rem' }}
+          />
+          {product && (
+            <span>
+              Are you sure you want to delete <b>{product.name}</b>?
+            </span>
+          )}
+        </div>
+      </Dialog>
+
+      <Dialog
+        visible={deleteProductsDialog}
+        style={{ width: '32rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="Confirm"
+        modal
+        footer={deleteProductsDialogFooter}
+        onHide={hideDeleteProductsDialog}
+      >
+        <div className="confirmation-content">
+          <i
+            className="pi pi-exclamation-triangle mr-3"
+            style={{ fontSize: '2rem' }}
+          />
+          {product && (
+            <span>Are you sure you want to delete the selected products?</span>
+          )}
+        </div>
+      </Dialog>
+    </div>
+  );
 }

@@ -185,3 +185,18 @@
 .e-input-group.e-control-wrapper.e-error:not(.e-float-icon-left) {
   border: none;
 }
+
+/* RENEW THEME CSS */
+.p-dialog {
+  font-family: 'kmuttDB'!important;
+}
+
+.p-component{
+  font-family: 'kmuttDB'!important;
+}
+
+.p-Testbutton {
+  background-color: #FF8261 !important;
+  border: 1px solid !important;
+  border-color: #FF8261 !important;
+}
