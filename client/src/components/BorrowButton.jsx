@@ -15,7 +15,6 @@ import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { Calendar } from 'primereact/calendar';
 
-
 export default function ProductsDemo() {
   let emptyProduct = {
     id: null,
@@ -30,11 +29,11 @@ export default function ProductsDemo() {
   };
 
   const [productStatus, setProductStatus] = useState(null);
-    const status = [
-        { name: 'ใช่งานได้', code: 'CU' },
-        { name: 'รอซ่อม', code: 'FX' },
-        { name: 'สิ้นสภาพ', code: 'BK' }
-    ];
+  const status = [
+    { name: 'ใช่งานได้', code: 'CU' },
+    { name: 'รอซ่อม', code: 'FX' },
+    { name: 'สิ้นสภาพ', code: 'BK' },
+  ];
 
   const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
@@ -46,8 +45,6 @@ export default function ProductsDemo() {
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
-
-  
 
   const formatCurrency = (value) => {
     return value.toLocaleString('en-US', {
@@ -136,7 +133,6 @@ export default function ProductsDemo() {
 
     return index;
   };
-  
 
   const createId = () => {
     let id = '';
@@ -236,7 +232,6 @@ export default function ProductsDemo() {
     );
   };
 
-
   const getSeverity = (product) => {
     switch (product.inventoryStatus) {
       case 'ใช้งานได้':
@@ -256,7 +251,12 @@ export default function ProductsDemo() {
   const productDialogFooter = (
     <React.Fragment>
       <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
-      <Button label="Save" icon="pi pi-check" className='p-Testbutton' onClick={saveProduct} />
+      <Button
+        label="Save"
+        icon="pi pi-check"
+        className="p-Testbutton"
+        onClick={saveProduct}
+      />
     </React.Fragment>
   );
   const deleteProductDialogFooter = (
@@ -293,20 +293,24 @@ export default function ProductsDemo() {
   );
 
   return (
+    <div className="p-button p-component mr-2  p-button-icon-only p-button-outlined">
+      <Button
+        outlined
+        //    icon="pi pi-calendar-times"
+        //   rounded
+        //   style={{ fontSize: '16px' }}
+        className="mr-2 "
+        // label="ยืม"
+        icon="pi pi-gift"
+        // severity="success"
+        onClick={openNew}
+      />
 
-    <div className="flex flex-wrap gap-2">
-        <Button
-          label="ยืม"
-          icon="pi pi-gift"
-          severity="success"
-          onClick={openNew}
-        />
-      
-    <Dialog
+      <Dialog
         visible={productDialog}
         style={{ width: '64rem' }}
         breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header="รายละเอียดครุภัณฑ์"
+        header="การยืมครุภัณฑ์"
         modal
         className="p-fluid"
         footer={productDialogFooter}
@@ -319,190 +323,218 @@ export default function ProductsDemo() {
             className="product-image block m-auto pb-3"
           />
         )}
-        <div className='card p-4'>
-          <h1 className='text-kmuttColor-800 py-2'>ข้อมูลครุภัณฑ์</h1>
-          <div className='grid grid-cols-4 gap-4'>
-          <div className="field col-start-1">
-            <label htmlFor="name" className="font-bold">
-            ลำดับที่
-            </label>
-          <InputText
-            id="no"
-            value={product.number}
-            onChange={(e) => onInputChange(e, 'number')}
-            required
-            autoFocus
-            className={classNames({ 'p-invalid': submitted && !product.number })}
-          />
-          {submitted && !product.number && (
-            <small className="p-error">No. is required.</small>
-          )}
-        </div>
-        
-        <div className="field col-start-2 col-end-5">
-          <label htmlFor="name" className="font-bold">
-            ชื่อรายการ
-          </label>
-          <InputText
-            id="name"
-            value={product.name}
-            onChange={(e) => onInputChange(e, 'name')}
-            required
-            autoFocus
-            className={classNames({ 'p-invalid': submitted && !product.name })}
-          />
-          {submitted && !product.name && (
-            <small className="p-error">Name is required.</small>
-          )}
-        </div>
-        
-        <div className="field">
-          <label htmlFor="id" className="font-bold">
-            หมายเลขครุภัณฑ์
-          </label>
-          <InputText
-            id="id"
-            value={product.id}
-            onChange={(e) => onInputChange(e, 'id')}
-            required
-            autoFocus
-            className={classNames({ 'p-invalid': submitted && !product.id })}
-          />
-          {submitted && !product.id && (
-            <small className="p-error">ProductID is required.</small>
-          )}
-        </div>
+        <div className="card p-4">
+          <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1">
+              <label htmlFor="name" className="font-bold">
+                ลำดับที่
+              </label>
+              <InputText
+                id="no"
+                value={product.number}
+                onChange={(e) => onInputChange(e, 'number')}
+                required
+                autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !product.number,
+                })}
+              />
+              {submitted && !product.number && (
+                <small className="p-error">No. is required.</small>
+              )}
+            </div>
 
-        <div className="formgrid grid">
-          <div className="field col">
-            <label htmlFor="price" className="font-bold">
-              ราคา
-            </label>
-            <InputNumber
-              id="price"
-              value={product.price}
-              onValueChange={(e) => onInputNumberChange(e, 'price')}
-              mode="currency"
-              currency="THB"
-              locale="en-US"
-            />
+            <div className="field col-start-2 col-end-5">
+              <label htmlFor="name" className="font-bold">
+                ชื่อรายการ
+              </label>
+              <InputText
+                id="name"
+                value={product.name}
+                onChange={(e) => onInputChange(e, 'name')}
+                required
+                autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !product.name,
+                })}
+              />
+              {submitted && !product.name && (
+                <small className="p-error">Name is required.</small>
+              )}
+            </div>
+
+            <div className="field">
+              <label htmlFor="id" className="font-bold">
+                หมายเลขครุภัณฑ์
+              </label>
+              <InputText
+                id="id"
+                value={product.id}
+                onChange={(e) => onInputChange(e, 'id')}
+                required
+                autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !product.id,
+                })}
+              />
+              {submitted && !product.id && (
+                <small className="p-error">ProductID is required.</small>
+              )}
+            </div>
+
+            <div className="formgrid grid">
+              <div className="field col">
+                <label htmlFor="price" className="font-bold">
+                  ราคา
+                </label>
+                <InputNumber
+                  id="price"
+                  value={product.price}
+                  onValueChange={(e) => onInputNumberChange(e, 'price')}
+                  mode="currency"
+                  currency="THB"
+                  locale="en-US"
+                />
+              </div>
+            </div>
+
+            <div className="field col-start-3 col-end-5">
+              <label htmlFor="room" className="font-bold">
+                ประจำที่
+              </label>
+              <InputText
+                id="room"
+                value={product.room}
+                onChange={(e) => onInputChange(e, 'room')}
+                required
+                autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !product.room,
+                })}
+              />
+              {submitted && !product.room && (
+                <small className="p-error">ProductRoom is required.</small>
+              )}
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                สถานะ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={productStatus}
+                  onChange={(e) => setProductStatus(e.value)}
+                  options={status}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                สภาพ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={productStatus}
+                  onChange={(e) => setProductStatus(e.value)}
+                  options={status}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                การใช้งาน
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={productStatus}
+                  onChange={(e) => setProductStatus(e.value)}
+                  options={status}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                ประเภทครุภัณฑ์
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={productStatus}
+                  onChange={(e) => setProductStatus(e.value)}
+                  options={status}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="field col-start-3 col-end-5">
-          <label htmlFor="room" className="font-bold">
-            ประจำที่
-          </label>
-          <InputText
-            id="room"
-            value={product.room}
-            onChange={(e) => onInputChange(e, 'room')}
-            required
-            autoFocus
-            className={classNames({ 'p-invalid': submitted && !product.room })}
-          />
-          {submitted && !product.room && (
-            <small className="p-error">ProductRoom is required.</small>
-          )}
+        <div className="card p-4">
+          <h1 className="text-kmuttColor-800 py-2">ข้อมูลผู้ยืม</h1>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1 col-end-3">
+              <label htmlFor="project" className="font-bold">
+                ชื่อผู้ยืม
+              </label>
+              <InputText
+                id="borrower"
+                value={product.borrower}
+                onChange={(e) => onInputChange(e, 'borrower')}
+                required
+                autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !product.borrower,
+                })}
+              />
+              {submitted && !product.project && (
+                <small className="p-error">Name is required.</small>
+              )}
+            </div>
+
+            <div className="field col-start-3 col-end-4">
+              <label htmlFor="borrowdate" className="font-bold">
+                ช่วงเวลาการยืม
+              </label>
+              <Calendar
+                value={dates}
+                onChange={(e) => setDates(e.value)}
+                selectionMode="range"
+                readOnlyInput
+                showIcon
+              />
+            </div>
+
+            <div className="field col-start-1 col-end-5">
+              <label htmlFor="description" className="font-bold">
+                หมายเหตุ
+              </label>
+              <InputTextarea
+                id="description"
+                value={product.description}
+                onChange={(e) => onInputChange(e, 'description')}
+                required
+                rows={3}
+                cols={20}
+              />
+            </div>
+          </div>
         </div>
-
-        <div className="field">
-<label htmlFor="description" className="font-bold">
-            สถานะ
-          </label>
-        <div className="card flex justify-content-center">
-        
-            <Dropdown value={productStatus} onChange={(e) => setProductStatus(e.value)} options={status} optionLabel="name" 
-                placeholder="เลือกสถานะ" className="w-full md:w-14rem" />
-        </div></div>
-
-        <div className="field">
-        <label htmlFor="description" className="font-bold">
-            สภาพ
-          </label>
-        <div className="card flex justify-content-center">
-        
-            <Dropdown value={productStatus} onChange={(e) => setProductStatus(e.value)} options={status} optionLabel="name" 
-                placeholder="เลือกสถานะ" className="w-full md:w-14rem" />
-        </div></div>
-        
-        <div className="field">
-        <label htmlFor="description" className="font-bold">
-            การใช้งาน
-          </label>
-        <div className="card flex justify-content-center">
-        
-            <Dropdown value={productStatus} onChange={(e) => setProductStatus(e.value)} options={status} optionLabel="name" 
-                placeholder="เลือกสถานะ" className="w-full md:w-14rem" />
-        </div></div>
-        
-        <div className="field">
-        <label htmlFor="description" className="font-bold">
-            ประเภทครุภัณฑ์
-          </label>
-        <div className="card flex justify-content-center">
-        
-            <Dropdown value={productStatus} onChange={(e) => setProductStatus(e.value)} options={status} optionLabel="name" 
-                placeholder="เลือกสถานะ" className="w-full md:w-14rem" />
-        </div>
-        </div></div>
-        </div>
-
-        <div className='card p-4'>
-          <h1 className='text-kmuttColor-800 py-2'>ข้อมูลผู้ยืม</h1>
-          <div className='grid grid-cols-4 gap-4'>
-          
-        
-        <div className="field col-start-1 col-end-3">
-          <label htmlFor="project" className="font-bold">
-            ชื่อผู้ยืม
-          </label>
-          <InputText
-            id="borrower"
-            value={product.borrower}
-            onChange={(e) => onInputChange(e, 'borrower')}
-            required
-            autoFocus
-            className={classNames({ 'p-invalid': submitted && !product.borrower })}
-          />
-          {submitted && !product.project && (
-            <small className="p-error">Name is required.</small>
-          )}
-        </div>
-        
-
-        <div className="field col-start-3 col-end-4">
-        <label htmlFor="borrowdate" className="font-bold">
-            ช่วงเวลาการยืม
-          </label>
-        <Calendar value={dates} onChange={(e) => setDates(e.value)} selectionMode="range" readOnlyInput showIcon/>
-        </div>
-
-        
-        
- <div className="field col-start-1 col-end-5">
-          <label htmlFor="description" className="font-bold">
-            หมายเหตุ
-          </label>
-          <InputTextarea
-            id="description"
-            value={product.description}
-            onChange={(e) => onInputChange(e, 'description')}
-            required
-            rows={3}
-            cols={20}
-          />
-        </div>
-</div>
-        </div>
-
-        
-       
-
-       
-
-        
       </Dialog>
-</div>
+    </div>
   );
 }

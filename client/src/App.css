@@ -188,15 +188,21 @@
 
 /* RENEW THEME CSS */
 .p-dialog {
-  font-family: 'kmuttDB'!important;
+  font-family: 'kmuttDB' !important;
 }
 
-.p-component{
-  font-family: 'kmuttDB'!important;
+.p-component {
+  font-family: 'kmuttDB' !important;
 }
 
 .p-Testbutton {
-  background-color: #FF8261 !important;
+  background-color: #ff8261 !important;
   border: 1px solid !important;
-  border-color: #FF8261 !important;
+  border-color: #ff8261 !important;
+}
+
+.p-Addbutton {
+  background-color: #22c55e !important;
+  border: 1px solid !important;
+  border-color: #22c55e !important;
 }

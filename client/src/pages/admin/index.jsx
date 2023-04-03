@@ -13,6 +13,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { adminTable } from '../../assets/dummy';
 import { Tag } from 'primereact/tag';
+import AddAdmin from '../../components/AddAdmin';
 
 export default function Admin() {
   let emptyadminTable = {
@@ -265,13 +266,14 @@ export default function Admin() {
         </span>
       </div>
       <div className="flex gap-2">
-        <Button
+        {/* <Button
           label="เพิ่มผู้ดูแล"
           icon="pi pi-plus"
           severity="success"
           style={{ width: '120px' }}
           //   onClick={openNew}
-        />
+        /> */}
+        <AddAdmin />
         {/* <Button
           label="Export"
           icon="pi pi-upload"
@@ -402,167 +404,6 @@ export default function Admin() {
         </div>
       </div>
 
-      <Dialog
-        visible={productDialog}
-        style={{ width: '32rem' }}
-        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header="Product Details"
-        modal
-        className="p-fluid"
-        footer={productDialogFooter}
-        onHide={hideDialog}
-      >
-        {product.image && (
-          <img
-            src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`}
-            alt={product.image}
-            className="product-image block m-auto pb-3"
-          />
-        )}
-        <div className="field">
-          <label htmlFor="name" className="font-bold">
-            ชื่อ
-          </label>
-          <InputText
-            id="name"
-            value={product.name}
-            onChange={(e) => onInputChange(e, 'name')}
-            required
-            autoFocus
-            className={classNames({ 'p-invalid': submitted && !product.name })}
-          />
-          {submitted && !product.name && (
-            <small className="p-error">Name is required.</small>
-          )}
-        </div>
-        <div className="field">
-          <label htmlFor="description" className="font-bold">
-            Description
-          </label>
-          <InputTextarea
-            id="description"
-            value={product.description}
-            onChange={(e) => onInputChange(e, 'description')}
-            required
-            rows={3}
-            cols={20}
-          />
-        </div>
-
-        <div className="field">
-          <label className="mb-3 font-bold">Category</label>
-          <div className="formgrid grid">
-            <div className="field-radiobutton col-6">
-              <RadioButton
-                inputId="category1"
-                name="category"
-                value="Accessories"
-                onChange={onCategoryChange}
-                checked={product.category === 'Accessories'}
-              />
-              <label htmlFor="category1">Accessories</label>
-            </div>
-            <div className="field-radiobutton col-6">
-              <RadioButton
-                inputId="category2"
-                name="category"
-                value="Clothing"
-                onChange={onCategoryChange}
-                checked={product.category === 'Clothing'}
-              />
-              <label htmlFor="category2">Clothing</label>
-            </div>
-            <div className="field-radiobutton col-6">
-              <RadioButton
-                inputId="category3"
-                name="category"
-                value="Electronics"
-                onChange={onCategoryChange}
-                checked={product.category === 'Electronics'}
-              />
-              <label htmlFor="category3">Electronics</label>
-            </div>
-            <div className="field-radiobutton col-6">
-              <RadioButton
-                inputId="category4"
-                name="category"
-                value="Fitness"
-                onChange={onCategoryChange}
-                checked={product.category === 'Fitness'}
-              />
-              <label htmlFor="category4">Fitness</label>
-            </div>
-          </div>
-        </div>
-
-        <div className="formgrid grid">
-          <div className="field col">
-            <label htmlFor="price" className="font-bold">
-              Price
-            </label>
-            <InputNumber
-              id="price"
-              value={product.price}
-              onValueChange={(e) => onInputNumberChange(e, 'price')}
-              mode="currency"
-              currency="USD"
-              locale="en-US"
-            />
-          </div>
-          <div className="field col">
-            <label htmlFor="quantity" className="font-bold">
-              Quantity
-            </label>
-            <InputNumber
-              id="quantity"
-              value={product.quantity}
-              onValueChange={(e) => onInputNumberChange(e, 'quantity')}
-            />
-          </div>
-        </div>
-      </Dialog>
-
-      <Dialog
-        visible={deleteProductDialog}
-        style={{ width: '32rem' }}
-        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header="Confirm"
-        modal
-        footer={deleteProductDialogFooter}
-        onHide={hideDeleteProductDialog}
-      >
-        <div className="confirmation-content">
-          <i
-            className="pi pi-exclamation-triangle mr-3"
-            style={{ fontSize: '2rem' }}
-          />
-          {product && (
-            <span>
-              Are you sure you want to delete <b>{product.name}</b>?
-            </span>
-          )}
-        </div>
-      </Dialog>
-
-      <Dialog
-        visible={deleteProductsDialog}
-        style={{ width: '32rem' }}
-        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header="Confirm"
-        modal
-        footer={deleteProductsDialogFooter}
-        onHide={hideDeleteProductsDialog}
-      >
-        <div className="confirmation-content">
-          <i
-            className="pi pi-exclamation-triangle mr-3"
-            style={{ fontSize: '2rem' }}
-          />
-          {product && (
-            <span>Are you sure you want to delete the selected products?</span>
-          )}
-        </div>
-      </Dialog>
       <div className="m-16">
         <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
       </div>

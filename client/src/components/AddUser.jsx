@@ -1,10 +1,10 @@
-import React, { useState, useRef } from "react";
-import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
-import { Image } from "primereact/image";
-import { InputText } from "primereact/inputtext";
-import { Toast } from "primereact/toast";
-import { FileUpload } from "primereact/fileupload";
+import React, { useState, useRef } from 'react';
+import { Button } from 'primereact/button';
+import { Dialog } from 'primereact/dialog';
+import { Image } from 'primereact/image';
+import { InputText } from 'primereact/inputtext';
+import { Toast } from 'primereact/toast';
+import { FileUpload } from 'primereact/fileupload';
 
 export default function AddUser() {
   const [visible, setVisible] = useState(false);
@@ -23,31 +23,37 @@ export default function AddUser() {
 
   const onUpload = () => {
     toast.current.show({
-      severity: "info",
-      summary: "Success",
-      detail: "File Uploaded",
+      severity: 'info',
+      summary: 'Success',
+      detail: 'File Uploaded',
     });
   };
 
   return (
     <div className="card flex justify-content-center">
       <Button
-        className="p-Testbutton"
+        className="p-Addbutton"
         label="เพิ่มผู้ใช้"
         icon="pi pi-user"
+        style={{ width: '120px' }}
         onClick={() => setVisible(true)}
       />
       <Dialog
         header="เพิ่มข้อมูลผู้ใช้"
         visible={visible}
-        style={{ width: "40vw" }}
+        style={{ width: '40vw' }}
         onHide={() => setVisible(false)}
         footer={footerContent}
       >
         <div className="flex flex-col pt-6">
-        <div className="flex justify-center p-2"><Image src="https://primefaces.org/cdn/primereact/images/galleria/galleria7.jpg" alt="Image" width="250"/></div>
+          <div className="flex justify-center p-2">
+            <Image
+              src="https://primefaces.org/cdn/primereact/images/galleria/galleria7.jpg"
+              alt="Image"
+              width="250"
+            />
+          </div>
           <div className="card flex justify-center">
-            
             <Toast ref={toast}></Toast>
             <FileUpload
               mode="basic"

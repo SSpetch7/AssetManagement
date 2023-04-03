@@ -13,6 +13,7 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { userInfoTable } from '../../assets/dummy';
 import { Tag } from 'primereact/tag';
+import AddUser from 'components/AddUser';
 
 export default function Admin() {
   let emptyuserInfoTable = {
@@ -202,23 +203,6 @@ export default function Admin() {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        {/* <Button
-          icon="pi pi-pencil"
-          style={{ scale: ' 70%' }}
-          rounded
-          outlined
-          className="mr-2"
-          onClick={() => editProduct(rowData)}
-        /> */}
-
-        {/* <Button
-          outlined
-          icon="pi pi-calendar-times"
-          //   rounded
-          //   style={{ fontSize: '16px' }}
-          className="mr-2 "
-          onClick={() => editProduct(rowData)}
-        /> */}
         <Button
           icon="pi pi-pencil"
           //   rounded
@@ -228,8 +212,6 @@ export default function Admin() {
         />
         <Button
           icon="pi pi-trash"
-          //   style={{ scale: ' 70%' }}
-          //   rounded
           outlined
           severity="danger"
           onClick={() => confirmDeleteProduct(rowData)}
@@ -264,19 +246,14 @@ export default function Admin() {
         </span>
       </div>
       <div className="flex gap-2">
-        <Button
+        {/* <Button
           label="เพิ่มรายชื่อ"
           icon="pi pi-plus"
           severity="success"
           style={{ width: '120px' }}
-          //   onClick={openNew}
-        />
-        {/* <Button
-          label="Export"
-          icon="pi pi-upload"
-          className="p-button-help"
-          //   onClick={exportCSV}
+        //   onClick={openNew}
         /> */}
+        <AddUser />
       </div>
     </div>
   );
