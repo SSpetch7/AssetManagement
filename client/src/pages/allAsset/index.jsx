@@ -276,6 +276,7 @@ export default function AllAsset() {
             type="search"
             onInput={(e) => setGlobalFilter(e.target.value)}
             placeholder="ค้นหา..."
+            style={{ width: '400px' }}
           />
         </span>
       </div>
@@ -370,7 +371,7 @@ export default function AllAsset() {
               header={header}
               className="actionRow"
               scrollable
-              scrollHeight="700px"
+              //   scrollHeight="700px"
               tableStyle={{ minHeight: '10rem' }}
             >
               <Column

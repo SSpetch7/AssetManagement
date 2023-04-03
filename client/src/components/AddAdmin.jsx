@@ -72,13 +72,16 @@ export default function AddUser() {
               <div className="mb-2 lg:col-6 lg:mb-0">
                 <span className="p-input-icon-left">
                   <i className="pi pi-user" />
-                  <InputText placeholder="ใส่ชื่อของผู้ดูแล" />
+                  <InputText
+                    className="inputForm"
+                    placeholder="ใส่ชื่อของผู้ดูแล"
+                  />
                 </span>
               </div>
               <div className="mb-2 lg:col-6 lg:mb-0">
                 <span className="p-input-icon-left">
                   <i className="pi pi-envelope" />
-                  <InputText placeholder="Email" />
+                  <InputText className="inputForm" placeholder="Email" />
                 </span>
               </div>
             </div>
@@ -90,7 +93,7 @@ export default function AddUser() {
                   <InputText
                     disabled
                     placeholder="Admin"
-                    className="text-kmuttColor-800"
+                    className="inputForm text-kmuttColor-800"
                   />
                 </span>
               </div>
@@ -100,7 +103,7 @@ export default function AddUser() {
                   <InputText
                     disabled
                     placeholder="01/03/2566"
-                    className="text-kmuttColor-800"
+                    className="inputForm text-kmuttColor-800"
                   />
                 </span>
               </div>

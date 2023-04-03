@@ -60,7 +60,7 @@ const Home = () => {
       <div className="font-bold text-4xl flex text-kmuttColor-800  mt-12 pl-36">
         <span>ครุภัณฑ์ที่เกี่ยวข้อง</span>
       </div>
-      <div className="flex justify-around">
+      <div className="flex labtop:justify-center justify-around">
         <div className="flex gap-10 m-4 flex-wrap justify-around">
           <div>
             <div className="flex justify-between items-end">
@@ -123,7 +123,7 @@ const Home = () => {
                     {item.number}
                   </span>
                   <button
-                    className="bg-kmuttColor-800 w-24 h-8  text-white text-2xl font-bold w-full h-10 rounded-md"
+                    className="bg-kmuttColor-800 w-24 h-8  text-white text-2xl font-bold h-10 rounded-md"
                     type="button"
                   >
                     <VisibilityIcon /> view

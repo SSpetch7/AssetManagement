@@ -72,13 +72,13 @@ export default function AddUser() {
               <div className="mb-2 lg:col-6 lg:mb-0">
                 <span className="p-input-icon-left">
                   <i className="pi pi-user" />
-                  <InputText placeholder="เจ" />
+                  <InputText className="inputForm" placeholder="เจ" />
                 </span>
               </div>
               <div className="mb-2 lg:col-6 lg:mb-0">
                 <span className="p-input-icon-left">
                   <i className="pi pi-envelope" />
-                  <InputText placeholder="Email" />
+                  <InputText className="inputForm" placeholder="Email" />
                 </span>
               </div>
             </div>
@@ -87,13 +87,13 @@ export default function AddUser() {
               <div className="col-6 mb-2 lg:col-6 lg:mb-0">
                 <span className="p-input-icon-left">
                   <i className="pi pi-book" />
-                  <InputText placeholder="สาขาวิชา" />
+                  <InputText className="inputForm" placeholder="สาขาวิชา" />
                 </span>
               </div>
               <div className="col-6 mb-2 lg:col-6 lg:mb-0">
                 <span className="p-input-icon-left">
                   <i className="pi pi-building" />
-                  <InputText placeholder="ประจำห้องที่" />
+                  <InputText className="inputForm" placeholder="ประจำห้องที่" />
                 </span>
               </div>
             </div>

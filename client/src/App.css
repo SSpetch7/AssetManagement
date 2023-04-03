@@ -26,7 +26,7 @@
   border-color: #ff8261 !important;
 }
 .p-input-icon-left .p-inputtext {
-  width: 400px !important;
+  /* width: 400px !important; */
 }
 .p-input-icon-left,
 .p-input-icon-left > .p-inputtext {
@@ -107,7 +107,7 @@
 }
 /* body table */
 .p-datatable > .p-datatable-wrapper {
-  height: 700px;
+  /* height: 700px !important; */
 }
 /* pagination */
 .p-paginator .p-paginator-first,
@@ -205,4 +205,9 @@
   background-color: #22c55e !important;
   border: 1px solid !important;
   border-color: #22c55e !important;
+}
+
+/* input form */
+.p-input-icon-left .p-inputtext.p-component.inputForm {
+  width: 300px !important;
 }

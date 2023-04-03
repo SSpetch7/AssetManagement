@@ -2,30 +2,31 @@ import React, { useState, useEffect, useRef } from 'react';
 import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import { Dropdown } from 'primereact/dropdown';
+import { Paginator } from 'primereact/paginator';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
 import { Rating } from 'primereact/rating';
 import { Toolbar } from 'primereact/toolbar';
+import { Dropdown } from 'primereact/dropdown';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { RadioButton } from 'primereact/radiobutton';
 import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
+import { InputText } from 'primereact/inputtext';
 import { dataTable } from '../../assets/dummy';
+import BorrowButton from '../../components/BorrowButton';
 
-export default function ProductsDemo() {
-  let emptyProduct = {
-    id: null,
+export default function AllAsset() {
+  let emptydataTable = {
+    order: '',
+    asset_id: '',
     name: '',
-    image: null,
-    description: '',
-    category: null,
-    price: 0,
-    quantity: 0,
-    rating: 0,
+    year: null,
+    status: '',
+    useable: '',
+    room_id: '',
     inventoryStatus: 'INSTOCK',
   };
 
@@ -40,7 +41,7 @@ export default function ProductsDemo() {
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-  const [product, setProduct] = useState(emptyProduct);
+  const [product, setProduct] = useState(emptydataTable);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
@@ -60,7 +61,7 @@ export default function ProductsDemo() {
   };
 
   const openNew = () => {
-    setProduct(emptyProduct);
+    setProduct(emptydataTable);
     setSubmitted(false);
     setProductDialog(true);
   };
@@ -109,13 +110,14 @@ export default function ProductsDemo() {
 
       setProducts(_products);
       setProductDialog(false);
-      setProduct(emptyProduct);
+      setProduct(emptydataTable);
     }
   };
 
   const editProduct = (product) => {
     setProduct({ ...product });
     setProductDialog(true);
+    console.log('edit product for click');
   };
 
   const confirmDeleteProduct = (product) => {
@@ -128,7 +130,7 @@ export default function ProductsDemo() {
 
     setProducts(_products);
     setDeleteProductDialog(false);
-    setProduct(emptyProduct);
+    setProduct(emptydataTable);
     toast.current.show({
       severity: 'success',
       summary: 'Successful',
@@ -209,70 +211,12 @@ export default function ProductsDemo() {
     setProduct(_product);
   };
 
-  const leftToolbarTemplate = () => {
-    return (
-      <div className="flex flex-wrap gap-2">
-        <Button
-          label="เพิ่มครุภัณฑ์"
-          icon="pi pi-plus"
-          severity="success"
-          onClick={openNew}
-        />
-        <Button
-          label="ลบ"
-          icon="pi pi-trash"
-          severity="danger"
-          onClick={confirmDeleteSelected}
-          disabled={!selectedProducts || !selectedProducts.length}
-        />
-      </div>
-    );
-  };
-
-  const rightToolbarTemplate = () => {
-    return (
-      <Button
-        label="Export"
-        icon="pi pi-upload"
-        className="p-button-help"
-        onClick={exportCSV}
-      />
-    );
-  };
-
-  const imageBodyTemplate = (rowData) => {
-    return (
-      <img
-        src={`https://primefaces.org/cdn/primereact/images/product/${rowData.image}`}
-        alt={rowData.image}
-        className="shadow-2 border-round"
-        style={{ width: '64px' }}
-      />
-    );
-  };
-
-  const priceBodyTemplate = (rowData) => {
-    return formatCurrency(rowData.price);
-  };
-
-  const ratingBodyTemplate = (rowData) => {
-    return <Rating value={rowData.rating} readOnly cancel={false} />;
-  };
-
-  const statusBodyTemplate = (rowData) => {
-    return (
-      <Tag
-        value={rowData.inventoryStatus}
-        severity={getSeverity(rowData)}
-      ></Tag>
-    );
-  };
-
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        <Button
+        {/* <Button
           icon="pi pi-pencil"
+          style={{ scale: ' 70%' }}
           rounded
           outlined
           className="mr-2"
@@ -280,24 +224,41 @@ export default function ProductsDemo() {
         />
         <Button
           icon="pi pi-trash"
+          style={{ scale: ' 70%' }}
           rounded
           outlined
           severity="danger"
           onClick={() => confirmDeleteProduct(rowData)}
-        />
+        /> */}
+        {/* <Button
+          outlined
+          icon="pi pi-calendar-times"
+          //   rounded
+          //   style={{ fontSize: '16px' }}
+          className="mr-2 "
+          onClick={() => editProduct(rowData)}
+        /> */}
+        <BorrowButton />
+        {/* <Button
+          icon="pi pi-pencil"
+          //   rounded
+          outlined
+          className="editBnt mr-2"
+          onClick={() => editProduct(rowData)}
+        /> */}
       </React.Fragment>
     );
   };
 
   const getSeverity = (product) => {
     switch (product.inventoryStatus) {
-      case 'ใช้งานได้':
+      case 'ใช้จริง':
         return 'success';
 
-      case 'รอซ่อม':
+      case 'ซ่อม':
         return 'warning';
 
-      case 'สิ้นสภาพ':
+      case 'กำลังใช้งาน':
         return 'danger';
 
       default:
@@ -306,16 +267,40 @@ export default function ProductsDemo() {
   };
 
   const header = (
-    <div className="flex flex-wrap gap-2 align-items-center justify-content-between">
+    <div className="flex  flex-wrap gap-2 align-items-center justify-between">
       {/* <h4 className="m-0">จัดการครุภัณฑ์</h4> */}
-      <span className="p-input-icon-left">
-        <i className="pi pi-search" />
-        <InputText
-          type="search"
-          onInput={(e) => setGlobalFilter(e.target.value)}
-          placeholder="ค้นหา..."
+      <div className="flex">
+        <span className="p-input-icon-left">
+          <i className="pi pi-search" />
+          <InputText
+            type="search"
+            onInput={(e) => setGlobalFilter(e.target.value)}
+            placeholder="ค้นหา..."
+            style={{ width: '400px' }}
+          />
+        </span>
+      </div>
+      <div className="flex gap-2">
+        <Button
+          label="แจ้งเตือน"
+          icon="pi pi-exclamation-circle
+          "
+          severity="warning"
+          onClick={openNew}
+          style={{
+            minWidth: '2rem',
+            paddingRight: '13px',
+            paddingLeft: '13px',
+          }}
         />
-      </span>
+        {/* <Button
+          label="Export"
+          icon="pi pi-upload"
+          className="p-button-help"
+          onClick={exportCSV}
+          style={{ width: '120px' }}
+        /> */}
+      </div>
     </div>
   );
   const productDialogFooter = (
@@ -365,75 +350,87 @@ export default function ProductsDemo() {
   return (
     <div>
       <Toast ref={toast} />
-      <div className="card">
-        <Toolbar
-          className="mb-4"
-          left={leftToolbarTemplate}
-          right={rightToolbarTemplate}
-        ></Toolbar>
+      <div className="mt-12">
+        <div className="pb-10">
+          <span className="pl-32 font-bold  text-4xl text-gray-600 items-start">
+            Annual Asset count
+          </span>
+          <span className="pl-2  text-gray-400">ตรวจนับครุภัณฑ์ประจำปี</span>
+        </div>
+        <div className="flex justify-center h-full ">
+          <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
+            <DataTable
+              ref={dt}
+              value={products}
+              selection={selectedProducts}
+              onSelectionChange={(e) => setSelectedProducts(e.value)}
+              dataKey="id"
+              paginator
+              rows={10}
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+              globalFilter={globalFilter}
+              header={header}
+              className="actionRow"
+              scrollable
+              //   scrollHeight="700px"
+              tableStyle={{ minHeight: '10rem' }}
+            >
+              <Column
+                field="order"
+                header="ลำดับ"
+                sortable
+                style={{ minWidth: '5rem' }}
+              ></Column>
+              <Column
+                field="asset_id"
+                header="หมายเลขครุภัณฑ์"
+                sortable
+                style={{ minWidth: '11rem' }}
+              ></Column>
+              <Column
+                field="name"
+                header="ชื่อ"
+                sortable
+                style={{ minWidth: '16rem' }}
+              ></Column>
 
-        <DataTable
-          ref={dt}
-          value={products}
-          selection={selectedProducts}
-          onSelectionChange={(e) => setSelectedProducts(e.value)}
-          dataKey="id"
-          paginator
-          rows={10}
-          currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-          globalFilter={globalFilter}
-          header={header}
-        >
-          <Column
-            field="order"
-            header="ลำดับ"
-            sortable
-            style={{ minWidth: '20px', width: '10rem' }}
-          ></Column>
-          <Column
-            field="asset_id"
-            header="หมายเลขครุภัณฑ์"
-            sortable
-            style={{ minWidth: '5rem', width: '15rem' }}
-          ></Column>
-          <Column
-            field="name"
-            header="ชื่อ"
-            sortable
-            style={{ minWidth: '16rem', width: '20rem' }}
-          ></Column>
-
-          <Column
-            field="year"
-            header="ปี"
-            sortable
-            style={{ minWidth: '8rem', width: '8rem' }}
-          ></Column>
-          <Column
-            field="status"
-            header="สภาพ"
-            sortable
-            style={{ minWidth: '10rem', width: '8rem' }}
-          ></Column>
-          <Column
-            field="useable"
-            header="การใช้งาน"
-            sortable
-            style={{ minWidth: '10rem', width: '10rem' }}
-          ></Column>
-          <Column
-            field="room_id"
-            header="ประจำที่"
-            sortable
-            style={{ minWidth: '12rem', width: '8rem' }}
-          ></Column>
-          <Column
-            body={actionBodyTemplate}
-            headerStyle={{ minWidth: '10rem' }}
-          ></Column>
-        </DataTable>
+              <Column
+                field="year"
+                header="ปี"
+                sortable
+                style={{ minWidth: '5rem' }}
+              ></Column>
+              <Column
+                field="status"
+                header="สภาพ"
+                sortable
+                style={{ minWidth: '4rem' }}
+              ></Column>
+              <Column
+                field="useable"
+                header="การใช้งาน"
+                sortable
+                style={{ minWidth: '9rem' }}
+              ></Column>
+              <Column
+                field="room_id"
+                header="ประจำที่"
+                sortable
+                style={{ minWidth: '8rem' }}
+              ></Column>
+              <Column
+                body={actionBodyTemplate}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '8rem', textAlign: 'center' }}
+              ></Column>
+            </DataTable>
+          </div>
+        </div>
       </div>
 
+      <div className="m-16">
+        <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
+      </div>
       <Dialog
         visible={productDialog}
         style={{ width: '64rem' }}

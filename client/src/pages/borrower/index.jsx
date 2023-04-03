@@ -242,6 +242,7 @@ export default function Admin() {
             type="search"
             onInput={(e) => setGlobalFilter(e.target.value)}
             placeholder="ค้นหา..."
+            style={{ width: '400px' }}
           />
         </span>
       </div>
