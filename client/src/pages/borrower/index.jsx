@@ -328,7 +328,7 @@ export default function Admin() {
           <span className="pl-2  text-gray-400">ข้อมูลผู้ยืม</span>
         </div>
         <div className="flex justify-center h-full ">
-          <div className=" bg-white h-5/6 rounded-xl w-9/12   px-8 pt-8 m-3 ">
+          <div className="bg-white h-5/6 rounded-xl w-9/12  labtop:m-0 px-8 pt-8 m-3 ">
             <DataTable
               ref={dt}
               value={products}

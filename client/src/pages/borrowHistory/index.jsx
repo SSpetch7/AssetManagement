@@ -327,7 +327,7 @@ export default function BorrowHistory() {
           <span className="pl-2 text-gray-400">ประวัติการยืม</span>
         </div>
         <div className="flex justify-center h-full ">
-          <div className=" bg-white h-5/6 rounded-xl w-9/12   px-8 pt-8 m-3 ">
+          <div className="bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
             <DataTable
               ref={dt}
               value={products}
@@ -345,26 +345,26 @@ export default function BorrowHistory() {
                 field="order"
                 header="ลำดับ"
                 sortable
-                style={{ minWidth: '10px', width: '10rem' }}
+                style={{ minWidth: '10px' }}
               ></Column>
               <Column
                 field="asset_id"
                 header="หมายเลขครุภัณฑ์"
                 sortable
-                style={{ minWidth: '12rem', width: '15rem' }}
+                style={{ minWidth: '12rem' }}
               ></Column>
               <Column
                 field="name"
                 header="ผู้ดำเนินการ"
                 sortable
-                style={{ minWidth: '16rem', width: '20rem' }}
+                style={{ minWidth: '16rem' }}
               ></Column>
 
               <Column
                 field="date"
                 header="วันที่"
                 sortable
-                style={{ minWidth: '15rem', width: '15rem' }}
+                style={{ minWidth: '15rem' }}
               ></Column>
               <Column
                 header="Status"

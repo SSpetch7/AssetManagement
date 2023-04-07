@@ -4,6 +4,7 @@ import BuildCircleIcon from '@mui/icons-material/BuildCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import notebook from '../assets/notebook.jpg';
 import tablet from '../assets/tablet.jpg';
+import avatar from '../assets/pic.jpg';
 
 export const overviewAsset = [
   {
@@ -267,6 +268,7 @@ export const dataTable = {
         status: 'ใช้งานได้',
         useable: 'กำลังใช้',
         room_id: 'รศ.ชูเกียรติ',
+        date: 'DD/MM/YY',
         inventoryStatus: 'คืน',
       },
       {
@@ -277,6 +279,7 @@ export const dataTable = {
         status: 'ใช้งานได้',
         useable: 'กำลังใช้',
         room_id: 'รศ.ดร.อุษา',
+        date: 'DD/MM/YY',
         inventoryStatus: 'คืน',
       },
       {
@@ -287,6 +290,7 @@ export const dataTable = {
         status: 'ใช้งานได้',
         useable: 'กำลังใช้',
         room_id: 'ห้อง SC 2502',
+        date: 'DD/MM/YY',
         inventoryStatus: '',
       },
       {
@@ -297,6 +301,7 @@ export const dataTable = {
         status: 'ใช้งานได้',
         useable: 'กำลังใช้',
         room_id: 'ห้อง SC 2502',
+        date: 'DD/MM/YY',
         inventoryStatus: 'ยืม',
       },
       {
@@ -307,6 +312,7 @@ export const dataTable = {
         status: 'ใช้งานได้',
         useable: 'กำลังใช้',
         room_id: 'ดร.ณฐวัฒน์',
+        date: 'DD/MM/YY',
         inventoryStatus: 'ส่งซ่อม',
       },
       {
@@ -317,6 +323,7 @@ export const dataTable = {
         status: 'ใช้งานได้',
         useable: 'กำลังใช้',
         room_id: 'สจล',
+        date: 'DD/MM/YY',
         inventoryStatus: 'ยืม',
       },
       {
@@ -327,6 +334,7 @@ export const dataTable = {
         status: 'ใช้งานได้',
         useable: 'กำลังใช้',
         room_id: 'สจล',
+        date: 'DD/MM/YY',
         inventoryStatus: 'ยืม',
       },
       {
@@ -337,6 +345,7 @@ export const dataTable = {
         status: 'ใช้งานได้',
         useable: 'กำลังใช้',
         room_id: 'สจล',
+        date: 'DD/MM/YY',
         inventoryStatus: 'ส่งซ่อม',
       },
       {
@@ -347,6 +356,7 @@ export const dataTable = {
         status: 'ใช้งานได้',
         useable: 'กำลังใช้',
         room_id: 'สจล',
+        date: 'DD/MM/YY',
         inventoryStatus: 'ส่งซ่อม',
       },
       {
@@ -357,6 +367,7 @@ export const dataTable = {
         status: 'ใช้งานได้',
         useable: 'กำลังใช้',
         room_id: 'สจล',
+        date: 'DD/MM/YY',
         inventoryStatus: 'ยืม',
       },
       {
@@ -367,6 +378,7 @@ export const dataTable = {
         status: 'ใช้งานได้',
         useable: 'กำลังใช้',
         room_id: 'สจล',
+        date: 'DD/MM/YY',
         inventoryStatus: 'คืน',
       },
       {
@@ -377,6 +389,7 @@ export const dataTable = {
         status: 'ใช้งานได้',
         useable: 'กำลังใช้',
         room_id: 'สจล',
+        date: 'DD/MM/YY',
         inventoryStatus: 'ส่งซ่อม',
       },
     ];
@@ -448,48 +461,56 @@ export const adminTable = {
   getAdminTable() {
     return [
       {
+        picture: avatar,
         name: 'กิตนันท์ สมัครพงค์',
         email: 'Kittinan.samakpong@gmail.com',
         date: 'DD/MM/YY',
         role: 'Admin',
       },
       {
+        picture: avatar,
         name: 'กิตนันท์ สมัครพงค์',
         email: 'Kittinan.samakpong@gmail.com',
         date: 'DD/MM/YY',
         role: 'Admin',
       },
       {
+        picture: avatar,
         name: 'กิตนันท์ สมัครพงค์',
         email: 'Kittinan.samakpong@gmail.com',
         date: 'DD/MM/YY',
         role: 'Admin',
       },
       {
+        picture: avatar,
         name: 'กิตนันท์ สมัครพงค์',
         email: 'Kittinan.samakpong@gmail.com',
         date: 'DD/MM/YY',
         role: 'Admin',
       },
       {
+        picture: avatar,
         name: 'กิตนันท์ สมัครพงค์',
         email: 'Kittinan.samakpong@gmail.com',
         date: 'DD/MM/YY',
         role: 'Admin',
       },
       {
+        picture: avatar,
         name: 'กิตนันท์ สมัครพงค์',
         email: 'Kittinan.samakpong@gmail.com',
         date: 'DD/MM/YY',
         role: 'Head Admin',
       },
       {
+        picture: avatar,
         name: 'กิตนันท์ สมัครพงค์',
         email: 'Kittinan.samakpong@gmail.com',
         date: 'DD/MM/YY',
         role: 'Admin',
       },
       {
+        picture: avatar,
         name: 'กิตนันท์ สมัครพงค์',
         email: 'Kittinan.samakpong@gmail.com',
         date: 'DD/MM/YY',

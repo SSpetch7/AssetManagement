@@ -288,9 +288,9 @@ export default function Admin() {
   const imageBodyTemplate = (product) => {
     return (
       <img
-        src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`}
-        alt={product.image}
-        className="w-6rem shadow-2 border-round"
+        src={`${product.picture}`}
+        alt={product.picture}
+        className="rounded-lg object-cover  w-12 h-12"
       />
     );
   };
@@ -349,7 +349,7 @@ export default function Admin() {
           <span className="pl-2  text-gray-400">จัดการแอดมิน</span>
         </div>
         <div className="flex justify-center h-full ">
-          <div className=" bg-white h-5/6 rounded-xl w-9/12   px-8 pt-8 m-3 ">
+          <div className="bg-white h-5/6 rounded-xl w-9/12  labtop:m-0 px-8 pt-8 m-3">
             <DataTable
               ref={dt}
               value={products}
@@ -364,10 +364,10 @@ export default function Admin() {
               className="actionRow"
             >
               <Column
-                // field=""
+                field="picture"
                 header="รูปภาพ"
                 // sortable
-                // body={imageBodyTemplate}
+                body={imageBodyTemplate}
                 style={{ minWidth: '12px', width: '12rem' }}
               ></Column>
               <Column
