@@ -16,20 +16,38 @@ export default function Dashboard() {
         ภาพรวมครุภัณฑ์
       </div>
       <div className="flex pt-10 flex-row justify-center items-center">
-        <div className="bg-white w-3/12 p-3 h-32  rounded-l-xl  gap-4">
-          <p>จำนวนอุปกรณ์ทั้งหมด</p>
-          <span className="text-kmuttColor-800 font-bold"> 100</span>
-          <span className="text-gray-400  pl-2">ชิ้น</span>
+        <div className="bg-white  w-3/12 p-3 h-32 rounded-l-xl  gap-4">
+          <div className="pl-10 pt-2 ">
+            <p className="text-2xl flex items-center">จำนวนอุปกรณ์ทั้งหมด</p>
+            <div className="pt-2">
+              <span className="text-kmuttColor-800 font-bold text-5xl">
+                100
+              </span>
+              <span className="text-gray-400 text-xl pl-4">ชิ้น</span>
+            </div>
+          </div>
         </div>
-        <div className="bg-white w-3/12 h-32  p-3  border-2 border-white border-x-gray-200  gap-4">
-          <p>จำนวนอุปกรณ์ทั้งหมด</p>
-          <span className="text-kmuttColor-800 font-bold"> 100</span>
-          <span className="text-gray-400  pl-2">ชิ้น</span>
+        <div className="bg-white w-3/12 h-32  p-3 border-2 border-white border-x-gray-200  gap-4">
+          <div className="pl-10 pt-2 ">
+            <p className="text-2xl">จำนวนอุปกรณ์ที่ใช้งาน</p>
+            <div className="pt-2">
+              <span className="text-kmuttColor-800 font-bold text-5xl">
+                100
+              </span>
+              <span className="text-gray-400 text-xl  pl-4">ชิ้น</span>
+            </div>
+          </div>
         </div>
         <div className="bg-white w-3/12 h-32  p-3 rounded-r-xl  gap-4">
-          <p>จำนวนอุปกรณ์ทั้งหมด</p>
-          <span className="text-kmuttColor-800 font-bold"> 100</span>
-          <span className="text-gray-400  pl-2">ชิ้น</span>
+          <div className="pl-10 pt-2">
+            <p className="text-2xl">จำนวนอุปกรณ์ที่ใช้ได้</p>
+            <div className="pt-2">
+              <span className="text-kmuttColor-800 font-bold text-5xl">
+                100
+              </span>
+              <span className="text-gray-400 text-xl  pl-4">ชิ้น</span>
+            </div>
+          </div>
         </div>
       </div>
       <div className="m-16">
