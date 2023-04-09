@@ -1,11 +1,11 @@
 import React, { Fragment, useState } from 'react';
 import { Tab } from '@headlessui/react';
 import { Listbox, Transition } from '@headlessui/react';
-import { CheckIcon, ChevronDownIcon } from '@heroicons/react/20/solid';
-import LineChart from '../components/chart/lineChart';
-import PieChart from '../components/chart/pieChart';
-import { UserData, SubData } from '../data';
-import Datepickertofrom from '../components/chart/day';
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
+import CheckIcon from '@mui/icons-material/Check';
+import LineChart from '../../assets/chart/lineChart';
+import { UserData, UserData2, SubData } from '../../assets/data/data';
+import Datepickertofrom from '../../components/day';
 
 const number1 = [
   { name: 'จำนวนของแต่ละสถานะครุภัณฑ์' },
@@ -85,73 +85,80 @@ function classNames(...classes) {
 }
 
 export default function Summarize() {
+  const [selected1, setSelected1] = useState(number1[0]);
+  const [selected2, setSelected2] = useState(number2[0]);
+  const [selected3, setSelected3] = useState(number3[0]);
+  const [userData, setUserData] = useState({
+    labels: UserData.map((data) => data.asset),
+    datasets: [
+      {
+        label: 'จำนวนครุภัณฑ์',
+        data: UserData.map((data) => data.totalAmount),
+        backgroundColor: [
+          'rgba(0,0,0)',
+          'rgba(75,192,192,1)',
+          '#ecf0f1',
+          '#f3ba2f',
+          '#2a71d0',
+          'rgba(225,75,225,1)'
+        ],
+        borderColor: 'black',
+        borderWidth: 2,
+        tension: 0.4
+      },
+    ],
+  });
+
+  const [userData2, setUserData2] = useState({
+    labels: UserData2.map((data) => data.asset),
+    datasets: [
+      {
+        label: 'จำนวนครุภัณฑ์',
+        data: UserData2.map((data) => data.totalAmount),
+        backgroundColor: [
+          'rgba(0,0,0)',
+          'rgba(75,192,192,1)',
+          '#ecf0f1',
+          '#f3ba2f',
+          '#2a71d0',
+          'rgba(225,75,225,1)'
+        ],
+        borderColor: 'black',
+        borderWidth: 2,
+        tension: 0.4
+      },
+    ],
+  });
+
+  const [subData, setSubData] = useState({
+    labels: SubData.map((data) => data.year),
+    datasets: [
+      {
+        label: 'จำนวนครุภัณฑ์ในแต่ละปี',
+        data: SubData.map((data) => data.number),
+        backgroundColor: ['#d02a2a'],
+        borderColor: 'blue',
+        borderWidth: 1,
+        tension: 0.4
+      },
+    ],
+  });
+
   let [categories] = useState({
     ครุภัณฑ์: [
       {
         id: 1,
-        title: 'Does drinking coffee make you smarter?',
-        date: '5h ago',
-        commentCount: 5,
-        shareCount: 2,
-      },
-      {
-        id: 2,
-        title: "So you've bought coffee... now what?",
-        date: '2h ago',
-        commentCount: 3,
-        shareCount: 2,
+        title: userData,
       },
     ],
     บุคลากร: [
       {
         id: 1,
-        title: 'Is tech making coffee better or worse?',
-        date: 'Jan 7',
-        commentCount: 29,
-        shareCount: 16,
-      },
-      {
-        id: 2,
-        title: 'The most innovative things happening in coffee',
-        date: 'Mar 19',
-        commentCount: 24,
-        shareCount: 12,
+        title: userData2,
       },
     ],
   });
-  const [selected1, setSelected1] = useState(number1[0]);
-  const [selected2, setSelected2] = useState(number2[0]);
-  const [selected3, setSelected3] = useState(number3[0]);
-  const [userData, setUserData] = useState({
-    labels: UserData.map((data) => data.year),
-    datasets: [
-      {
-        label: 'Users Gained',
-        data: UserData.map((data) => data.userGain),
-        backgroundColor: [
-          'rgba(75,192,192,1)',
-          '#ecf0f1',
-          '#50AF95',
-          '#f3ba2f',
-          '#2a71d0',
-        ],
-        borderColor: 'black',
-        borderWidth: 2,
-      },
-    ],
-  });
-  const [subData, setSubData] = useState({
-    labels: SubData.map((data) => data.status),
-    datasets: [
-      {
-        label: 'Subjects Status',
-        data: SubData.map((data) => data.subGain),
-        backgroundColor: ['#d02a2a', '#f3ba2f', '#50AF95'],
-        borderColor: 'white',
-        borderWidth: 1,
-      },
-    ],
-  });
+
   return (
     <div>
       <div className="flex flex-col-2 justify-start p-2">
@@ -261,7 +268,7 @@ export default function Summarize() {
           <div className="h-5"></div>
           <div>
             <div className="grid grid-rows-6 grid-cols-5 gap-8 ">
-              <div className="row-span-6 col-span-3 bg-white rounded-lg">
+              <div className="row-span-6 col-span-3 rounded-lg">
                 <div className="w-full sm:px-0 shadow-md rounded-lg">
                   <Tab.Group>
                     <Tab.List className="flex space-x-1 rounded-t-lg bg-white p-1">
@@ -271,10 +278,10 @@ export default function Summarize() {
                           className={({ selected }) =>
                             classNames(
                               'w-full rounded-t-lg py-2.5 text-sm font-medium leading-5 text-black',
-                              'ring-orange-400 ring-opacity-60 ring-offset-2 ring-offset-orange-400 focus:outline-none focus:ring-2 focus:text-white',
+                              'ring-white ring-opacity-60 ring-offset-2 ring-offset-white focus:outline-none focus:ring-2 focus:text-white',
                               selected
                                 ? 'bg-orange-400 text-white'
-                                : 'text-white hover:bg-orange-200 hover:text-white'
+                                : 'text-black border-2 border-black hover:bg-orange-300 hover:text-white hover:border-2 hover:border-orange-300'
                             )
                           }
                         >
@@ -291,8 +298,8 @@ export default function Summarize() {
                             'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
                           )}
                         >
-                          <div className="grid grid-cols-2 grid-rows-8 gap-8 h-full">
-                            <div className="col-span-1 row-span-8">
+                          <div className="grid grid-cols-3 grid-rows-8 gap-8 h-full">
+                            <div className="col-span-2 row-span-8">
                               <div>
                                 <Listbox
                                   value={selected2}
@@ -304,7 +311,7 @@ export default function Summarize() {
                                         {selected2.name}
                                       </span>
                                       <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                                        <ChevronDownIcon
+                                        <ArrowDropDownIcon
                                           className="h-5 w-5 text-gray-400"
                                           aria-hidden="true"
                                         />
@@ -321,10 +328,9 @@ export default function Summarize() {
                                           <Listbox.Option
                                             key={personIdx}
                                             className={({ active }) =>
-                                              `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                                active
-                                                  ? 'bg-amber-100 text-amber-900'
-                                                  : 'text-gray-900'
+                                              `relative cursor-default select-none py-2 pl-10 pr-4 ${active
+                                                ? 'bg-amber-100 text-amber-900'
+                                                : 'text-gray-900'
                                               }`
                                             }
                                             value={person}
@@ -332,11 +338,10 @@ export default function Summarize() {
                                             {({ selected2 }) => (
                                               <>
                                                 <span
-                                                  className={`block truncate ${
-                                                    selected2
-                                                      ? 'font-medium'
-                                                      : 'font-normal'
-                                                  }`}
+                                                  className={`block truncate ${selected2
+                                                    ? 'font-medium'
+                                                    : 'font-normal'
+                                                    }`}
                                                 >
                                                   {person.name}
                                                 </span>
@@ -357,11 +362,14 @@ export default function Summarize() {
                                   </div>
                                 </Listbox>
                               </div>
-
-                              <div className="flex justify-center">
-                                <div style={{ width: 300, height: 225 }}>
-                                  <LineChart chartData={userData} />
-                                </div>
+                              <div>
+                                {posts.map((post) => (
+                                    <div className="flex justify-center pr-3 pl-3">
+                                      <div style={{ width: 1100, height: 225 }}>
+                                        <LineChart chartData={post.title} />
+                                      </div>
+                                    </div>
+                                ))}
                               </div>
                             </div>
                             <div className="col-span-1 row-span-8">
@@ -374,11 +382,11 @@ export default function Summarize() {
                   </Tab.Group>
                 </div>
               </div>
-              <div className="row-span-6 col-span-2 bg-gray-100">
-                <div className="row-span-1 col-span-2 bg-gray-100">
-                  <div className="h-12 max-h-full"></div>
+              <div className="row-span-6 col-span-2 ">
+                <div className="row-span-1 col-span-2">
+                  <div className="h-11 max-h-full"></div>
                 </div>
-                <div className="bg-gray-100">
+                <div className="">
                   <div className="bg-white rounded-xl shadow-md">
                     <div className="h-full">
                       <div>
@@ -389,7 +397,7 @@ export default function Summarize() {
                                 {selected1.name}
                               </span>
                               <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                                <ChevronDownIcon
+                                <ArrowDropDownIcon
                                   className="h-5 w-5 text-gray-400"
                                   aria-hidden="true"
                                 />
@@ -406,10 +414,9 @@ export default function Summarize() {
                                   <Listbox.Option
                                     key={personIdx}
                                     className={({ active }) =>
-                                      `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                        active
-                                          ? 'bg-amber-100 text-amber-900'
-                                          : 'text-gray-900'
+                                      `relative cursor-default select-none py-2 pl-10 pr-4 ${active
+                                        ? 'bg-amber-100 text-amber-900'
+                                        : 'text-gray-900'
                                       }`
                                     }
                                     value={person}
@@ -417,11 +424,10 @@ export default function Summarize() {
                                     {({ selected1 }) => (
                                       <>
                                         <span
-                                          className={`block truncate ${
-                                            selected1
-                                              ? 'font-medium'
-                                              : 'font-normal'
-                                          }`}
+                                          className={`block truncate ${selected1
+                                            ? 'font-medium'
+                                            : 'font-normal'
+                                            }`}
                                         >
                                           {person.name}
                                         </span>
@@ -442,9 +448,9 @@ export default function Summarize() {
                           </div>
                         </Listbox>
                       </div>
-                      <div className="flex justify-center h-full\">
-                        <div style={{ width: 200, height: 200 }}>
-                          <PieChart chartData={subData} />
+                      <div className="flex justify-center h-full pr-5 pl-5">
+                        <div style={{ width: 800 }}>
+                          <LineChart chartData={subData} />
                         </div>
                       </div>
                       <div className="grid grid-cols-4 grid-rows-1 gap-4">
@@ -459,7 +465,7 @@ export default function Summarize() {
                                   {selected3.name}
                                 </span>
                                 <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                                  <ChevronDownIcon
+                                  <ArrowDropDownIcon
                                     className="h-5 w-5 text-gray-400"
                                     aria-hidden="true"
                                   />
@@ -476,10 +482,9 @@ export default function Summarize() {
                                     <Listbox.Option
                                       key={personIdx}
                                       className={({ active }) =>
-                                        `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                          active
-                                            ? 'bg-amber-100 text-amber-900'
-                                            : 'text-gray-900'
+                                        `relative cursor-default select-none py-2 pl-10 pr-4 ${active
+                                          ? 'bg-amber-100 text-amber-900'
+                                          : 'text-gray-900'
                                         }`
                                       }
                                       value={person}
@@ -487,11 +492,10 @@ export default function Summarize() {
                                       {({ selected3 }) => (
                                         <>
                                           <span
-                                            className={`block truncate ${
-                                              selected3
-                                                ? 'font-medium'
-                                                : 'font-normal'
-                                            }`}
+                                            className={`block truncate ${selected3
+                                              ? 'font-medium'
+                                              : 'font-normal'
+                                              }`}
                                           >
                                             {person.name}
                                           </span>
