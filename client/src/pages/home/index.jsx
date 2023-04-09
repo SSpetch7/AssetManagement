@@ -1,8 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { overviewAsset, mostActivity, roomAtAsset } from '../../assets/dummy';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import LineChart from '../../assets/chart/lineChart';
+import { UserData } from '../../assets/data/data';
 
 const Home = () => {
+  const [userData, setUserData] = useState({
+    labels: UserData.map((data) => data.asset),
+    datasets: [
+      {
+        data: UserData.map((data) => data.totalAmount),
+        backgroundColor: [
+          'rgba(0,0,0)',
+          'rgba(75,192,192,1)',
+          '#ecf0f1',
+          '#f3ba2f',
+          '#2a71d0',
+          'rgba(225,75,225,1)'
+        ],
+        borderColor: 'black',
+        borderWidth: 2,
+        tension: 0.4
+      },
+    ],
+  });
   return (
     <div className="mt-12">
       <div className=" pb-10">
@@ -131,6 +152,16 @@ const Home = () => {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      </div>
+      <div className="font-bold text-4xl flex text-kmuttColor-800  mt-12 pl-36">
+        <span>แสดงจำนวนครุภัณธ์</span>
+      </div>
+      <div className=''>
+        <div className="flex justify-center p-10">
+          <div style={{ width: "60%" }}>
+            <LineChart chartData={userData} />
           </div>
         </div>
       </div>
