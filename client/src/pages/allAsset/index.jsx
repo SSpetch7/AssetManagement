@@ -18,6 +18,7 @@ import { InputText } from 'primereact/inputtext';
 import { dataTable } from '../../assets/dummy';
 import BorrowButton from '../../components/BorrowButton';
 
+
 export default function AllAsset() {
   let emptydataTable = {
     order: '',
@@ -440,13 +441,11 @@ export default function AllAsset() {
         footer={productDialogFooter}
         onHide={hideDialog}
       >
-        {product.image && (
-          <img
-            src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`}
-            alt={product.image}
-            className="product-image block m-auto pb-3"
-          />
-        )}
+        
+        <div className="card p-4">
+            <FileUpload name="demo[]" url={'/api/upload'} multiple accept="image/*" maxFileSize={1000000} emptyTemplate={<p className="m-0">อัพโหลดรูปครุภัณฑ์ที่นี่</p>} />
+        </div>
+        
         <div className="card p-4">
           <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
           <div className="grid grid-cols-4 gap-4">

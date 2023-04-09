@@ -5,3 +5,4 @@ export { default as BorrowHistory } from './borrowHistory/index';
 export { default as AllAsset } from './allAsset/index';
 export { default as Dashboard } from './dashboard/test';
 export { default as CheckAsset } from './checkAsset/index';
+export { default as Login } from './login/index';

@@ -12,6 +12,7 @@ import {
   AllAsset,
   Dashboard,
   CheckAsset,
+  Login,
 } from './pages/index';
 
 import { useStateContext } from './contexts/ContextProvider';
@@ -56,6 +57,7 @@ const App = () => {
                 <Route path="/allAsset" element={<AllAsset />} />
                 <Route path="/checkAsset" element={<CheckAsset />} />
                 <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/login" element={<Login />} />
                 {/* admin */}
                 <Route path="/borrowHistory" element={<BorrowHistory />} />
                 <Route path="/borrower" element={<Borrower />} />
