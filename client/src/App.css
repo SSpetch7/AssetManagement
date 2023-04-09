@@ -107,7 +107,7 @@
 }
 /* body table */
 .p-datatable > .p-datatable-wrapper {
-  /* height: 700px !important; */
+  height: 680px !important;
 }
 /* pagination */
 .p-paginator .p-paginator-first,

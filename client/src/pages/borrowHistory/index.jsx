@@ -357,7 +357,7 @@ export default function BorrowHistory() {
                 field="name"
                 header="ผู้ดำเนินการ"
                 sortable
-                style={{ minWidth: '16rem' }}
+                style={{ minWidth: '20rem' }}
               ></Column>
 
               <Column
