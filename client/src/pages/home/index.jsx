@@ -6,20 +6,20 @@ const Home = () => {
   return (
     <div className="mt-12">
       <div className=" pb-10">
-        <span className="pl-32 font-bold  text-4xl text-gray-600 items-start">
+        <span className="pl-32 labtop:pl-20 font-bold  text-4xl text-gray-600 items-start">
           Home
         </span>
         <span className="text-gray-400  pl-2">หน้าแรก</span>
         {/* <div className="border-b w-96 pl-42"></div> */}
       </div>
-      <div className="pl-36 font-bold text-4xl  text-kmuttColor-800 items-start">
+      <div className="pl-36 labtop:pl-20 font-bold text-4xl  text-kmuttColor-800 items-start">
         ภาพรวมครุภัณฑ์
       </div>
       <div className="flex flex-col justify-center items-center">
         {overviewAsset.map((item) => (
           <div
             key={item.device}
-            className=" bg-kmuttColor-bg-menu h-56 rounded-xl w-9/12 border border-gray-300 px-8 pt-6 m-3 "
+            className=" bg-kmuttColor-bg-menu h-56 rounded-xl labtop:w-10/12 w-9/12 border border-gray-300 px-8 pt-6 m-3 "
           >
             <div>
               <div className="flex justify-start item-start pb-4">
@@ -57,7 +57,7 @@ const Home = () => {
           </div>
         ))}
       </div>
-      <div className="font-bold text-4xl flex text-kmuttColor-800  mt-12 pl-36">
+      <div className="font-bold labtop:pl-20 text-4xl flex text-kmuttColor-800  mt-12 pl-36">
         <span>ครุภัณฑ์ที่เกี่ยวข้อง</span>
       </div>
       <div className="flex labtop:justify-center justify-around">
