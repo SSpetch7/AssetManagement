@@ -174,7 +174,10 @@
 ::-webkit-scrollbar-track {
   background-color: transparent;
 }
-
+.scroller-div::-webkit-scrollbar {
+  position: absolute;
+  left: 0;
+}
 .e-input-group:not(.e-float-icon-left),
 .e-input-group.e-success:not(.e-float-icon-left),
 .e-input-group.e-warning:not(.e-float-icon-left),
