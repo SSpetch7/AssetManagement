@@ -56,11 +56,12 @@ function Datepickertofrom() {
                 <div className="row fthight">
                     <div className="col-sm-8  mt-3">
                         <form onSubmit={handleSubmit}>
+                            <div className="pt-5"></div>
                             <div className="row mb-4 ">
                                 <div className="col-sm-5">
                                     <p class="text-sm text-gray-600 font-medium">เลือกวันที่</p>
                                     <div className="h-4"></div>
-                                    <input type="date" className="form-control flex w-full content-between border-2 border-orange-200 rounded-md p-2" name="todate" onChange={(e) => handletodate(e)} />
+                                    <input type="date" className="form-control flex w-full border-2 border-orange-200 rounded-md p-2" name="todate" onChange={(e) => handletodate(e)} />
                                     <span className="text-danger"> </span>
                                 </div>
                             </div>
@@ -69,10 +70,10 @@ function Datepickertofrom() {
                                 <div className="col-sm-5">
                                     <p class="text-sm text-gray-600 font-medium">เลือกวันที่</p>
                                     <div className="h-4"></div>
-                                    <input type="date" className="form-control flex w-full content-between border-2 border-orange-200 rounded-md p-2" name="fromdate" onChange={(e) => handlefromdate(e)} />
+                                    <input type="date" className="form-control flex w-full border-2 border-orange-200 rounded-md p-2" name="fromdate" onChange={(e) => handlefromdate(e)} />
                                 </div>
                             </div>
-
+                            <div className="pt-12"></div>
                             <div className="row mb-4 bg-orange-400 rounded-md p-2">
                                 <label className="col-sm-2 col-form-label"></label>
                                 <div className="col-sm-5">

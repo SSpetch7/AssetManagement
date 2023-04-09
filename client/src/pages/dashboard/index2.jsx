@@ -137,8 +137,8 @@ export default function Summarize() {
         label: 'จำนวนครุภัณฑ์ในแต่ละปี',
         data: SubData.map((data) => data.number),
         backgroundColor: ['#d02a2a'],
-        borderColor: 'blue',
-        borderWidth: 1,
+        borderColor: 'black',
+        borderWidth: 2,
         tension: 0.4
       },
     ],
@@ -263,9 +263,9 @@ export default function Summarize() {
       <div className="pt-10 pb-10 pl-36 font-bold text-4xl  text-kmuttColor-800 items-start">
         แผนภูมิ
       </div>
-      <div className='flex pt-10 flex-row justify-center items-center pl-32 pr-32'>
-        <div className="grid grid-flow-row grid-cols-12 gap-4 contact-between w-full h-full">
-          <div className="col-span-7 rounded-lg ">
+      <div className='flex flex-row justify-center items-center pl-32 pr-32 '>
+        <div className="contact-between w-full h-full">
+          <div className="rounded-lg pb-10 w-full h-full">
             <div className="sm:px-0 shadow-md rounded-lg w-full h-full">
               <Tab.Group>
                 <Tab.List className="flex space-x-1 rounded-t-lg bg-white p-1">
@@ -291,11 +291,11 @@ export default function Summarize() {
                     <Tab.Panel
                       key={idx}
                       className={classNames(
-                        'rounded-b-lg bg-white p-2',
+                        'rounded-b-lg bg-white',
                         'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
                       )}
                     >
-                      <div className="grid grid-cols-3 grid-rows-8 gap-8 h-full">
+                      <div className="grid grid-cols-3 grid-rows-8 gap-8 h-full pl-8 pr-8 pb-8">
                         <div className="col-span-2 row-span-8 gap-2 w-full h-full">
                           <div className='grid grid-cols-1 grid-rows-8 w-full h-full'>
                             <div className='col-span-1 row-span-1'>
@@ -360,9 +360,9 @@ export default function Summarize() {
                                 </div>
                               </Listbox>
                             </div>
-                            <div className='col-span-1 row-span-7 flex justify-center w-full h-full'>
+                            <div className='col-span-1 row-span-7 flex justify-center items-center w-full h-full'>
                               {posts.map((post) => (
-                                <div className="flex justify-center pr-3 pl-3 w-full h-full">
+                                <div className="flex justify-center items-center pr-3 pl-3 w-full h-full">
                                   <div style={{ width: "100%" }}>
                                     <LineChart chartData={post.title} />
                                   </div>
@@ -371,7 +371,7 @@ export default function Summarize() {
                             </div>
                           </div>
                         </div>
-                        <div className="col-span-1 row-span-8">
+                        <div className="col-span-1 row-span-8 w-full h-full">
                           <Datepickertofrom />
                         </div>
                       </div>
@@ -381,11 +381,11 @@ export default function Summarize() {
               </Tab.Group>
             </div>
           </div>
-          <div className="col-span-5 w-full h-full">
+          <div className="w-full h-full">
             <div className="w-full h-full">
               <div className="bg-white rounded-xl shadow-md w-full h-full">
-                <div className="grid grid-cols-1 grid-rows-10 gap-2 w-full h-full">
-                  <div className='col-span-1 row-span-1'>
+                <div className="w-full h-full p-5">
+                  <div className='col-span-1 row-span-1 w-full h-full'>
                     <Listbox value={selected1} onChange={setSelected1}>
                       <div className="relative mt-1 p-5">
                         <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
@@ -444,18 +444,20 @@ export default function Summarize() {
                       </div>
                     </Listbox>
                   </div>
-                  <div className="col-span-1 row-span-8 flex justify-center pr-5 pl-5">
-                    <div style={{ width: "100%" }}>
-                      <LineChart chartData={subData} />
+                  <div className='col-span-1 row-span-8 flex justify-center items-center w-full h-full'>
+                    <div className="flex justify-center items-center pr-5 pl-5 w-full h-full">
+                      <div style={{ width: "100%" }}>
+                        <LineChart chartData={subData} />
+                      </div>
                     </div>
                   </div>
-                  <div className="col-span-1 row-span-1 grid grid-cols-4 grid-rows-1 gap-4">
-                    <p className="col-span-1 pt-3 pl-1 text-sm text-gray-600 font-medium flex justify-center">
+                  <div className="col-span-1 row-span-1 grid grid-cols-10 grid-rows-1 gap-4 w-full h-full">
+                    <p className="col-span-1 pt-8 pl-1 text-sm text-gray-600 font-medium flex justify-center">
                       ปีงบประมาณ
                     </p>
-                    <div className="col-span-3 pb-2 pr-2">
+                    <div className="col-span-9 pb-2 pr-2 pt-5 pb-5">
                       <Listbox value={selected3} onChange={setSelected3}>
-                        <div className="relative mt-1">
+                        <div className="relative mt-1 pr-4">
                           <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
                             <span className="block truncate">
                               {selected3.name}
