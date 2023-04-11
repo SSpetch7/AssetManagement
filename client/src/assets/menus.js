@@ -20,16 +20,16 @@ export const menus = [
       { name: 'eachRoom', nameTh: 'ครุภัณฑ์ตามห้อง' },
     ],
   },
-  {
-    name: 'type',
-    nameTh: 'ประเภทครุภัณฑ์',
-    icon: DevicesOtherIcon,
-    menus: [
-      { name: 'computer', nameTh: 'คอมพิวเตอร์' },
-      { name: 'tablet', nameTh: 'แท็บแลต' },
-      { name: 'office', nameTh: 'สำนักงาน' },
-    ],
-  },
+  //   {
+  //     name: 'type',
+  //     nameTh: 'ประเภทครุภัณฑ์',
+  //     icon: DevicesOtherIcon,
+  //     menus: [
+  //       { name: 'computer', nameTh: 'คอมพิวเตอร์' },
+  //       { name: 'tablet', nameTh: 'แท็บแลต' },
+  //       { name: 'office', nameTh: 'สำนักงาน' },
+  //     ],
+  //   },
   {
     name: 'AssetManage',
     nameTh: 'การจัดการครุภัณฑ์',

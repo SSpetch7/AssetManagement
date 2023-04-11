@@ -52,7 +52,7 @@ const App = () => {
                 {/* general user */}
                 <Route path="/" element={<Home />} />
                 <Route path="/home" element={<Home />} />
-                <Route path="/allAsset" element={<AllAsset />} />
+                <Route path="/asset/allAsset" element={<AllAsset />} />
                 <Route path="/checkAsset" element={<CheckAsset />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 {/* admin */}

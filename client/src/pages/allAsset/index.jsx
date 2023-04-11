@@ -221,15 +221,22 @@ export default function AllAsset() {
           outlined
           className="mr-2"
           onClick={() => editProduct(rowData)}
+        /> */}
+        <Button
+          icon="pi pi-pencil"
+          //   rounded
+          outlined
+          className="editBnt mr-2"
+          onClick={() => editProduct(rowData)}
         />
         <Button
           icon="pi pi-trash"
-          style={{ scale: ' 70%' }}
-          rounded
+          //   style={{ scale: ' 70%' }}
+          //   rounded
           outlined
           severity="danger"
           onClick={() => confirmDeleteProduct(rowData)}
-        /> */}
+        />
         {/* <Button
           outlined
           icon="pi pi-calendar-times"
@@ -238,14 +245,14 @@ export default function AllAsset() {
           className="mr-2 "
           onClick={() => editProduct(rowData)}
         /> */}
-        <BorrowButton />
-        <Button
+        {/* <BorrowButton /> */}
+        {/* <Button
           icon="pi pi-pencil"
           //   rounded
           outlined
           className="editBnt mr-2"
           onClick={() => editProduct(rowData)}
-        />
+        /> */}
       </React.Fragment>
     );
   };
@@ -292,13 +299,13 @@ export default function AllAsset() {
             paddingLeft: '13px',
           }}
         />
-        <Button
+        {/* <Button
           label="Export"
           icon="pi pi-upload"
           className="p-button-help"
           onClick={exportCSV}
           style={{ width: '120px' }}
-        />
+        /> */}
       </div>
     </div>
   );
