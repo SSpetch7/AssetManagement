@@ -17,6 +17,7 @@ import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
 import { dataTable } from '../../assets/dummy';
 import BorrowButton from '../../components/BorrowButton';
+import AssetFilter from '../../components/AssetFilter';
 
 
 export default function AllAsset() {
@@ -280,6 +281,9 @@ export default function AllAsset() {
             style={{ width: '400px' }}
           />
         </span>
+        <div className="flex gap-2">
+        <AssetFilter/>
+      </div>
       </div>
       <div className="flex gap-2">
         <Button
@@ -477,7 +481,6 @@ export default function AllAsset() {
                 value={product.name}
                 onChange={(e) => onInputChange(e, 'name')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.name,
                 })}
@@ -496,7 +499,6 @@ export default function AllAsset() {
                 value={product.id}
                 onChange={(e) => onInputChange(e, 'id')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.id,
                 })}
@@ -531,7 +533,6 @@ export default function AllAsset() {
                 value={product.room}
                 onChange={(e) => onInputChange(e, 'room')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.room,
                 })}
@@ -619,7 +620,6 @@ export default function AllAsset() {
                 value={product.project}
                 onChange={(e) => onInputChange(e, 'ยพน่ำแะ')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.project,
                 })}
@@ -638,7 +638,6 @@ export default function AllAsset() {
                 value={product.plan}
                 onChange={(e) => onInputChange(e, 'plan')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.plan,
                 })}
