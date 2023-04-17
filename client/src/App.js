@@ -6,12 +6,19 @@ import { Navbar, Sidebar } from './components';
 import './App.css';
 import {
   Home,
-  Admin,
-  Borrower,
-  BorrowHistory,
   AllAsset,
-  Dashboard,
+  EachRoom,
+  Addnew,
+  Remove,
+  Edit,
   CheckAsset,
+  Rearch,
+  Report,
+  Dashboard,
+  Borrowed,
+  BorrowHistory,
+  Borrower,
+  Admin,
   Login,
 } from './pages/index';
 
@@ -21,7 +28,6 @@ import 'primereact/resources/primereact.min.css';
 import 'primereact/resources/themes/tailwind-light/theme.css';
 import 'primeicons/primeicons.css';
 
-
 const App = () => {
   const { activeMenu } = useStateContext();
 
@@ -30,7 +36,7 @@ const App = () => {
       <Router>
         <div className="flex relative">
           {activeMenu ? (
-            <div className="fixed w-72 labtop:w-60 h-full  sidebar bg-second-bg">
+            <div className="fixed  w-72 labtop:w-62 h-full  sidebar bg-second-bg">
               <Sidebar />
             </div>
           ) : (
@@ -41,7 +47,7 @@ const App = () => {
           <div
             className={`min-h-screen w-full ${
               activeMenu
-                ? '  bg-main-bg labtop:ml-60 md:ml-72 '
+                ? '  bg-main-bg labtop:ml-62 md:ml-72 '
                 : 'bg-main-bg flex-2'
             }`}
           >
@@ -51,16 +57,25 @@ const App = () => {
 
             <div>
               <Routes>
-                {/* general user */}
                 <Route path="/" element={<Home />} />
                 <Route path="/home" element={<Home />} />
-                <Route path="/allAsset" element={<AllAsset />} />
+                <Route path="/asset/allAsset" element={<AllAsset />} />
+                <Route path="/asset/eachRoom" element={<EachRoom />} />
+                <Route path="/AssetManage/add" element={<Addnew />} />
+                <Route path="/AssetManage/remove" element={<Remove />} />
+                <Route path="/AssetManage/edit" element={<Edit />} />
                 <Route path="/checkAsset" element={<CheckAsset />} />
+                <Route path="/assetSearching" element={<Rearch />} />
+                <Route path="/report" element={<Report />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/login" element={<Login />} />
-                {/* admin */}
-                <Route path="/borrowHistory" element={<BorrowHistory />} />
-                <Route path="/borrower" element={<Borrower />} />
+
+                <Route path="/borrow/borrowAsset" element={<Borrowed />} />
+                <Route
+                  path="/borrow/borrowHistory"
+                  element={<BorrowHistory />}
+                />
+                <Route path="/borrow/borrower" element={<Borrower />} />
                 <Route path="/admin" element={<Admin />} />
               </Routes>
             </div>

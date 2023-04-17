@@ -189,7 +189,6 @@ export default function AssetFilter() {
     setProduct(_product);
   };
 
-
   const [dates, setDates] = useState(null);
 
   const priceBodyTemplate = (rowData) => {
@@ -227,16 +226,16 @@ export default function AssetFilter() {
 
   const productDialogFooter = (
     <React.Fragment>
-        <div className="flex justify-center">
-      <Button
-        label="Search"
-        icon="pi pi-search"
-        className="p-Testbutton"
-        onClick={saveProduct}
-      /></div>
+      <div className="flex justify-center">
+        <Button
+          label="Search"
+          icon="pi pi-search"
+          className="p-Testbutton"
+          onClick={saveProduct}
+        />
+      </div>
     </React.Fragment>
   );
-  
 
   return (
     <div className="p-button p-component mr-2  p-button-icon-only p-button-outlined">
@@ -258,17 +257,11 @@ export default function AssetFilter() {
         breakpoints={{ '960px': '75vw', '641px': '90vw' }}
         header="ตัวกรอง"
         modal
+        filter
         className="p-fluid"
         footer={productDialogFooter}
         onHide={hideDialog}
       >
-        {product.image && (
-          <img
-            src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`}
-            alt={product.image}
-            className="product-image block m-auto pb-3"
-          />
-        )}
         <div className="card p-4">
           <div className="grid grid-cols-4 gap-4">
             <div className="field col-start-1">
@@ -296,12 +289,10 @@ export default function AssetFilter() {
                 value={product.name}
                 onChange={(e) => onInputChange(e, 'name')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.name,
                 })}
               />
-             
             </div>
 
             <div className="field col-start-4 col-end-5">
@@ -328,12 +319,10 @@ export default function AssetFilter() {
                 value={product.id}
                 onChange={(e) => onInputChange(e, 'id')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.id,
                 })}
               />
-             
             </div>
 
             <div className="formgrid grid">
@@ -361,12 +350,10 @@ export default function AssetFilter() {
                 value={product.room}
                 onChange={(e) => onInputChange(e, 'room')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.room,
                 })}
               />
-              
             </div>
 
             <div className="field">
@@ -446,12 +433,10 @@ export default function AssetFilter() {
                 value={product.borrower}
                 onChange={(e) => onInputChange(e, 'borrower')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.borrower,
                 })}
               />
-              
             </div>
 
             <div className="field col-start-3 col-end-4">
@@ -466,7 +451,6 @@ export default function AssetFilter() {
                 showIcon
               />
             </div>
-
           </div>
         </div>
       </Dialog>

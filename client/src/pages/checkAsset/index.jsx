@@ -18,7 +18,7 @@ import { InputText } from 'primereact/inputtext';
 import { dataTable } from '../../assets/dummy';
 import BorrowButton from '../../components/BorrowButton';
 
-export default function AllAsset() {
+export default function CheckAsset() {
   let emptydataTable = {
     order: '',
     asset_id: '',
