@@ -14,6 +14,8 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { Calendar } from 'primereact/calendar';
+import { Galleria } from 'primereact/galleria';
+import { TestPhoto } from 'assets/testPhoto';
 
 export default function ProductsDemo() {
   let emptyProduct = {
@@ -45,6 +47,31 @@ export default function ProductsDemo() {
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
+
+  const [images, setImages] = useState(null);
+
+  const responsiveOptions = [
+    {
+      breakpoint: '1024px',
+      numVisible: 5,
+    },
+    {
+      breakpoint: '960px',
+      numVisible: 4,
+    },
+    {
+      breakpoint: '768px',
+      numVisible: 3,
+    },
+    {
+      breakpoint: '560px',
+      numVisible: 1,
+    },
+  ];
+
+  useEffect(() => {
+    TestPhoto.getImages().then((data) => setImages(data));
+  }, []);
 
   const formatCurrency = (value) => {
     return value.toLocaleString('en-US', {
@@ -292,6 +319,26 @@ export default function ProductsDemo() {
     </React.Fragment>
   );
 
+  const itemTemplate = (item) => {
+    return (
+      <img
+        src={item.itemImageSrc}
+        alt=""
+        style={{ width: '100%', display: 'block' }}
+      />
+    );
+  };
+
+  const thumbnailTemplate = (item) => {
+    return (
+      <img
+        src={item.thumbnailImageSrc}
+        alt={item.alt}
+        style={{ display: 'block' }}
+      />
+    );
+  };
+
   return (
     <div className="p-button p-component mr-2  p-button-icon-only p-button-outlined">
       <Button
@@ -316,13 +363,17 @@ export default function ProductsDemo() {
         footer={productDialogFooter}
         onHide={hideDialog}
       >
-        {product.image && (
-          <img
-            src={`https://primefaces.org/cdn/primereact/images/product/${product.image}`}
-            alt={product.image}
-            className="product-image block m-auto pb-3"
+        <div className="flex justify-center">
+          <Galleria
+            value={images}
+            responsiveOptions={responsiveOptions}
+            numVisible={5}
+            circular
+            style={{ maxWidth: '600px' }}
+            item={itemTemplate}
+            thumbnail={thumbnailTemplate}
           />
-        )}
+        </div>
         <div className="card p-4">
           <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
           <div className="grid grid-cols-4 gap-4">
@@ -354,7 +405,6 @@ export default function ProductsDemo() {
                 value={product.name}
                 onChange={(e) => onInputChange(e, 'name')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.name,
                 })}
@@ -373,7 +423,6 @@ export default function ProductsDemo() {
                 value={product.id}
                 onChange={(e) => onInputChange(e, 'id')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.id,
                 })}
@@ -408,7 +457,6 @@ export default function ProductsDemo() {
                 value={product.room}
                 onChange={(e) => onInputChange(e, 'room')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.room,
                 })}
@@ -496,7 +544,6 @@ export default function ProductsDemo() {
                 value={product.borrower}
                 onChange={(e) => onInputChange(e, 'borrower')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.borrower,
                 })}

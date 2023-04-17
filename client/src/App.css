@@ -105,6 +105,11 @@
   font-family: 'kmuttDB' !important;
   font-size: 20px !important;
 }
+/* table sorting icon */
+.p-datatable .p-sortable-column .p-sortable-column-icon {
+  font-size: 10px !important;
+}
+
 /* body table */
 .p-datatable > .p-datatable-wrapper {
   height: 680px !important;

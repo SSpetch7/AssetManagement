@@ -36,7 +36,7 @@ export const menus = [
     menus: [
       { name: 'add', nameTh: 'เพิ่มครุภัณฑ์ใหม่' },
       { name: 'remove', nameTh: 'แทงจำหน่ายครุภัณฑ์' },
-      { name: 'edit', nameTh: 'แก้ไขครุภัณฑ์' },
+      { name: 'edit', nameTh: 'แก้ไขข้อมูลครุภัณฑ์' },
     ],
   },
 ];

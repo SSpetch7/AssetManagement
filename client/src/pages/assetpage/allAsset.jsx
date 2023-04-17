@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
+import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
 import { Paginator } from 'primereact/paginator';
 import { Toast } from 'primereact/toast';
@@ -17,7 +18,7 @@ import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
 import { dataTable } from '../../assets/dummy';
 import BorrowButton from '../../components/BorrowButton';
-
+import AssetFilter from '../../components/AssetFilter';
 
 export default function AllAsset() {
   let emptydataTable = {
@@ -38,6 +39,9 @@ export default function AllAsset() {
     { name: 'สิ้นสภาพ', code: 'BK' },
   ];
 
+  const [filters, setFilters] = useState(null);
+  const [globalFilterValue, setGlobalFilterValue] = useState('');
+
   const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -50,7 +54,6 @@ export default function AllAsset() {
   const dt = useRef(null);
 
   useEffect(() => {
-    // ProductService.getProducts().then((data) => setProducts(data));
     dataTable.getDatas().then((data) => setProducts(data));
   }, []);
 
@@ -280,6 +283,9 @@ export default function AllAsset() {
             style={{ width: '400px' }}
           />
         </span>
+        <div className="flex gap-2">
+          <AssetFilter />
+        </div>
       </div>
       <div className="flex gap-2">
         <Button
@@ -293,13 +299,13 @@ export default function AllAsset() {
             paddingLeft: '13px',
           }}
         />
-        <Button
+        {/* <Button
           label="Export"
           icon="pi pi-upload"
           className="p-button-help"
           onClick={exportCSV}
           style={{ width: '120px' }}
-        />
+        /> */}
       </div>
     </div>
   );
@@ -368,6 +374,7 @@ export default function AllAsset() {
               paginator
               rows={10}
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+              filters={filters}
               globalFilter={globalFilter}
               header={header}
               className="actionRow"
@@ -379,49 +386,56 @@ export default function AllAsset() {
                 field="order"
                 header="ลำดับ"
                 sortable
-                style={{ minWidth: '5rem' }}
+                style={{ minWidth: '4rem' }}
               ></Column>
               <Column
                 field="asset_id"
                 header="หมายเลขครุภัณฑ์"
                 sortable
-                style={{ minWidth: '11rem' }}
+                filter
+                filterPlaceholder="Search by name"
+                style={{ minWidth: '13rem', width: '13rem' }}
               ></Column>
               <Column
                 field="name"
                 header="ชื่อ"
                 sortable
-                style={{ minWidth: '16rem' }}
+                filter
+                style={{ minWidth: '18rem' }}
               ></Column>
 
               <Column
                 field="year"
-                header="ปี"
+                header="ปีงบประมาณ"
                 sortable
-                style={{ minWidth: '5rem' }}
+                filter
+                style={{ minWidth: '4rem' }}
               ></Column>
               <Column
                 field="status"
                 header="สภาพ"
                 sortable
+                filter
                 style={{ minWidth: '4rem' }}
               ></Column>
               <Column
                 field="useable"
                 header="การใช้งาน"
                 sortable
-                style={{ minWidth: '9rem' }}
+                filter
+                style={{ minWidth: '10rem' }}
               ></Column>
               <Column
                 field="room_id"
                 header="ประจำที่"
                 sortable
-                style={{ minWidth: '8rem' }}
+                filter
+                style={{ minWidth: '10rem' }}
               ></Column>
               <Column
                 body={actionBodyTemplate}
                 // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '8rem' }}
+                style={{ minWidth: '6rem' }}
               ></Column>
             </DataTable>
           </div>
@@ -441,11 +455,17 @@ export default function AllAsset() {
         footer={productDialogFooter}
         onHide={hideDialog}
       >
-        
         <div className="card p-4">
-            <FileUpload name="demo[]" url={'/api/upload'} multiple accept="image/*" maxFileSize={1000000} emptyTemplate={<p className="m-0">อัพโหลดรูปครุภัณฑ์ที่นี่</p>} />
+          <FileUpload
+            name="demo[]"
+            url={'/api/upload'}
+            multiple
+            accept="image/*"
+            maxFileSize={1000000}
+            emptyTemplate={<p className="m-0">อัพโหลดรูปครุภัณฑ์ที่นี่</p>}
+          />
         </div>
-        
+
         <div className="card p-4">
           <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
           <div className="grid grid-cols-4 gap-4">
@@ -477,7 +497,6 @@ export default function AllAsset() {
                 value={product.name}
                 onChange={(e) => onInputChange(e, 'name')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.name,
                 })}
@@ -496,7 +515,6 @@ export default function AllAsset() {
                 value={product.id}
                 onChange={(e) => onInputChange(e, 'id')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.id,
                 })}
@@ -531,7 +549,6 @@ export default function AllAsset() {
                 value={product.room}
                 onChange={(e) => onInputChange(e, 'room')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.room,
                 })}
@@ -619,7 +636,6 @@ export default function AllAsset() {
                 value={product.project}
                 onChange={(e) => onInputChange(e, 'ยพน่ำแะ')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.project,
                 })}
@@ -638,7 +654,6 @@ export default function AllAsset() {
                 value={product.plan}
                 onChange={(e) => onInputChange(e, 'plan')}
                 required
-                autoFocus
                 className={classNames({
                   'p-invalid': submitted && !product.plan,
                 })}

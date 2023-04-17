@@ -16,11 +16,11 @@ const Home = () => {
           '#ecf0f1',
           '#f3ba2f',
           '#2a71d0',
-          'rgba(225,75,225,1)'
+          'rgba(225,75,225,1)',
         ],
         borderColor: 'black',
         borderWidth: 2,
-        tension: 0.4
+        tension: 0.4,
       },
     ],
   });
@@ -78,89 +78,13 @@ const Home = () => {
           </div>
         ))}
       </div>
-      <div className="font-bold labtop:pl-20 text-4xl flex text-kmuttColor-800  mt-12 pl-36">
-        <span>ครุภัณฑ์ที่เกี่ยวข้อง</span>
-      </div>
-      <div className="flex labtop:justify-center justify-around">
-        <div className="flex gap-10 m-4 flex-wrap justify-around">
-          <div>
-            <div className="flex justify-between items-end">
-              <div className="font-bold text-3xl  text-gray-500 ">
-                กิจกรรมยอดนิยม
-              </div>
-              <div className="text-gray-400 ">ดูทั้งหมด</div>
-            </div>
-            <div className="flex gap-10">
-              {mostActivity.map((item) => (
-                <div className="bg-gray-300 w-64 rounded-lg" key={item.title}>
-                  <div className="px-6">
-                    <div className="flex justify-center pt-3 ">
-                      <img src={item.image} className="w-40 rounded-md" />
-                    </div>
-                    <span className="text-3xl font-bold  text-gray-600">
-                      {item.title}
-                    </span>
-                    <div className="flex justify-between">
-                      <div className="text-2xl  font-bold">
-                        <div className="text-gray-600  h-6">ใช้งานได้ :</div>
-                        <div className="text-sky-500 ">
-                          {`${item.borrowed}/${item.useable}`} เครื่อง
-                        </div>
-                      </div>
-                      <div className="text-2xl  font-bold">
-                        <div className="text-gray-600 h-6">จำนวนทั้งหมด :</div>
-                        <div className="text-gray-700 ">{item.all} เครื่อง</div>
-                      </div>
-                    </div>
-                    <div className="py-2">
-                      <div className="bg-sky-500 h-4 rounded-full">bar</div>
-                    </div>
-                    <div className="pb-4">
-                      <button
-                        className="bg-kmuttColor-800 text-white text-2xl  font-bold w-full h-10 rounded-md"
-                        type="button"
-                      >
-                        ยื่นคำร้องขอยืม
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="flex gap-10 m-4 flex-wrap">
-          <div>
-            <div className="flex justify-between items-end">
-              <div className="font-bold text-3xl  text-gray-500 ">
-                ครุภัณฑ์ตามห้อง
-              </div>
-              <div className="text-gray-400 ">ดูทั้งหมด</div>
-            </div>
-            <div className="flex flex-col gap-2 ">
-              {roomAtAsset.map((item) => (
-                <div className="flex justify-between items-center px-2 rounded-lg border-1 border-gray-300 bg-white h-14 w-80">
-                  <span className="font-bold text-2xl  text-gray-600">
-                    {item.number}
-                  </span>
-                  <button
-                    className="bg-kmuttColor-800 w-24 h-8  text-white text-2xl font-bold h-10 rounded-md"
-                    type="button"
-                  >
-                    <VisibilityIcon /> view
-                  </button>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
+
       <div className="font-bold text-4xl flex text-kmuttColor-800  mt-12 pl-36">
-        <span>แสดงจำนวนครุภัณธ์</span>
+        <span>แสดงจำนวนครุภัณฑ์</span>
       </div>
-      <div className=''>
+      <div className="">
         <div className="flex justify-center p-10">
-          <div style={{ width: "60%" }}>
+          <div style={{ width: '60%' }}>
             <LineChart chartData={userData} />
           </div>
         </div>
