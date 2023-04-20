@@ -186,3 +186,21 @@ export const SubData = [
       number: 4000,
     },
   ];
+
+  export const StatusData = [
+    {
+      id: 1,
+      status: "ชำรุด",
+      count: 500,
+    },
+    {
+      id: 2,
+      status: "รอซ่อม",
+      count: 100,
+    },
+    {
+      id: 3,
+      status: "ใช้งานได้",
+      count: 400,
+    },
+  ];

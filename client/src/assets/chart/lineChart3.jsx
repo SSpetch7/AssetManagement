@@ -20,17 +20,20 @@ import {
     y: {
       title: {
         display: true,
-        text: 'จำนวนครุภัณฑ์'
+        text: 'จำนวนครุภัณฑ์ทั้งหมด'
       }
     },
     x: {
-      
+      title: {
+        display: true,
+        text: 'เดือน'
+      }
     },
   },
 };
 
-function LineChart({ chartData }) {
-  return <Line data={chartData} options={options}/>;
+function LineChart3({ chart3Data }) {
+  return <Line data={chart3Data} options={options}/>;
 }
 
-export default LineChart;
+export default LineChart3;
