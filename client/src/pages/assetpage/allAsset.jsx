@@ -39,7 +39,14 @@ export default function AllAsset() {
     { name: 'สิ้นสภาพ', code: 'BK' },
   ];
 
-  const [filters, setFilters] = useState(null);
+  const [filters, setFilters] = useState({
+    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    order: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    'country.name': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    asset_id: { value: null, matchMode: FilterMatchMode.IN },
+    name: { value: null, matchMode: FilterMatchMode.EQUALS },
+    year: { value: null, matchMode: FilterMatchMode.EQUALS },
+  });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
   const [products, setProducts] = useState(null);
