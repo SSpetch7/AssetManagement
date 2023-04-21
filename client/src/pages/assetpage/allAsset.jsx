@@ -16,6 +16,7 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
+import { Calendar } from 'primereact/calendar';
 import { dataTable } from '../../assets/dummy';
 import BorrowButton from '../../components/BorrowButton';
 import AssetFilter from '../../components/AssetFilter';
@@ -41,12 +42,16 @@ export default function AllAsset() {
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+    name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
     order: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    'country.name': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    asset_id: { value: null, matchMode: FilterMatchMode.IN },
-    name: { value: null, matchMode: FilterMatchMode.EQUALS },
-    year: { value: null, matchMode: FilterMatchMode.EQUALS },
-  });
+    asset_id: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    year: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    status: { value: null, matchMode: FilterMatchMode.EQUALS },
+    room_id: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    useable: { value: null, matchMode: FilterMatchMode.EQUALS },
+    
+    
+});
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
   const [products, setProducts] = useState(null);
@@ -60,9 +65,13 @@ export default function AllAsset() {
   const toast = useRef(null);
   const dt = useRef(null);
 
+  const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
+  const [useable] = useState(['กำลังใช้', 'ไม่ได้ใช้งาน']);
+
   useEffect(() => {
     dataTable.getDatas().then((data) => setProducts(data));
   }, []);
+  
 
   const formatCurrency = (value) => {
     return value.toLocaleString('en-US', {
@@ -124,6 +133,57 @@ export default function AllAsset() {
       setProduct(emptydataTable);
     }
   };
+
+  const statusBodyTemplate = (rowData) => {
+    return <Tag value={rowData.status} severity={getSeverity(rowData.status)} />;
+};
+const statusRowFilterTemplate = (options) => {
+  return (
+      <Dropdown value={options.value} options={statuses} onChange={(e) => options.filterApplyCallback(e.value)} itemTemplate={statusItemTemplate} placeholder="สภาพ" className="p-column-filter" showClear style={{ minWidth: '12rem' }} />
+  );
+};
+
+const statusItemTemplate = (option) => {
+  return <Tag value={option} severity={getSeverity(option)} />;
+};
+
+const getSeverity = (status) => {
+  switch (status) {
+      case 'ใช้งานได้':
+          return 'success';
+
+      case 'กำลังซ่อม':
+          return 'info';
+
+      case 'สิ้นสภาพ':
+          return 'danger';
+
+  }
+};
+
+const useableBodyTemplate = (rowData) => {
+  return <Tag value={rowData.useable} severity={getUseable(rowData.useable)} />;
+};
+const useableRowFilterTemplate = (options) => {
+return (
+    <Dropdown value={options.value} options={useable} onChange={(e) => options.filterApplyCallback(e.value)} itemTemplate={useableItemTemplate} placeholder="การใช้งาน" className="p-column-filter" showClear style={{ minWidth: '12rem' }} />
+);
+};
+
+const useableItemTemplate = (option) => {
+return <Tag value={option} severity={getUseable(option)} />;
+};
+
+const getUseable = (status) => {
+switch (status) {
+    case 'กำลังใช้':
+        return 'success';
+
+    case 'ไม่ได้ใช้งาน':
+        return 'danger';
+
+}
+};
 
   const editProduct = (product) => {
     setProduct({ ...product });
@@ -222,6 +282,7 @@ export default function AllAsset() {
     setProduct(_product);
   };
 
+
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
@@ -261,21 +322,6 @@ export default function AllAsset() {
     );
   };
 
-  const getSeverity = (product) => {
-    switch (product.inventoryStatus) {
-      case 'ใช้จริง':
-        return 'success';
-
-      case 'ซ่อม':
-        return 'warning';
-
-      case 'กำลังใช้งาน':
-        return 'danger';
-
-      default:
-        return null;
-    }
-  };
 
   const header = (
     <div className="flex  flex-wrap gap-2 align-items-center justify-between">
@@ -400,7 +446,8 @@ export default function AllAsset() {
                 header="หมายเลขครุภัณฑ์"
                 sortable
                 filter
-                filterPlaceholder="Search by name"
+                showFilterMatchModes={false}
+                filterPlaceholder="ค้นหาหมายเลขครุภัณฑ์"
                 style={{ minWidth: '13rem', width: '13rem' }}
               ></Column>
               <Column
@@ -408,6 +455,8 @@ export default function AllAsset() {
                 header="ชื่อ"
                 sortable
                 filter
+                showFilterMatchModes={false}
+                filterPlaceholder="ค้นหาชื่อ"
                 style={{ minWidth: '18rem' }}
               ></Column>
 
@@ -416,13 +465,18 @@ export default function AllAsset() {
                 header="ปีงบประมาณ"
                 sortable
                 filter
+                showFilterMatchModes={false}
                 style={{ minWidth: '4rem' }}
               ></Column>
+              
               <Column
                 field="status"
                 header="สภาพ"
                 sortable
                 filter
+                showFilterMatchModes={false}
+                body={statusBodyTemplate}
+                filterElement={statusRowFilterTemplate}
                 style={{ minWidth: '4rem' }}
               ></Column>
               <Column
@@ -430,6 +484,9 @@ export default function AllAsset() {
                 header="การใช้งาน"
                 sortable
                 filter
+                body={useableBodyTemplate}
+                filterElement={useableRowFilterTemplate}
+                showFilterMatchModes={false}
                 style={{ minWidth: '10rem' }}
               ></Column>
               <Column
@@ -437,6 +494,7 @@ export default function AllAsset() {
                 header="ประจำที่"
                 sortable
                 filter
+                showFilterMatchModes={false}
                 style={{ minWidth: '10rem' }}
               ></Column>
               <Column
