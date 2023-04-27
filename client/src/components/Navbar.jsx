@@ -2,11 +2,13 @@ import React, { useEffect } from 'react';
 import avatar from '../assets/pic.jpg';
 import { useStateContext } from '../contexts/ContextProvider';
 import { Tooltip } from '@mui/material';
+import { Menubar } from 'primereact/menubar';
 import AdminProfile from './AdminProfile';
 import Notification from './Notification';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+
 
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <Tooltip title={title} placement="bottom" arrow>
@@ -51,7 +53,29 @@ const Navbar = () => {
     }
   }, [screenSize]);
 
+  const items = [
+        
+    {
+        label: 'Admin',
+        items: [
+            {
+                label: 'Profile',
+                icon: 'pi pi-fw pi-user',
+
+            },
+            {
+                label: 'logout',
+                icon: 'pi pi-fw pi-sign-out',
+
+            },
+        ]
+    },
+    
+    
+];
+
   return (
+    
     <div className="flex justify-between p-2 labtop:ml-0 md:mx-6 relative">
       <NavButton
         title="Menu"
@@ -67,7 +91,16 @@ const Navbar = () => {
           color="#FF8261"
           icon={<NotificationsNoneIcon />}
         />
-        <Tooltip title="Profile" placement="bottom" arrow>
+        <div
+            className="flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg "
+          >
+            <img
+              className="rounded-full object-cover  w-10 h-10"
+              src={avatar}
+            />
+        <Menubar  model={items} />
+        </div>
+        {/* <Tooltip title="Profile" placement="bottom" arrow>
           <div
             className="flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg "
             onClick={() => handleClick('adminProfile')}
@@ -83,7 +116,7 @@ const Navbar = () => {
             </p>
             <KeyboardArrowDownIcon className="text-gray-400 font-bold ml-1 text-14 " />
           </div>
-        </Tooltip>
+        </Tooltip> */}
         {isClicked.notification && <Notification />}
         {isClicked.adminProfile && <AdminProfile />}
       </div>

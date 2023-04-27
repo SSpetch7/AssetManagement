@@ -240,3 +240,11 @@
 .p-input-icon-left .p-inputtext.p-component.inputForm {
   width: 300px !important;
 }
+
+.p-menubar {
+  padding: 0rem!important;
+  background: rgb(239 239 240 / var(--tw-bg-opacity))!important;
+  color: #ffffff!important;
+  border: 0px solid #e5e7eb!important;
+  border-radius: 0.1rem!important;
+}
