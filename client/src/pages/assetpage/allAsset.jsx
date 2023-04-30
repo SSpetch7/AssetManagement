@@ -20,6 +20,7 @@ import { Calendar } from 'primereact/calendar';
 import { dataTable } from '../../assets/dummy';
 import BorrowButton from '../../components/BorrowButton';
 import AssetFilter from '../../components/AssetFilter';
+import { AssetService } from '../../service/AssetService';
 
 export default function AllAsset() {
   let emptydataTable = {
@@ -27,8 +28,8 @@ export default function AllAsset() {
     asset_id: '',
     name: '',
     year: null,
-    status: '',
-    useable: '',
+    asset_status: '',
+    asset_useable: '',
     room_id: '',
     inventoryStatus: 'INSTOCK',
   };
@@ -42,19 +43,29 @@ export default function AllAsset() {
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    name: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
     order: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    asset_id: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-    year: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    asset_id: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
+    year: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
     status: { value: null, matchMode: FilterMatchMode.EQUALS },
-    room_id: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    room_id: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
     useable: { value: null, matchMode: FilterMatchMode.EQUALS },
-    
-    
-});
+  });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
-  const [products, setProducts] = useState(null);
+  const [assets, setAssets] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
@@ -69,9 +80,11 @@ export default function AllAsset() {
   const [useable] = useState(['กำลังใช้', 'ไม่ได้ใช้งาน']);
 
   useEffect(() => {
-    dataTable.getDatas().then((data) => setProducts(data));
+    // dataTable.getDatas().then((data) => setAssets(data));
+    AssetService.getAllAsset().then((data) => setAssets(data));
+    // console.log(AssetService.getAllAsset().then((data) => setAssets(data)));
+    console.log(assets);
   }, []);
-  
 
   const formatCurrency = (value) => {
     return value.toLocaleString('en-US', {
@@ -103,7 +116,7 @@ export default function AllAsset() {
     setSubmitted(true);
 
     if (product.name.trim()) {
-      let _products = [...products];
+      let _products = [...assets];
       let _product = { ...product };
 
       if (product.id) {
@@ -128,62 +141,88 @@ export default function AllAsset() {
         });
       }
 
-      setProducts(_products);
+      setAssets(_products);
       setProductDialog(false);
       setProduct(emptydataTable);
     }
   };
 
   const statusBodyTemplate = (rowData) => {
-    return <Tag value={rowData.status} severity={getSeverity(rowData.status)} />;
-};
-const statusRowFilterTemplate = (options) => {
-  return (
-      <Dropdown value={options.value} options={statuses} onChange={(e) => options.filterApplyCallback(e.value)} itemTemplate={statusItemTemplate} placeholder="สภาพ" className="p-column-filter" showClear style={{ minWidth: '12rem' }} />
-  );
-};
+    return (
+      <Tag
+        value={rowData.asset_status}
+        severity={getSeverity(rowData.status)}
+      />
+    );
+  };
+  const statusRowFilterTemplate = (options) => {
+    return (
+      <Dropdown
+        value={options.value}
+        options={statuses}
+        onChange={(e) => options.filterApplyCallback(e.value)}
+        itemTemplate={statusItemTemplate}
+        placeholder="สภาพ"
+        className="p-column-filter"
+        showClear
+        style={{ minWidth: '12rem' }}
+      />
+    );
+  };
 
-const statusItemTemplate = (option) => {
-  return <Tag value={option} severity={getSeverity(option)} />;
-};
+  const statusItemTemplate = (option) => {
+    return <Tag value={option} severity={getSeverity(option)} />;
+  };
 
-const getSeverity = (status) => {
-  switch (status) {
+  const getSeverity = (status) => {
+    switch (status) {
       case 'ใช้งานได้':
-          return 'success';
-
-      case 'กำลังซ่อม':
-          return 'info';
-
-      case 'สิ้นสภาพ':
-          return 'danger';
-
-  }
-};
-
-const useableBodyTemplate = (rowData) => {
-  return <Tag value={rowData.useable} severity={getUseable(rowData.useable)} />;
-};
-const useableRowFilterTemplate = (options) => {
-return (
-    <Dropdown value={options.value} options={useable} onChange={(e) => options.filterApplyCallback(e.value)} itemTemplate={useableItemTemplate} placeholder="การใช้งาน" className="p-column-filter" showClear style={{ minWidth: '12rem' }} />
-);
-};
-
-const useableItemTemplate = (option) => {
-return <Tag value={option} severity={getUseable(option)} />;
-};
-
-const getUseable = (status) => {
-switch (status) {
-    case 'กำลังใช้':
         return 'success';
 
-    case 'ไม่ได้ใช้งาน':
-        return 'danger';
+      case 'กำลังซ่อม':
+        return 'info';
 
-}
-};
+      case 'สิ้นสภาพ':
+        return 'danger';
+    }
+  };
+
+  const useableBodyTemplate = (rowData) => {
+    return (
+      <Tag
+        value={rowData.asset_useable}
+        severity={getUseable(rowData.useable)}
+      />
+    );
+  };
+  const useableRowFilterTemplate = (options) => {
+    return (
+      <Dropdown
+        value={options.value}
+        options={useable}
+        onChange={(e) => options.filterApplyCallback(e.value)}
+        itemTemplate={useableItemTemplate}
+        placeholder="การใช้งาน"
+        className="p-column-filter"
+        showClear
+        style={{ minWidth: '12rem' }}
+      />
+    );
+  };
+
+  const useableItemTemplate = (option) => {
+    return <Tag value={option} severity={getUseable(option)} />;
+  };
+
+  const getUseable = (status) => {
+    switch (status) {
+      case 'กำลังใช้':
+        return 'success';
+
+      case 'ไม่ได้ใช้งาน':
+        return 'danger';
+    }
+  };
 
   const editProduct = (product) => {
     setProduct({ ...product });
@@ -197,9 +236,9 @@ switch (status) {
   };
 
   const deleteProduct = () => {
-    let _products = products.filter((val) => val.id !== product.id);
+    let _products = assets.filter((val) => val.id !== product.id);
 
-    setProducts(_products);
+    setAssets(_products);
     setDeleteProductDialog(false);
     setProduct(emptydataTable);
     toast.current.show({
@@ -213,8 +252,8 @@ switch (status) {
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < products.length; i++) {
-      if (products[i].id === id) {
+    for (let i = 0; i < assets.length; i++) {
+      if (assets[i].id === id) {
         index = i;
         break;
       }
@@ -244,9 +283,9 @@ switch (status) {
   };
 
   const deleteSelectedProducts = () => {
-    let _products = products.filter((val) => !selectedProducts.includes(val));
+    let _products = assets.filter((val) => !selectedProducts.includes(val));
 
-    setProducts(_products);
+    setAssets(_products);
     setDeleteProductsDialog(false);
     setSelectedProducts(null);
     toast.current.show({
@@ -281,7 +320,6 @@ switch (status) {
 
     setProduct(_product);
   };
-
 
   const actionBodyTemplate = (rowData) => {
     return (
@@ -321,7 +359,6 @@ switch (status) {
       </React.Fragment>
     );
   };
-
 
   const header = (
     <div className="flex  flex-wrap gap-2 align-items-center justify-between">
@@ -420,7 +457,7 @@ switch (status) {
           <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
             <DataTable
               ref={dt}
-              value={products}
+              value={assets}
               selection={selectedProducts}
               onSelectionChange={(e) => setSelectedProducts(e.value)}
               dataKey="id"
@@ -436,7 +473,7 @@ switch (status) {
               tableStyle={{ minHeight: '10rem' }}
             >
               <Column
-                field="order"
+                field="asset_order"
                 header="ลำดับ"
                 sortable
                 style={{ minWidth: '4rem' }}
@@ -451,7 +488,7 @@ switch (status) {
                 style={{ minWidth: '13rem', width: '13rem' }}
               ></Column>
               <Column
-                field="name"
+                field="asset_name"
                 header="ชื่อ"
                 sortable
                 filter
@@ -461,16 +498,16 @@ switch (status) {
               ></Column>
 
               <Column
-                field="year"
+                field="asset_year"
                 header="ปีงบประมาณ"
                 sortable
                 filter
                 showFilterMatchModes={false}
                 style={{ minWidth: '4rem' }}
               ></Column>
-              
+
               <Column
-                field="status"
+                field="asset_status"
                 header="สภาพ"
                 sortable
                 filter
@@ -480,7 +517,7 @@ switch (status) {
                 style={{ minWidth: '4rem' }}
               ></Column>
               <Column
-                field="useable"
+                field="asset_useable"
                 header="การใช้งาน"
                 sortable
                 filter

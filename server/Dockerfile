@@ -1,17 +1,10 @@
 FROM node:18.15.0
-WORKDIR /usr/code
-COPY package.json . 
+ENV NODE_ENV=production
+WORKDIR /server
+COPY package.json .
+COPY package.lock.json .
 RUN npm install 
 COPY . .
-EXPOSE 5001
-CMD ['npm','run','start:prod']
-ENV NODE_ENV=production
+# EXPOSE 5001
+CMD ['npm','run','dev']
 
-WORKDIR /application
-
-COPY ['package.json','package-lock.json*','./']
-
-
-COPY . .
-
-CMD ['node','server.js']
