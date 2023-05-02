@@ -20,26 +20,19 @@ import { Calendar } from 'primereact/calendar';
 import { dataTable } from '../../assets/dummy';
 import BorrowButton from '../../components/BorrowButton';
 import AssetFilter from '../../components/AssetFilter';
-import { AssetService } from '../../service/AssetService';
+import { AssetService, AssetOptionService } from '../../service/AssetService';
 
 export default function AllAsset() {
   let emptydataTable = {
-    order: '',
+    asset_order: '',
     asset_id: '',
-    name: '',
-    year: null,
-    asset_status: '',
+    asset_name: '',
+    asset_year: null,
     asset_useable: '',
+    asset_stock: '',
+    asset_status: '',
     room_id: '',
-    inventoryStatus: 'INSTOCK',
   };
-
-  const [productStatus, setProductStatus] = useState(null);
-  const status = [
-    { name: 'ใช่งานได้', code: 'CU' },
-    { name: 'รอซ่อม', code: 'FX' },
-    { name: 'สิ้นสภาพ', code: 'BK' },
-  ];
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -56,7 +49,7 @@ export default function AllAsset() {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    status: { value: null, matchMode: FilterMatchMode.EQUALS },
+    asset_status: { value: null, matchMode: FilterMatchMode.EQUALS },
     room_id: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
@@ -65,8 +58,17 @@ export default function AllAsset() {
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
+  const [assetID, setAssetID] = useState(emptydataTable);
   const [assets, setAssets] = useState(null);
+  const [assetStatus, setAssetStatus] = useState();
+  const [assetStock, setAssetStock] = useState(null);
+  const [assetUseable, setAssetUseable] = useState(null);
+  const [assetType, setAssetType] = useState(null);
+  const [assetComType, setAssetComType] = useState(null);
+
   const [productDialog, setProductDialog] = useState(false);
+  const [showAssetDialog, setShowAssetDialog] = useState(false);
+
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [product, setProduct] = useState(emptydataTable);
@@ -76,23 +78,16 @@ export default function AllAsset() {
   const toast = useRef(null);
   const dt = useRef(null);
 
-  const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
-  const [useable] = useState(['กำลังใช้', 'ไม่ได้ใช้งาน']);
-
   useEffect(() => {
-    // dataTable.getDatas().then((data) => setAssets(data));
     AssetService.getAllAsset().then((data) => setAssets(data));
-    // console.log(AssetService.getAllAsset().then((data) => setAssets(data)));
-    console.log(assets);
+    // AssetService.getAssetByID().then((data) => setAssetID(data));
+    AssetOptionService.getStatusAsset().then((data) => setAssetStatus(data));
+    AssetOptionService.getStockAsset().then((data) => setAssetStock(data));
+    AssetOptionService.getUseableAsset().then((data) => setAssetUseable(data));
+    AssetOptionService.getTypeAsset().then((data) => setAssetType(data));
+    AssetOptionService.getTypeCom().then((data) => setAssetComType(data));
+    console.log(assetID);
   }, []);
-
-  const formatCurrency = (value) => {
-    return value.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    });
-  };
-
   const openNew = () => {
     setProduct(emptydataTable);
     setSubmitted(false);
@@ -102,6 +97,7 @@ export default function AllAsset() {
   const hideDialog = () => {
     setSubmitted(false);
     setProductDialog(false);
+    setShowAssetDialog(false);
   };
 
   const hideDeleteProductDialog = () => {
@@ -159,7 +155,7 @@ export default function AllAsset() {
     return (
       <Dropdown
         value={options.value}
-        options={statuses}
+        options={assetStatus}
         onChange={(e) => options.filterApplyCallback(e.value)}
         itemTemplate={statusItemTemplate}
         placeholder="สภาพ"
@@ -199,7 +195,7 @@ export default function AllAsset() {
     return (
       <Dropdown
         value={options.value}
-        options={useable}
+        options={assetStock}
         onChange={(e) => options.filterApplyCallback(e.value)}
         itemTemplate={useableItemTemplate}
         placeholder="การใช้งาน"
@@ -228,6 +224,19 @@ export default function AllAsset() {
     setProduct({ ...product });
     setProductDialog(true);
     console.log('edit product for click');
+  };
+
+  const showAsset = (rowData) => {
+    setProduct({ ...rowData });
+    setShowAssetDialog(true);
+    AssetService.getAssetByID(rowData.asset_id)
+      .then((data) => {
+        setAssetID(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    console.log(rowData.asset_id + ' is id asset');
   };
 
   const confirmDeleteProduct = (product) => {
@@ -340,15 +349,16 @@ export default function AllAsset() {
           severity="danger"
           onClick={() => confirmDeleteProduct(rowData)}
         /> */}
-        {/* <Button
+        <Button
           outlined
-          icon="pi pi-calendar-times"
+          icon="pi pi-search"
           //   rounded
           //   style={{ fontSize: '16px' }}
           className="mr-2 "
-          onClick={() => editProduct(rowData)}
-        /> */}
-        <BorrowButton />
+          onClick={() => showAsset(rowData)}
+        />
+        {/* <BorrowButton /> */}
+
         <Button
           icon="pi pi-pencil"
           //   rounded
@@ -547,6 +557,271 @@ export default function AllAsset() {
       <div className="m-16">
         <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
       </div>
+
+      {/* showDialog */}
+      <Dialog
+        visible={showAssetDialog}
+        style={{ width: '64rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="รายละเอียดครุภัณฑ์"
+        modal
+        className="p-fluid"
+        // footer={productDialogFooter}
+        onHide={hideDialog}
+      >
+        <div className="card p-4">
+          <FileUpload
+            name="demo[]"
+            url={'/api/upload'}
+            multiple
+            accept="image/*"
+            maxFileSize={1000000}
+            emptyTemplate={<p className="m-0">อัพโหลดรูปครุภัณฑ์ที่นี่</p>}
+          />
+        </div>
+
+        <div className="card p-4">
+          <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1">
+              <label htmlFor="name" className="font-bold">
+                ลำดับที่
+              </label>
+              <InputText
+                id="no"
+                placeholder={assetID.asset_order}
+                disabled
+                onChange={(e) => onInputChange(e, 'number')}
+                required
+                autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !product.number,
+                })}
+              />
+              {submitted && !product.number && (
+                <small className="p-error">No. is required.</small>
+              )}
+            </div>
+
+            <div className="field col-start-2 col-end-5">
+              <label htmlFor="name" className="font-bold">
+                ชื่อรายการ
+              </label>
+              <InputText
+                id="name"
+                placeholder={assetID.asset_name}
+                disabled
+                onChange={(e) => onInputChange(e, 'name')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !product.name,
+                })}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="id" className="font-bold">
+                หมายเลขครุภัณฑ์
+              </label>
+              <InputText
+                id="id"
+                placeholder={assetID.asset_id}
+                disabled
+                onChange={(e) => onInputChange(e, 'id')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !product.id,
+                })}
+              />
+              {submitted && !product.id && (
+                <small className="p-error">ProductID is required.</small>
+              )}
+            </div>
+
+            <div className="formgrid grid">
+              <div className="field col">
+                <label htmlFor="price" className="font-bold">
+                  ราคา
+                </label>
+                <InputNumber
+                  id="price"
+                  value={product.price}
+                  onValueChange={(e) => onInputNumberChange(e, 'price')}
+                  mode="currency"
+                  currency="THB"
+                  locale="en-US"
+                />
+              </div>
+            </div>
+
+            <div className="field col-start-3 col-end-5">
+              <label htmlFor="room" className="font-bold">
+                ประจำที่
+              </label>
+              <InputText
+                id="room"
+                placeholder={assetID.room_id}
+                disabled
+                onChange={(e) => onInputChange(e, 'room')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !product.room,
+                })}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                สถานะ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  placeholder={assetID.asset_useable}
+                  disabled
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetStock}
+                  optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                สภาพ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={assetStatus}
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetStatus}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                การใช้งาน
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={assetUseable}
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetUseable}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                ประเภทครุภัณฑ์
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={assetType}
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetType}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                ประเภทครุภัณฑ์คอมพิวเตอร์
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={assetComType}
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetComType}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card p-4">
+          <h1 className="text-kmuttColor-800 py-2">ข้อมูลโครงการ</h1>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1 col-end-5">
+              <label htmlFor="project" className="font-bold">
+                ชื่อโครงการ
+              </label>
+              <InputText
+                id="project"
+                value={product.project}
+                onChange={(e) => onInputChange(e, 'ยพน่ำแะ')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !product.project,
+                })}
+              />
+              {submitted && !product.project && (
+                <small className="p-error">ProjectName is required.</small>
+              )}
+            </div>
+
+            <div className="field col-start-1 col-end-5">
+              <label htmlFor="id" className="font-bold">
+                ชื่อแผนงาน
+              </label>
+              <InputText
+                id="plan"
+                value={product.plan}
+                onChange={(e) => onInputChange(e, 'plan')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !product.plan,
+                })}
+              />
+              {submitted && !product.plan && (
+                <small className="p-error">PlanName is required.</small>
+              )}
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                ประเภทแผนงาน
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={assetStatus}
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetStatus}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="field">
+            <label htmlFor="description" className="font-bold">
+              หมายเหตุ
+            </label>
+            <InputTextarea
+              id="description"
+              value={product.description}
+              onChange={(e) => onInputChange(e, 'description')}
+              required
+              rows={3}
+              cols={20}
+            />
+          </div>
+        </div>
+      </Dialog>
+
       <Dialog
         visible={productDialog}
         style={{ width: '64rem' }}
@@ -666,9 +941,9 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={productStatus}
-                  onChange={(e) => setProductStatus(e.value)}
-                  options={status}
+                  value={assetStock}
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetStock}
                   optionLabel="name"
                   placeholder="เลือกสถานะ"
                   className="w-full md:w-14rem"
@@ -682,9 +957,9 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={productStatus}
-                  onChange={(e) => setProductStatus(e.value)}
-                  options={status}
+                  value={assetStatus}
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetStatus}
                   optionLabel="name"
                   placeholder="เลือกสถานะ"
                   className="w-full md:w-14rem"
@@ -698,9 +973,9 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={productStatus}
-                  onChange={(e) => setProductStatus(e.value)}
-                  options={status}
+                  value={assetUseable}
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetUseable}
                   optionLabel="name"
                   placeholder="เลือกสถานะ"
                   className="w-full md:w-14rem"
@@ -714,9 +989,24 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={productStatus}
-                  onChange={(e) => setProductStatus(e.value)}
-                  options={status}
+                  value={assetType}
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetType}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                ประเภทครุภัณฑ์คอมพิวเตอร์
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={assetComType}
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetComType}
                   optionLabel="name"
                   placeholder="เลือกสถานะ"
                   className="w-full md:w-14rem"
@@ -771,9 +1061,9 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={productStatus}
-                  onChange={(e) => setProductStatus(e.value)}
-                  options={status}
+                  value={assetStatus}
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetStatus}
                   optionLabel="name"
                   placeholder="เลือกสถานะ"
                   className="w-full md:w-14rem"

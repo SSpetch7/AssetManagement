@@ -240,3 +240,10 @@
 .p-input-icon-left .p-inputtext.p-component.inputForm {
   width: 300px !important;
 }
+
+/*  in dialog */
+/* disabled input */
+.p-disabled,
+.p-component:disabled {
+  opacity: 1 !important;
+}

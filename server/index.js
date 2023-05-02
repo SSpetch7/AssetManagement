@@ -8,7 +8,7 @@ import morgan from 'morgan';
 // import clientRoutes from './routes/client.js';
 // import generalRoutes from './routes/general.js';
 // import routes
-import assetRoutes from './routes/asset.js';
+import assetRoutes from './routes/assetRoute.js';
 // import managementRoutes from "./routes/management.js";
 
 // CONFIGURATION
@@ -27,6 +27,7 @@ dotenv.config();
 
 /* ROUTES */
 app.use('/asset', assetRoutes);
+// app.use('/state', assetRoutes);
 
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, function (req, res) {
