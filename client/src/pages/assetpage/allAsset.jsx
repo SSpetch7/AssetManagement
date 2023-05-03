@@ -80,7 +80,7 @@ export default function AllAsset() {
 
   useEffect(() => {
     AssetService.getAllAsset().then((data) => setAssets(data));
-    // AssetService.getAssetByID().then((data) => setAssetID(data));
+    AssetService.getAssetByID().then((data) => setAssetID(data));
     AssetOptionService.getStatusAsset().then((data) => setAssetStatus(data));
     AssetOptionService.getStockAsset().then((data) => setAssetStock(data));
     AssetOptionService.getUseableAsset().then((data) => setAssetUseable(data));
@@ -676,7 +676,7 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={assetID.asset_useable}
+                  placeholder={assetID.stock_name}
                   disabled
                   onChange={(e) => setAssetStatus(e.value)}
                   options={assetStock}
@@ -692,11 +692,9 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={assetStatus}
-                  onChange={(e) => setAssetStatus(e.value)}
-                  options={assetStatus}
+                  placeholder={assetID.status_name}
+                  disabled
                   optionLabel="name"
-                  placeholder="เลือกสถานะ"
                   className="w-full md:w-14rem"
                 />
               </div>
@@ -708,11 +706,9 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={assetUseable}
-                  onChange={(e) => setAssetStatus(e.value)}
-                  options={assetUseable}
+                  placeholder={assetID.useable_name}
+                  disabled
                   optionLabel="name"
-                  placeholder="เลือกสถานะ"
                   className="w-full md:w-14rem"
                 />
               </div>
@@ -724,11 +720,9 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={assetType}
-                  onChange={(e) => setAssetStatus(e.value)}
-                  options={assetType}
+                  placeholder={assetID.cate_p_name}
+                  disabled
                   optionLabel="name"
-                  placeholder="เลือกสถานะ"
                   className="w-full md:w-14rem"
                 />
               </div>
@@ -739,11 +733,8 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={assetComType}
-                  onChange={(e) => setAssetStatus(e.value)}
-                  options={assetComType}
-                  optionLabel="name"
-                  placeholder="เลือกสถานะ"
+                  placeholder={assetID.sub_cate_name}
+                  disabled
                   className="w-full md:w-14rem"
                 />
               </div>

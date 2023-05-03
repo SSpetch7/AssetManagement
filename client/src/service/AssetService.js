@@ -39,7 +39,7 @@ export const AssetOptionService = {
       .then((d) => d.data);
   },
   getTypeAsset() {
-    return fetch('http://localhost:5000/asset/type', {
+    return fetch('http://localhost:5000/asset/v1/types', {
       headers: { 'Cache-Control': 'no-cache' },
     })
       .then((res) => res.json())

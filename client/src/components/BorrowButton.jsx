@@ -15,7 +15,7 @@ import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { Calendar } from 'primereact/calendar';
 import { Galleria } from 'primereact/galleria';
-import { TestPhoto } from 'assets/testphoto';
+import { TestPhoto } from 'assets/testPhoto';
 
 export default function ProductsDemo() {
   let emptyProduct = {

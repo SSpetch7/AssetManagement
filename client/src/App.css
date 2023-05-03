@@ -247,3 +247,7 @@
 .p-component:disabled {
   opacity: 1 !important;
 }
+/* disabled dropdown icon */
+.p-dropdown.p-component.p-inputwrapper.p-disabled .p-dropdown-trigger {
+  display: none !important;
+}

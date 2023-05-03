@@ -8,10 +8,12 @@ var Asset = (asset) => {
 };
 
 const selectColAsset =
-  'asset_order,asset_id ,asset_name,asset_year,asset_status,asset_useable,room_id';
+  'asset_order,asset_id ,asset_name,asset_year,asset_useable,asset_status,room_id';
 const useableTable =
   'JOIN useable_state AS useable ON asset_detail.asset_useable = useable.useable_id';
-const sqlAllAsset = `SELECT ${selectColAsset}, status_name AS asset_status, useable_name as asset_useable FROM asset_detail  JOIN status_state AS status ON asset_detail.asset_status = status.status_id ${useableTable}`;
+const stockTable =
+  'JOIN stock_state AS stock ON asset_detail.asset_stock = stock.stock_id';
+const sqlAllAsset = `SELECT ${selectColAsset}, status_name AS asset_status, stock_name, useable_name as asset_useable FROM asset_detail  JOIN status_state AS status ON asset_detail.asset_status = status.status_id ${useableTable} ${stockTable}`;
 const sqlOrderASC = `${sqlAllAsset} ORDER BY asset_order ASC`;
 
 Asset.getAllAsset = (result) => {
@@ -26,9 +28,16 @@ Asset.getAllAsset = (result) => {
   });
 };
 
-const sqlByID = 'SELECT * FROM asset_detail WHERE asset_id = ?';
+const selectColAssetFull = `asset_order,asset_id,asset_name,asset_year,gallery_id,detail,room_id,cate_id`;
+const sqlAllAssetFull = `SELECT * FROM asset_detail  JOIN status_state AS status ON asset_detail.asset_status = status.status_id ${useableTable} ${stockTable}`;
+
+const sqlByCateId = `SELECT asset_detail.cate_id AS asset_cate_ID ,category.parent_id AS cate_parent_ID FROM asset_detail JOIN category ON asset_detail.cate_id  = category.cate_id`;
+const sqlBySubCateId = `SELECT asset_detail.cate_id AS asset_cate_ID FROM asset_detail JOIN category ON asset_detail.cate_id  = category.cate_id`;
+const sqlCateName = `SELECT asset_cate_ID,cate_parent_ID,category.cate_name as cate_p_name FROM category JOIN (${sqlByCateId}) as asset_cate_id ON category.cate_id = asset_cate_id.cate_parent_ID`;
+const sqlSubCateName = `SELECT cate_id as sub_cate_id , cate_name as sub_cate_name FROM category WHERE cate_id = (${sqlBySubCateId})`;
+const sqlById = `SELECT * FROM (${sqlAllAssetFull}) as sql_full JOIN (${sqlCateName}) as sql_p_cate ON sql_full.cate_id = sql_p_cate.asset_cate_ID JOIN (${sqlSubCateName}) as sql_sub_cate ON sql_p_cate.asset_cate_ID = sql_sub_cate.sub_cate_id `;
 Asset.getAssetByID = (id, callback) => {
-  db.query(sqlByID, [id], (err, results) => {
+  db.query(sqlById, [id], (err, results) => {
     if (err) {
       console.log('Error while fetching asset ', err);
       return callback(err, null);
@@ -78,8 +87,7 @@ Asset.getUseableState = (result) => {
   });
 };
 
-const typeAsset =
-  'SELECT cate_name as name FROM category WHERE parent_id IS NULL';
+const typeAsset = 'SELECT cate_name as name FROM category ';
 Asset.getTypeAsset = (result) => {
   db.query(typeAsset, (err, res) => {
     if (err) {
