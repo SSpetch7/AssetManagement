@@ -5,7 +5,6 @@ import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import CheckIcon from '@mui/icons-material/Check';
 import LineChart from '../../assets/chart/lineChart';
 import { UserData, UserData2, SubData } from '../../assets/data/data';
-import Datepickertofrom from '../../components/day';
 
 const number1 = [
   { name: 'จำนวนของแต่ละสถานะครุภัณฑ์' },
@@ -318,9 +317,7 @@ export default function Summarize() {
                             </div>
                           </div>
                         </div>
-                        <div className="col-span-1 row-span-8 w-full h-full">
-                          <Datepickertofrom />
-                        </div>
+                        
                       </div>
                     </Tab.Panel>
                   ))}
