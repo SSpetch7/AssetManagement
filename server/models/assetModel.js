@@ -37,9 +37,9 @@ const sqlSubCateName = `SELECT cate_id as sub_cate_id , cate_name as sub_cate_na
 const sqlById = `SELECT * FROM (${sqlAllAssetFull}) as sql_full JOIN (${sqlCateName}) as sql_p_cate ON sql_full.cate_id = sql_p_cate.asset_cate_ID JOIN (${sqlSubCateName}) as sql_sub_cate ON sql_p_cate.asset_cate_ID = sql_sub_cate.sub_cate_id `;
 
 const test1 = `select * from asset_detail join useable_state as sql_useable on asset_useable = sql_useable.useable_id`;
-
+const test2 = `(${sqlAllAsset} WHERE asset_id = ?)`;
 Asset.getAssetByID = (id, callback) => {
-  db.query(sqlAllAssetFull, [id], (err, results) => {
+  db.query(test2, [id], (err, results) => {
     if (err) {
       console.log('Error while fetching asset ', err);
       return callback(err, null);
