@@ -15,7 +15,7 @@ const stockTable =
   'JOIN stock_state AS stock ON asset_detail.asset_stock = stock.stock_id';
 const sqlAllAsset = `SELECT ${selectColAsset}, status_name AS asset_status, stock_name, useable_name as asset_useable FROM asset_detail  JOIN status_state AS status ON asset_detail.asset_status = status.status_id ${useableTable} ${stockTable}`;
 const sqlOrderASC = `${sqlAllAsset} ORDER BY asset_order ASC`;
-
+const test = 'SELECT * from asset_detail ';
 Asset.getAllAsset = (result) => {
   db.query(sqlOrderASC, (err, res) => {
     if (err) {
@@ -30,14 +30,16 @@ Asset.getAllAsset = (result) => {
 
 const selectColAssetFull = `asset_order,asset_id,asset_name,asset_year,gallery_id,detail,room_id,cate_id`;
 const sqlAllAssetFull = `SELECT * FROM asset_detail  JOIN status_state AS status ON asset_detail.asset_status = status.status_id ${useableTable} ${stockTable}`;
-
 const sqlByCateId = `SELECT asset_detail.cate_id AS asset_cate_ID ,category.parent_id AS cate_parent_ID FROM asset_detail JOIN category ON asset_detail.cate_id  = category.cate_id`;
 const sqlBySubCateId = `SELECT asset_detail.cate_id AS asset_cate_ID FROM asset_detail JOIN category ON asset_detail.cate_id  = category.cate_id`;
 const sqlCateName = `SELECT asset_cate_ID,cate_parent_ID,category.cate_name as cate_p_name FROM category JOIN (${sqlByCateId}) as asset_cate_id ON category.cate_id = asset_cate_id.cate_parent_ID`;
 const sqlSubCateName = `SELECT cate_id as sub_cate_id , cate_name as sub_cate_name FROM category WHERE cate_id = (${sqlBySubCateId})`;
 const sqlById = `SELECT * FROM (${sqlAllAssetFull}) as sql_full JOIN (${sqlCateName}) as sql_p_cate ON sql_full.cate_id = sql_p_cate.asset_cate_ID JOIN (${sqlSubCateName}) as sql_sub_cate ON sql_p_cate.asset_cate_ID = sql_sub_cate.sub_cate_id `;
+
+const test1 = `select * from asset_detail join useable_state as sql_useable on asset_useable = sql_useable.useable_id`;
+
 Asset.getAssetByID = (id, callback) => {
-  db.query(sqlById, [id], (err, results) => {
+  db.query(sqlAllAssetFull, [id], (err, results) => {
     if (err) {
       console.log('Error while fetching asset ', err);
       return callback(err, null);

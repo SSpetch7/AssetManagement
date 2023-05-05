@@ -80,13 +80,13 @@ export default function AllAsset() {
 
   useEffect(() => {
     AssetService.getAllAsset().then((data) => setAssets(data));
-    AssetService.getAssetByID().then((data) => setAssetID(data));
+    // AssetService.getAssetByID().then((data) => setAssetID(data));
     AssetOptionService.getStatusAsset().then((data) => setAssetStatus(data));
     AssetOptionService.getStockAsset().then((data) => setAssetStock(data));
     AssetOptionService.getUseableAsset().then((data) => setAssetUseable(data));
     AssetOptionService.getTypeAsset().then((data) => setAssetType(data));
     AssetOptionService.getTypeCom().then((data) => setAssetComType(data));
-    console.log(assetID);
+    console.log(assets);
   }, []);
   const openNew = () => {
     setProduct(emptydataTable);
