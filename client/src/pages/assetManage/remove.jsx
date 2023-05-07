@@ -330,14 +330,14 @@ export default function Remove() {
           severity="danger"
           onClick={() => confirmDeleteProduct(rowData)}
         /> */}
-        {/* <Button
+        <Button
           outlined
           icon="pi pi-calendar-times"
           //   rounded
           //   style={{ fontSize: '16px' }}
           className="mr-2 "
           onClick={() => editProduct(rowData)}
-        /> */}
+        />
         <BorrowButton />
         {/* <Button
           icon="pi pi-pencil"
