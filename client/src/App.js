@@ -20,6 +20,7 @@ import {
   Borrower,
   Admin,
   Login,
+  Register,
 } from './pages/index';
 
 import { useStateContext } from './contexts/ContextProvider';
@@ -69,6 +70,7 @@ const App = () => {
                 <Route path="/report" element={<Report />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
 
                 <Route path="/borrow/borrowAsset" element={<Borrowed />} />
                 <Route

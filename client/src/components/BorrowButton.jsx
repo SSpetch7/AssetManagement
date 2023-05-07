@@ -15,7 +15,6 @@ import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { Calendar } from 'primereact/calendar';
 import { Galleria } from 'primereact/galleria';
-import { TestPhoto } from 'assets/testPhoto';
 
 export default function ProductsDemo() {
   let emptyProduct = {
@@ -69,9 +68,9 @@ export default function ProductsDemo() {
     },
   ];
 
-  useEffect(() => {
-    TestPhoto.getImages().then((data) => setImages(data));
-  }, []);
+  // useEffect(() => {
+  //   TestPhoto.getImages().then((data) => setImages(data));
+  // }, []);
 
   const formatCurrency = (value) => {
     return value.toLocaleString('en-US', {
