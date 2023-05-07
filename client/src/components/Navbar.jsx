@@ -117,8 +117,8 @@ const Navbar = () => {
             <KeyboardArrowDownIcon className="text-gray-400 font-bold ml-1 text-14 " />
           </div>
         </Tooltip> */}
-        {isClicked.notification && <Notification />}
-        {isClicked.adminProfile && <AdminProfile />}
+        {/* {isClicked.notification && <Notification />}
+        {isClicked.adminProfile && <AdminProfile />} */}
       </div>
     </div>
   );

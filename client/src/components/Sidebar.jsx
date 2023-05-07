@@ -91,7 +91,7 @@ const Sidebar = () => {
               <PublishedWithChangesIcon />
               <span className="text-xl font-bold ">ตรวจเช็คครุภัณฑ์</span>
             </NavLink>
-            <NavLink
+            {/* <NavLink
               to="/assetSearching"
               onClick={handleCloseSidebar}
               style={({ isActive }) => ({
@@ -101,7 +101,7 @@ const Sidebar = () => {
             >
               <PlagiarismIcon />
               <span className="text-xl font-bold ">ค้นหาครุภัณฑ์</span>
-            </NavLink>
+            </NavLink> */}
             <NavLink
               to="/report"
               onClick={handleCloseSidebar}
