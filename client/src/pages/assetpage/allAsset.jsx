@@ -145,10 +145,7 @@ export default function AllAsset() {
 
   const statusBodyTemplate = (rowData) => {
     return (
-      <Tag
-        value={rowData.asset_status}
-        severity={getSeverity(rowData.status)}
-      />
+      <Tag value={rowData.s_name} severity={getSeverity(rowData.status)} />
     );
   };
   const statusRowFilterTemplate = (options) => {
@@ -185,10 +182,7 @@ export default function AllAsset() {
 
   const useableBodyTemplate = (rowData) => {
     return (
-      <Tag
-        value={rowData.asset_useable}
-        severity={getUseable(rowData.useable)}
-      />
+      <Tag value={rowData.u_name} severity={getUseable(rowData.useable)} />
     );
   };
   const useableRowFilterTemplate = (options) => {
@@ -558,7 +552,7 @@ export default function AllAsset() {
         <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
       </div>
 
-      {/* showDialog */}
+      {/* view asset */}
       <Dialog
         visible={showAssetDialog}
         style={{ width: '64rem' }}
@@ -676,7 +670,7 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={assetID.stock_name}
+                  placeholder={assetID.sck_name}
                   disabled
                   onChange={(e) => setAssetStatus(e.value)}
                   options={assetStock}
@@ -692,7 +686,7 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={assetID.status_name}
+                  placeholder={assetID.s_name}
                   disabled
                   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -706,7 +700,7 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={assetID.useable_name}
+                  placeholder={assetID.u_name}
                   disabled
                   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -720,7 +714,7 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={assetID.cate_p_name}
+                  placeholder={assetID.category}
                   disabled
                   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -733,7 +727,7 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={assetID.sub_cate_name}
+                  placeholder={assetID.subcategory}
                   disabled
                   className="w-full md:w-14rem"
                 />
@@ -743,7 +737,7 @@ export default function AllAsset() {
         </div>
 
         <div className="card p-4">
-          <h1 className="text-kmuttColor-800 py-2">ข้อมูลโครงการ</h1>
+          {/* <h1 className="text-kmuttColor-800 py-2">ข้อมูลโครงการ</h1>
           <div className="grid grid-cols-4 gap-4">
             <div className="field col-start-1 col-end-5">
               <label htmlFor="project" className="font-bold">
@@ -796,7 +790,7 @@ export default function AllAsset() {
                 />
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="field">
             <label htmlFor="description" className="font-bold">
               หมายเหตุ
@@ -813,11 +807,12 @@ export default function AllAsset() {
         </div>
       </Dialog>
 
+      {/* edit asset */}
       <Dialog
         visible={productDialog}
         style={{ width: '64rem' }}
         breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header="รายละเอียดครุภัณฑ์"
+        header="แก้ไขครุภัณฑ์"
         modal
         className="p-fluid"
         footer={productDialogFooter}
