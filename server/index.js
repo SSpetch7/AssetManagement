@@ -8,6 +8,7 @@ import morgan from 'morgan';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import cookieParser from 'cookie-parser';
+import connection from './db.js';
 // import clientRoutes from './routes/client.js';
 // import generalRoutes from './routes/general.js';
 // import routes
@@ -40,8 +41,8 @@ app.listen(PORT, function (req, res) {
   console.log('The server has been connect by port : ' + PORT);
 });
 
-app.post('/register', (res, res) => {
-  const sql = "INSERT INTO admin (admin_username, admin_email, admin_password,) VALUES(?)";
+app.post('/register', (req, res) => {
+  const sql = "INSERT INTO admin (admin_username, admin_email, admin_password) VALUES(?)";
   bcrypt.hash(req.body.admin_password.toString(), salt, (err, hash) => {
       if(err) return res.json({Error: "Error for hassing password"});
       const values = [
@@ -49,7 +50,8 @@ app.post('/register', (res, res) => {
         req.body.admin_email,
         hash
       ]
-      db.query(sql, [values], (err, result) => {
+      connection.query(sql, [values], (err, result) => {
+        console.log(err);
         if(err) return res.json({Error: "Inserting data Error in server"});
         return res.json({Status: "Success"});
       })

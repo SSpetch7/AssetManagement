@@ -11,7 +11,7 @@ export default function Login() {
       })
       const handleSubmit = (event) => {
         event.preventDefault();
-        axios.post('http://localhost:8080/register', values)
+        axios.post('http://localhost:5000/register', values)
         .then(res  => console.log(res))
         .then(err  => console.log(err));
       }
