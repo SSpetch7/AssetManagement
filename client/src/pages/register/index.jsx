@@ -1,18 +1,26 @@
 import React from "react";
 import { useState } from "react";
 import loginImg from "assets/loginlogo.png";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios"
 
-export default function Login() {
+export default function Register() {
       const [values, setValues] = useState({
             admin_username: '',
             admin_email: '',
             admin_password: ''
       })
+      const navigate = useNavigate()
       const handleSubmit = (event) => {
         event.preventDefault();
         axios.post('http://localhost:5000/register', values)
-        .then(res  => console.log(res))
+        .then(res  => {
+          if (res.data.Status === 'Success') {
+              navigate('/login')
+          } else { 
+            alert("Error");          
+          }
+        })
         .then(err  => console.log(err));
       }
 

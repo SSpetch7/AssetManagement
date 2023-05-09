@@ -1,7 +1,28 @@
 import React from "react";
+import { useState } from "react";
 import loginImg from "assets/loginlogo.png"
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios"
 
 export default function Login() {
+    const [values, setValues] = useState({
+            admin_email: '',
+            admin_password: ''
+      })
+      const navigate = useNavigate()
+      axios.defaults.withCredentials = true;
+      const handleSubmit = (event) => {
+        event.preventDefault();
+        axios.post('http://localhost:5000/login', values)
+        .then(res  => {
+          if (res.data.Status === 'Success') {
+              navigate('/home')
+          } else { 
+            alert(res.data.Error);          
+          }
+        })
+        .then(err  => console.log(err));
+      }
   return (
     <div className="grid grid-cols-1 grid-rows-3 h-screen w-full bg-gray-100">
       <div className=" flex flex-col justify-center">
@@ -15,7 +36,7 @@ export default function Login() {
       </div>
 
       <div className="flex flex-col justify-center items">
-        <form className="max-w-[400px] w-full mx-auto bg-white p-8 px-8 rounded-lg">
+        <form className="max-w-[400px] w-full mx-auto bg-white p-8 px-8 rounded-lg" onSubmit={handleSubmit}>
           <h2 className="text-3xl font-bold text-center text-orange-400">
             เข้าสู่ระบบ
           </h2>
@@ -23,14 +44,14 @@ export default function Login() {
             <label>อีเมล</label>
             <input
               className="rounded-lg mt-2 p-2 border-2 focus:bg-orange-100 focus:outline-orange-300"
-              type="text"
+              type="text" name="admin_email" onChange={e => setValues({...values, admin_email:e.target.value})}
             />
           </div>
           <div className="flex flex-col text-gray-500 py-2">
             <label>รหัสผ่าน</label>
             <input
               className="rounded-lg mt-2 p-2 border-2 focus:border-red-200 focus:bg-orange-100 focus:outline-orange-300"
-              type="password"
+              type="password" name="admin_password" onChange={e => setValues({...values, admin_password:e.target.value})}
             />
           </div>
           <div className="flex justify-end text-kmuttColor-500 py-2">

@@ -25,7 +25,11 @@ app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 app.use(morgan('common'));
 app.use(bodyParser.json({ type: '*/*' }));
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:3000"],
+  methods: [ "POST", "GET" ],
+  credentials: true
+}));
 app.use(cookieParser());
 
 const salt = 10;
@@ -51,10 +55,31 @@ app.post('/register', (req, res) => {
         hash
       ]
       connection.query(sql, [values], (err, result) => {
-        console.log(err);
         if(err) return res.json({Error: "Inserting data Error in server"});
         return res.json({Status: "Success"});
       })
+  })
+})
+
+app.post('/login', (req, res) => {
+  const sql = "SELECT * FROM admin WHERE admin_email = ?";
+  connection.query(sql, [req.body.admin_email], (err, data) => {
+    if(err) return res.json({Error: "Login Error in server"});
+    if(data.length > 0) {
+      bcrypt.compare(req.body.admin_password.toString(), data[0].admin_password, (err, response) => {
+        if(err) return res.json({Error: "Password compare error"});
+        if(response) {
+          const admin_username = data[0].admin_username;
+          const token = jwt.sign({admin_username}, "jwt-secret-key", {expiresIn: '1d'});
+          res.cookie('token', token);
+          return res.json({Status: "Success"});
+        } else {
+          return res.json({Status: "Password is incorrect"});
+        }
+    })
+  } else {
+    return res.json({Error: "No email exists"});
+  }
   })
 })
 
