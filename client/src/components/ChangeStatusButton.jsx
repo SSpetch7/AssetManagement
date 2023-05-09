@@ -375,7 +375,7 @@ export default function ProductsDemo() {
         <div className="card">
           <div className="grid grid-cols-4 gap-4">
             <div className="field col-start-1 col-end-5">
-              <div className="card flex justify-content-center grid grid-cols-3 grid-rows-1 gap-8 p-4">
+              <div className="card flex justify-content-center grid grid-cols-6 grid-rows-1 gap-4 pb-4">
                 <div className="col-span-1 row-span-1">
                   <Button label="ใช้งานได้" severity="success" raised icon="pi text-white pi-check-circle" size="large"/>
                 </div>
@@ -384,6 +384,8 @@ export default function ProductsDemo() {
                 </div>
                 <div className="col-span-1 row-span-1">
                   <Button label="สิ้นสภาพ" severity="danger" raised icon="pi text-white pi-times-circle" size="large"/>
+                </div>
+                <div className="col-span-3 row-span-1">
                 </div>
               </div>
               <label htmlFor="description" className="font-bold">
