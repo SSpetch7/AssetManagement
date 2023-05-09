@@ -1,6 +1,6 @@
 export { default as Home } from './home/index';
-export { default as AllAsset } from './assetpage/allAsset2';
-export { default as EachRoom } from './assetpage/allAsset';
+export { default as AllAsset } from './assetpage/allAsset';
+export { default as EachRoom } from './assetpage/eachRoom';
 export { default as Addnew } from './assetManage/add';
 export { default as Remove } from './assetManage/remove';
 export { default as Edit } from './assetManage/edit';

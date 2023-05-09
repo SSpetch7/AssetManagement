@@ -20,6 +20,8 @@ import { Calendar } from 'primereact/calendar';
 import { dataTable } from '../../assets/dummy';
 import BorrowButton from '../../components/BorrowButton';
 import AssetFilter from '../../components/AssetFilter';
+import RemoveButton from '../../components/RemoveButton';
+import ChangeStatusButton from '../../components/ChangeStatusButton';
 
 export default function Remove() {
   let emptydataTable = {
@@ -311,7 +313,7 @@ export default function Remove() {
     setProduct(_product);
   };
 
-  const actionBodyTemplate = (rowData) => {
+  const actionRemove = (rowData) => {
     return (
       <React.Fragment>
         {/* <Button
@@ -338,7 +340,7 @@ export default function Remove() {
           className="mr-2 "
           onClick={() => editProduct(rowData)}
         /> */}
-        <BorrowButton />
+        <RemoveButton />
         {/* <Button
           icon="pi pi-pencil"
           //   rounded
@@ -346,6 +348,14 @@ export default function Remove() {
           className="editBnt mr-2"
           onClick={() => editProduct(rowData)}
         /> */}
+      </React.Fragment>
+    );
+  };
+
+  const actionChangeStatus = (rowData) => {
+    return (
+      <React.Fragment>
+        <ChangeStatusButton />
       </React.Fragment>
     );
   };
@@ -505,9 +515,14 @@ export default function Remove() {
                 style={{ minWidth: '10rem' }}
               ></Column>
               <Column
-                body={actionBodyTemplate}
+                body={actionChangeStatus}
                 // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '6rem' }}
+                style={{ minWidth: '1rem' }}
+              ></Column>
+              <Column
+                body={actionRemove}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '1rem' }}
               ></Column>
             </DataTable>
           </div>
