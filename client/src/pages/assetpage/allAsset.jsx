@@ -797,7 +797,8 @@ export default function AllAsset() {
             </label>
             <InputTextarea
               id="description"
-              value={product.description}
+              disabled
+              value={product.detail}
               onChange={(e) => onInputChange(e, 'description')}
               required
               rows={3}
