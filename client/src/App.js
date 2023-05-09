@@ -4,6 +4,7 @@ import { Logo } from './assets/logo.png';
 import { Tooltip } from '@mui/material';
 import { Navbar, Sidebar } from './components';
 import './App.css';
+import axios from 'axios';
 import {
   Home,
   AllAsset,
@@ -30,6 +31,8 @@ import 'primeicons/primeicons.css';
 
 const App = () => {
   const { activeMenu } = useStateContext();
+
+  axios.defaults.baseURL = 'http://localhost:5000';
 
   return (
     <div>
