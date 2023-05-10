@@ -1,4 +1,4 @@
-import db from '../db.js';
+import db from '../config/db.js';
 import assetModel from '../models/assetModel.js';
 
 const assetController = {

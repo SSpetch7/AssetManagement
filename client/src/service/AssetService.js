@@ -3,13 +3,6 @@ export const AssetService = {
   getAllAsset() {
     return axios.get('/asset').then((res) => res.data.data);
   },
-  //   getAllAsset() {
-  //     return fetch('http://localhost:5000/asset', {
-  //       headers: { 'Cache-Control': 'no-cache' },
-  //     })
-  //       .then((res) => res.json())
-  //       .then((d) => d.data);
-  //   },
   getAssetByID(id) {
     return axios.get(`/asset/${id}`).then((res) => res.data.data);
   },

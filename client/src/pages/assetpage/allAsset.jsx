@@ -60,6 +60,7 @@ export default function AllAsset() {
 
   const [assetID, setAssetID] = useState(emptydataTable);
   const [assets, setAssets] = useState(null);
+  const [galleries, setGalleries] = useState(null);
   const [assetStatus, setAssetStatus] = useState();
   const [assetStock, setAssetStock] = useState(null);
   const [assetUseable, setAssetUseable] = useState(null);

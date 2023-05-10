@@ -11,5 +11,15 @@ router.get('/state/stock', controller.optionController.getStockList);
 router.get('/state/useable', controller.optionController.getUseableList);
 router.get('/v1/types', controller.optionController.getTypeAssetList);
 router.get('/type/com', controller.optionController.getTypeComList);
+router.get('/images/:imageName', async (req, res, next) => {
+  try {
+    const imageName = req.params.imageName;
+    const blob = bucket.file(imageName);
+    const blobStream = blob.createReadStream();
+    blobStream.pipe(res);
+  } catch (error) {
+    next(error);
+  }
+});
 
 export default router;
