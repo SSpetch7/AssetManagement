@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import jwt from 'jsonwebtoken';
+import jwt, { decode, verify } from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import cookieParser from 'cookie-parser';
 import connection from './db.js';
@@ -45,6 +45,26 @@ app.listen(PORT, function (req, res) {
   console.log('The server has been connect by port : ' + PORT);
 });
 
+const verifyUser = (req, res, next) => {
+  const token = req.cookies.token;
+  if(!token) {
+    return res.json({Error: "You are not authenticated"});
+  } else {
+      jwt.verify(token, "jwt-secret-key", (err, decoded) => {
+        if(err) {
+          return res.json({Error: "Token is not correct"});
+        } else {
+            req.admin_username  = decoded.admin_username;
+            next();
+        }
+      })
+  }
+}
+
+app.get('/', verifyUser ,(req, res) => {
+    return res.json({Status: "Success", admin_username: req.admin_username});
+})
+
 app.post('/register', (req, res) => {
   const sql = "INSERT INTO admin (admin_username, admin_email, admin_password) VALUES(?)";
   bcrypt.hash(req.body.admin_password.toString(), salt, (err, hash) => {
@@ -81,5 +101,10 @@ app.post('/login', (req, res) => {
     return res.json({Error: "No email exists"});
   }
   })
+})
+
+app.get('/logout', (req, res) => {
+    res.clearCookie('token');
+    return res.json({Status: "Success"});
 })
 
