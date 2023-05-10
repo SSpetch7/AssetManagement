@@ -325,7 +325,7 @@ export default function ProductsDemo() {
         //   style={{ fontSize: '16px' }}
         style={{ width: '135px' }}
         severity="info"
-        className="mr-2"
+        className="changeStatusBnt mr-2"
         size="small"
         // label="ยืม"
         icon="pi text-white pi-sync"
