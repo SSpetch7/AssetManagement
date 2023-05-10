@@ -1,20 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { classNames } from 'primereact/utils';
-import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
-import { Dropdown } from 'primereact/dropdown';
-import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
-import { FileUpload } from 'primereact/fileupload';
-import { Rating } from 'primereact/rating';
-import { Toolbar } from 'primereact/toolbar';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
-import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
-import { Calendar } from 'primereact/calendar';
-import { Galleria } from 'primereact/galleria';
 import { TestPhoto } from 'assets/testphoto';
 import { SelectButton } from 'primereact/selectbutton';
 
@@ -31,13 +19,15 @@ export default function ProductsDemo() {
     inventoryStatus: 'INSTOCK',
   };
 
-  const [productStatus, setProductStatus] = useState(null);
-  const status = [
-    { name: 'ใช่งานได้', code: 'CU' },
-    { name: 'รอซ่อม', code: 'FX' },
-    { name: 'สิ้นสภาพ', code: 'BK' },
+  const [selectedStatus, setSelectedStatus] = useState(null);
+  const statusOptions = [
+    { label: 'Option 1', value: 'option1' },
+    { label: 'Option 2', value: 'option2' },
+    { label: 'Option 3', value: 'option3' },
   ];
-
+  const handleStatusChange = (e) => {
+    setSelectedStatus(e.value);
+  };
   const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
@@ -232,25 +222,6 @@ export default function ProductsDemo() {
 
   const [dates, setDates] = useState(null);
 
-  const imageBodyTemplate = (rowData) => {
-    return (
-      <img
-        src={`https://primefaces.org/cdn/primereact/images/product/${rowData.image}`}
-        alt={rowData.image}
-        className="shadow-2 border-round"
-        style={{ width: '64px' }}
-      />
-    );
-  };
-
-  const priceBodyTemplate = (rowData) => {
-    return formatCurrency(rowData.price);
-  };
-
-  const ratingBodyTemplate = (rowData) => {
-    return <Rating value={rowData.rating} readOnly cancel={false} />;
-  };
-
   const statusBodyTemplate = (rowData) => {
     return (
       <Tag
@@ -372,21 +343,44 @@ export default function ProductsDemo() {
         footer={productDialogFooter}
         onHide={hideDialog}
       >
-        <div className="card">
+        <div className="dialog-changeStatus card">
           <div className="grid grid-cols-4 gap-4">
             <div className="field col-start-1 col-end-5">
-              <div className="card flex justify-content-center grid grid-cols-6 grid-rows-1 gap-4 pb-4">
-                <div className="col-span-1 row-span-1">
-                  <Button label="ใช้งานได้" severity="success" raised icon="pi text-white pi-check-circle" size="large"/>
+              <div className="flex card justify-content-center grid w-5/6 grid-rows-1 gap-4 pt-4 pb-4">
+                {/* <div className="col-span-1 row-span-1">
+                  <Button
+                    label="ใช้งานได้"
+                    severity="success"
+                    raised
+                    icon="pi text-white pi-check-circle"
+                    size="large"
+                  />
                 </div>
                 <div className="col-span-1 row-span-1">
-                  <Button label="รอซ่อม" severity="warning" raised icon="pi text-white pi-wrench" size="large"/>
+                  <Button
+                    label="รอซ่อม"
+                    severity="warning"
+                    raised
+                    icon="pi text-white pi-wrench"
+                    size="large"
+                  />
                 </div>
                 <div className="col-span-1 row-span-1">
-                  <Button label="สิ้นสภาพ" severity="danger" raised icon="pi text-white pi-times-circle" size="large"/>
-                </div>
-                <div className="col-span-3 row-span-1">
-                </div>
+                  <Button
+                    label="สิ้นสภาพ"
+                    severity="danger"
+                    raised
+                    icon="pi text-white pi-times-circle"
+                    size="large"
+                  />
+                </div> */}
+                <SelectButton
+                  className="statusOptions"
+                  options={options}
+                  value={selectedStatus}
+                  onChange={handleStatusChange}
+                />
+                <div className="col-span-3 row-span-1"></div>
               </div>
               <label htmlFor="description" className="font-bold">
                 หมายเหตุ
