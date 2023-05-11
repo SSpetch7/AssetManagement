@@ -109,7 +109,7 @@ Asset.getTypeAsset = (result) => {
   });
 };
 
-const typeComAsset = 'SELECT sub_name as name FROM subcate ';
+const typeComAsset = 'SELECT sub_name as subcategory FROM subcate ';
 Asset.getTypeCom = (result) => {
   db.query(typeComAsset, (err, res) => {
     if (err) {
