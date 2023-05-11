@@ -367,7 +367,7 @@ export default function AllAsset() {
 
   const productDialogFooter = (
     <React.Fragment>
-      <Button label="ยกเลิก" icon="pi pi-times" outlined onClick={hideDialog} />
+      <Button label="ยกเลิก" icon="pi pi-times" severity="danger" outlined onClick={hideDialog} />
       <Button
         label="ยืนยัน"
         icon="pi pi-check"
@@ -536,7 +536,7 @@ export default function AllAsset() {
                 field="name"
                 header="ประเภท"
                 sortable
-                style={{ minWidth: '18rem' }}
+                style={{ minWidth: '30rem' }}
               ></Column>
 
               <Column

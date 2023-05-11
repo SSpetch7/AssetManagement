@@ -277,9 +277,9 @@ export default function ProductsDemo() {
 
   const productDialogFooter = (
     <React.Fragment>
-      <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
+      <Button label="ยกเลิก" icon="pi pi-times" severity="danger" outlined onClick={hideDialog} />
       <Button
-        label="Save"
+        label="ยืนยัน"
         icon="pi pi-check"
         className="p-Testbutton"
         onClick={saveProduct}
