@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import jwt, { decode, verify } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import cookieParser from 'cookie-parser';
 import connection from './db.js';
@@ -75,6 +75,7 @@ app.post('/register', (req, res) => {
         hash
       ]
       connection.query(sql, [values], (err, result) => {
+        console.log(err);
         if(err) return res.json({Error: "Inserting data Error in server"});
         return res.json({Status: "Success"});
       })

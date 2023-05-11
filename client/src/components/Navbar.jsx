@@ -1,12 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import avatar from '../assets/pic.jpg';
 import { useStateContext } from '../contexts/ContextProvider';
 import { Tooltip } from '@mui/material';
+import { Menubar } from 'primereact/menubar';
+import { Button } from 'primereact/button';
+import { Link, useNavigate } from "react-router-dom";
 import AdminProfile from './AdminProfile';
 import Notification from './Notification';
 import MenuIcon from '@mui/icons-material/Menu';
 import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import axios from 'axios';
+
 
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <Tooltip title={title} placement="bottom" arrow>
@@ -50,44 +55,101 @@ const Navbar = () => {
       setActiveMenu(true);
     }
   }, [screenSize]);
+  const [auth, setAuth] = useState(false);
+  const [message, setMessage] = useState('');
+  const [admin_username, setAdmin_username] = useState('');
+  const navigate = useNavigate();
+
+  const handleDelete = () => {
+    axios.get('http://localhost:5000/logout')
+      .then(res => {
+        window.location.reload(true);
+      })
+      .catch(err =>  console.log(err));
+  }
+  const items = [
+        
+    {
+        label: admin_username,
+        items: [
+            {
+                label: 'Profile',
+                icon: 'pi pi-fw pi-user',
+
+            },
+            {
+                label: 'logout',
+                icon: 'pi pi-fw pi-sign-out',
+                command: () => { handleDelete ()},
+            },
+        ]
+    },
+    
+    
+];
+
+
+axios.defaults.withCredentials = true;
+useEffect(() => {
+  axios.get('http://localhost:5000')
+  .then(res  => {
+    if (res.data.Status === 'Success') {
+        setAuth(true)
+        setAdmin_username(res.data.admin_username)
+    } else { 
+      setAuth(false)        
+      setMessage(res.data.Error)
+    }
+  })
+  .then(err  => console.log(err));
+},[])
+
+
 
   return (
-    <div className="flex justify-between p-2 labtop:ml-0 md:mx-6 relative">
-      <NavButton
-        title="Menu"
-        customFunc={() => setActiveMenu((prevActive) => !prevActive)}
-        color="#FF8261"
-        icon={<MenuIcon />}
-      />
-      <div className="flex ">
-        <NavButton
-          title="Notifications"
-          dotColor="#FFB39F"
-          customFunc={() => handleClick('notification')}
-          color="#FF8261"
-          icon={<NotificationsNoneIcon />}
+
+<>
+{
+  auth ?
+  <div>
+<div className="flex justify-between p-2 labtop:ml-0 md:mx-6 relative">
+  
+  <NavButton
+    title="Menu"
+    customFunc={() => setActiveMenu((prevActive) => !prevActive)}
+    color="#FF8261"
+    icon={<MenuIcon />}
+  />
+  <div className="flex ">
+    <NavButton
+      title="Notifications"
+      dotColor="#FFB39F"
+      customFunc={() => handleClick('notification')}
+      color="#FF8261"
+      icon={<NotificationsNoneIcon />}
+    />
+    <div
+        className="flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg "
+      >
+        <img
+          className="rounded-full object-cover  w-10 h-10"
+          src={avatar}
         />
-        <Tooltip title="Profile" placement="bottom" arrow>
-          <div
-            className="flex items-center gap-2 cursor-pointer p-1 hover:bg-light-gray rounded-lg "
-            onClick={() => handleClick('adminProfile')}
-          >
-            <img
-              className="rounded-full object-cover  w-10 h-10"
-              src={avatar}
-            />
-            <p>
-              <span className="text-gray-400 font-bold ml-1  text-20 ">
-                Admin
-              </span>
-            </p>
-            <KeyboardArrowDownIcon className="text-gray-400 font-bold ml-1 text-14 " />
-          </div>
-        </Tooltip>
-        {isClicked.notification && <Notification />}
-        {isClicked.adminProfile && <AdminProfile />}
-      </div>
+    <Menubar  model={items} />
     </div>
+    
+  </div>
+</div>
+  </div>
+  :
+  <div>
+     <Link to="/login">
+    <Button label="Login" severity="success" rounded />
+    </Link>
+  </div>
+}
+</>
+
   );
 };
 
