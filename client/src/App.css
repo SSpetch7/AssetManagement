@@ -157,6 +157,14 @@
 
 /* end all asset*/
 
+/* each asset */
+/* type table */
+.p-datatable.typeTable > .p-datatable-wrapper {
+  height: 520px !important;
+}
+.actionRow.p-datatable.typeTable .p-datatable-tbody > tr > td:last-child {
+  padding-left: 1.5rem !important;
+}
 /*================== borrow history =================== */
 .p-tag.p-component {
   height: 20px !important;

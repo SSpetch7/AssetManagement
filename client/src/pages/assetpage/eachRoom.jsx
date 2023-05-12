@@ -42,15 +42,25 @@ export default function AllAsset() {
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    name: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
     order: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    asset_id: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-    year: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    asset_id: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
+    year: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
     status: { value: null, matchMode: FilterMatchMode.EQUALS },
-    room_id: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    room_id: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
     useable: { value: null, matchMode: FilterMatchMode.EQUALS },
-
-
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
   const rooms = [
@@ -82,13 +92,23 @@ export default function AllAsset() {
   const toast = useRef(null);
   const dt = useRef(null);
 
+  const type = [
+    { name: 'ครุภัณฑ์สำนักงาน', num: '32' },
+    { name: 'ครุภัณฑ์การศึกษา', num: '40' },
+    { name: 'ครุภัณฑ์คอมพิวเตอร์ทั้งหมด', num: '21' },
+    { name: 'ครุภัณฑ์อื่น ๆ ', num: '44' },
+    { name: 'ครุภัณฑ์คอมพิวเตอร์', num: '31' },
+    { name: 'ครุภัณฑ์โน๊ตบุ๊ค', num: '20' },
+    { name: 'ครุภัณฑ์แท็บเล็ต', num: '10' },
+  ];
+  const [typeAsset, setTypeAsset] = useState(type);
+
   const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
   const [useable] = useState(['กำลังใช้', 'ไม่ได้ใช้งาน']);
 
   useEffect(() => {
     dataTable.getDatas().then((data) => setProducts(data));
   }, []);
-
 
   const formatCurrency = (value) => {
     return value.toLocaleString('en-US', {
@@ -152,11 +172,22 @@ export default function AllAsset() {
   };
 
   const statusBodyTemplate = (rowData) => {
-    return <Tag value={rowData.status} severity={getSeverity(rowData.status)} />;
+    return (
+      <Tag value={rowData.status} severity={getSeverity(rowData.status)} />
+    );
   };
   const statusRowFilterTemplate = (options) => {
     return (
-      <Dropdown value={options.value} options={statuses} onChange={(e) => options.filterApplyCallback(e.value)} itemTemplate={statusItemTemplate} placeholder="สภาพ" className="p-column-filter" showClear style={{ minWidth: '12rem' }} />
+      <Dropdown
+        value={options.value}
+        options={statuses}
+        onChange={(e) => options.filterApplyCallback(e.value)}
+        itemTemplate={statusItemTemplate}
+        placeholder="สภาพ"
+        className="p-column-filter"
+        showClear
+        style={{ minWidth: '12rem' }}
+      />
     );
   };
 
@@ -174,16 +205,26 @@ export default function AllAsset() {
 
       case 'สิ้นสภาพ':
         return 'danger';
-
     }
   };
 
   const useableBodyTemplate = (rowData) => {
-    return <Tag value={rowData.useable} severity={getUseable(rowData.useable)} />;
+    return (
+      <Tag value={rowData.useable} severity={getUseable(rowData.useable)} />
+    );
   };
   const useableRowFilterTemplate = (options) => {
     return (
-      <Dropdown value={options.value} options={useable} onChange={(e) => options.filterApplyCallback(e.value)} itemTemplate={useableItemTemplate} placeholder="การใช้งาน" className="p-column-filter" showClear style={{ minWidth: '12rem' }} />
+      <Dropdown
+        value={options.value}
+        options={useable}
+        onChange={(e) => options.filterApplyCallback(e.value)}
+        itemTemplate={useableItemTemplate}
+        placeholder="การใช้งาน"
+        className="p-column-filter"
+        showClear
+        style={{ minWidth: '12rem' }}
+      />
     );
   };
 
@@ -198,7 +239,6 @@ export default function AllAsset() {
 
       case 'ไม่ได้ใช้งาน':
         return 'danger';
-
     }
   };
 
@@ -252,10 +292,6 @@ export default function AllAsset() {
     return id;
   };
 
-  const exportCSV = () => {
-    dt.current.exportCSV();
-  };
-
   const confirmDeleteSelected = () => {
     setDeleteProductsDialog(true);
   };
@@ -298,7 +334,6 @@ export default function AllAsset() {
 
     setProduct(_product);
   };
-
 
   const actionBodyTemplate = (rowData) => {
     return (
@@ -344,7 +379,6 @@ export default function AllAsset() {
     );
   };
 
-
   const header = (
     <div className="flex  flex-wrap gap-2 align-items-center justify-between">
       {/* <h4 className="m-0">จัดการครุภัณฑ์</h4> */}
@@ -352,13 +386,14 @@ export default function AllAsset() {
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <div className="card flex justify-content-center">
-            <Dropdown 
-              value={globalFilter} 
-              onChange={(e) => setGlobalFilter(e.target.value)} 
-              options={rooms} 
+            <Dropdown
+              value={globalFilter}
+              onChange={(e) => setGlobalFilter(e.target.value)}
+              options={rooms}
               optionLabel="name"
-              placeholder="เลือกห้อง" 
-              style={{ width: '400px' }} />
+              placeholder="เลือกห้อง"
+              style={{ width: '400px' }}
+            />
           </div>
         </span>
       </div>
@@ -367,7 +402,13 @@ export default function AllAsset() {
 
   const productDialogFooter = (
     <React.Fragment>
-      <Button label="ยกเลิก" icon="pi pi-times" severity="danger" outlined onClick={hideDialog} />
+      <Button
+        label="ยกเลิก"
+        icon="pi pi-times"
+        severity="danger"
+        outlined
+        onClick={hideDialog}
+      />
       <Button
         label="ยืนยัน"
         icon="pi pi-check"
@@ -376,7 +417,7 @@ export default function AllAsset() {
       />
     </React.Fragment>
   );
-  
+
   const deleteProductDialogFooter = (
     <React.Fragment>
       <Button
@@ -518,19 +559,19 @@ export default function AllAsset() {
           <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
             <DataTable
               ref={dt}
-              value={products}
+              value={typeAsset}
               selection={selectedProducts}
               onSelectionChange={(e) => setSelectedProducts(e.value)}
               dataKey="id"
-              paginator
+              //   paginator
               rows={10}
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
               filters={filters}
               globalFilter={globalFilter}
-              className="actionRow"
+              className="actionRow typeTable"
               scrollable
               //   scrollHeight="700px"
-              tableStyle={{ minHeight: '10rem' }}
+              tableStyle={{ minHeight: '5rem', height: '8rem' }}
             >
               <Column
                 field="name"
@@ -540,7 +581,7 @@ export default function AllAsset() {
               ></Column>
 
               <Column
-                field="year"
+                field="num"
                 header="จำนวน"
                 sortable
                 style={{ minWidth: '4rem' }}
@@ -733,60 +774,6 @@ export default function AllAsset() {
         </div>
 
         <div className="card p-4">
-          <h1 className="text-kmuttColor-800 py-2">ข้อมูลโครงการ</h1>
-          <div className="grid grid-cols-4 gap-4">
-            <div className="field col-start-1 col-end-5">
-              <label htmlFor="project" className="font-bold">
-                ชื่อโครงการ
-              </label>
-              <InputText
-                id="project"
-                value={product.project}
-                onChange={(e) => onInputChange(e, 'ยพน่ำแะ')}
-                required
-                className={classNames({
-                  'p-invalid': submitted && !product.project,
-                })}
-              />
-              {submitted && !product.project && (
-                <small className="p-error">ProjectName is required.</small>
-              )}
-            </div>
-
-            <div className="field col-start-1 col-end-5">
-              <label htmlFor="id" className="font-bold">
-                ชื่อแผนงาน
-              </label>
-              <InputText
-                id="plan"
-                value={product.plan}
-                onChange={(e) => onInputChange(e, 'plan')}
-                required
-                className={classNames({
-                  'p-invalid': submitted && !product.plan,
-                })}
-              />
-              {submitted && !product.plan && (
-                <small className="p-error">PlanName is required.</small>
-              )}
-            </div>
-
-            <div className="field">
-              <label htmlFor="description" className="font-bold">
-                ประเภทแผนงาน
-              </label>
-              <div className="card flex justify-content-center">
-                <Dropdown
-                  value={productStatus}
-                  onChange={(e) => setProductStatus(e.value)}
-                  options={status}
-                  optionLabel="name"
-                  placeholder="เลือกสถานะ"
-                  className="w-full md:w-14rem"
-                />
-              </div>
-            </div>
-          </div>
           <div className="field">
             <label htmlFor="description" className="font-bold">
               หมายเหตุ
@@ -821,26 +808,6 @@ export default function AllAsset() {
             <span>
               Are you sure you want to delete <b>{product.name}</b>?
             </span>
-          )}
-        </div>
-      </Dialog>
-
-      <Dialog
-        visible={deleteProductsDialog}
-        style={{ width: '32rem' }}
-        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header="Confirm"
-        modal
-        footer={deleteProductsDialogFooter}
-        onHide={hideDeleteProductsDialog}
-      >
-        <div className="confirmation-content">
-          <i
-            className="pi pi-exclamation-triangle mr-3"
-            style={{ fontSize: '2rem' }}
-          />
-          {product && (
-            <span>Are you sure you want to delete the selected products?</span>
           )}
         </div>
       </Dialog>
