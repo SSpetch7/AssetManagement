@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from "react";
-import avatar from "../assets/pic.jpg";
-import { useStateContext } from "../contexts/ContextProvider";
-import { Tooltip } from "@mui/material";
-import { Menubar } from "primereact/menubar";
-import { Button } from "primereact/button";
-import { Link, useNavigate } from "react-router-dom";
-import AdminProfile from "./AdminProfile";
-import Notification from "./Notification";
-import MenuIcon from "@mui/icons-material/Menu";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import axios from "axios";
+import React, { useEffect, useState } from 'react';
+import avatar from '../assets/pic.jpg';
+import { useStateContext } from '../contexts/ContextProvider';
+import { Tooltip } from '@mui/material';
+import { Menubar } from 'primereact/menubar';
+import { Button } from 'primereact/button';
+import { Link, useNavigate } from 'react-router-dom';
+import AdminProfile from './AdminProfile';
+import Notification from './Notification';
+import MenuIcon from '@mui/icons-material/Menu';
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import axios from 'axios';
 
 const NavButton = ({ title, customFunc, icon, color, dotColor }) => (
   <Tooltip title={title} placement="bottom" arrow>
@@ -39,14 +39,14 @@ const Navbar = () => {
     screenSize,
     setScreenSize,
     setLoginOn,
-    loginOn
+    loginOn,
   } = useStateContext();
   useEffect(() => {
     const handleResize = () => setScreenSize(window.innerWidth);
-    window.addEventListener("resize", handleResize);
+    window.addEventListener('resize', handleResize);
 
     handleResize();
-    return () => window.addEventListener("resize", handleResize);
+    return () => window.addEventListener('resize', handleResize);
   }, []);
 
   useEffect(() => {
@@ -57,13 +57,13 @@ const Navbar = () => {
     }
   }, [screenSize]);
   const [auth, setAuth] = useState(false);
-  const [message, setMessage] = useState("");
-  const [admin_username, setAdmin_username] = useState("");
+  const [message, setMessage] = useState('');
+  const [admin_username, setAdmin_username] = useState('');
   const navigate = useNavigate();
 
   const handleDelete = () => {
     axios
-      .get("http://localhost:5000/logout")
+      .get('http://localhost:5000/logout')
       .then((res) => {
         window.location.reload(true);
       })
@@ -74,12 +74,12 @@ const Navbar = () => {
       label: admin_username,
       items: [
         {
-          label: "Profile",
-          icon: "pi pi-fw pi-user",
+          label: 'Profile',
+          icon: 'pi pi-fw pi-user',
         },
         {
-          label: "logout",
-          icon: "pi pi-fw pi-sign-out",
+          label: 'logout',
+          icon: 'pi pi-fw pi-sign-out',
           command: () => {
             handleDelete();
           },
@@ -91,9 +91,9 @@ const Navbar = () => {
   axios.defaults.withCredentials = true;
   useEffect(() => {
     axios
-      .get("http://localhost:5000")
+      .get('http://localhost:5000')
       .then((res) => {
-        if (res.data.Status === "Success") {
+        if (res.data.Status === 'Success') {
           setAuth(true);
           setAdmin_username(res.data.admin_username);
         } else {
@@ -119,7 +119,7 @@ const Navbar = () => {
               <NavButton
                 title="Notifications"
                 dotColor="#FFB39F"
-                customFunc={() => handleClick("notification")}
+                customFunc={() => handleClick('notification')}
                 color="#FF8261"
                 icon={<NotificationsNoneIcon />}
               />
@@ -133,8 +133,8 @@ const Navbar = () => {
             </div>
           </div>
         </div>
-      ) : 
-          <div className="flex justify-between p-2 labtop:ml-0 md:ml-6 relative bg-transparent">
+      ) : (
+        <div className="flex justify-between p-2 labtop:ml-0 md:ml-6 relative bg-transparent">
           <NavButton
             title="Menu"
             customFunc={() => setActiveMenu((prevActive) => !prevActive)}
@@ -143,16 +143,18 @@ const Navbar = () => {
           />
           <div className="flex pr-4">
             <Link to="/login" className="pt-2 w-16">
-              <Button 
-                label="Login" 
-                severity="success" 
-                text 
+              <Button
+                className="p-button-info"
+                text
                 style={{ color: 'var(--surface-900-text)' }}
-                onClick={() => setLoginOn((loginOn) => !loginOn)}/>
+                onClick={() => setLoginOn((loginOn) => !loginOn)}
+              >
+                <i className="pi pi-user" style={{ fontSize: '1.5rem' }}></i>
+              </Button>
             </Link>
           </div>
-        </div>    
-      }
+        </div>
+      )}
     </>
   );
 };
