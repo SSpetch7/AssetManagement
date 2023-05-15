@@ -31,12 +31,17 @@ import 'primeicons/primeicons.css';
 
 const App = () => {
   const { activeMenu } = useStateContext();
+  const { loginOn } = useStateContext();
 
   return (
     <div>
       <Router>
         <div className="flex relative">
-          {activeMenu ? (
+          {loginOn? (
+           null 
+          ) : (
+            <div>
+              {activeMenu ? (
             <div className="fixed  w-72 labtop:w-62 h-full  sidebar bg-second-bg">
               <Sidebar />
             </div>
@@ -45,16 +50,24 @@ const App = () => {
               <Sidebar />
             </div>
           )}
+            </div>
+          )}
           <div
             className={`min-h-screen w-full ${
+              loginOn
+              ? ''
+              :
               activeMenu
-                ? '  bg-main-bg labtop:ml-62 md:ml-72 '
+                ? 'bg-main-bg labtop:ml-62 md:ml-72 '
                 : 'bg-main-bg flex-2'
             }`}
-          >
+          > {loginOn? (
+            <div className="min-w-screen bg-100"></div>
+           ) : (
             <div className="fixed md:static bg-main-bg navbar w-full">
               <Navbar />
             </div>
+           )}
 
             <div>
               <Routes>

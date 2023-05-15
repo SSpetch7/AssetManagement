@@ -1,5 +1,5 @@
-import React from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useStateContext } from "../../contexts/ContextProvider";
 import loginImg from "assets/loginlogo.png"
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios"
@@ -24,6 +24,32 @@ export default function Login() {
         })
         .then(err  => console.log(err));
       }
+      const {
+        activeMenu,
+        setActiveMenu,
+        handleClick,
+        isClicked,
+        setIsClicked,
+        screenSize,
+        setScreenSize,
+        setLoginOn,
+        loginOn
+      } = useStateContext();
+      useEffect(() => {
+        const handleResize = () => setScreenSize(window.innerWidth);
+        window.addEventListener("resize", handleResize);
+    
+        handleResize();
+        return () => window.addEventListener("resize", handleResize);
+      }, []);
+    
+      useEffect(() => {
+        if (screenSize <= 900) {
+          setActiveMenu(false);
+        } else {
+          setActiveMenu(true);
+        }
+      }, [screenSize]);
   return (
     <div className="grid grid-cols-1 grid-rows-3 h-screen w-full bg-gray-100">
       <div className=" flex flex-col justify-center">
@@ -58,7 +84,7 @@ export default function Login() {
           <div className="flex justify-end text-kmuttColor-500 py-2">
             <p>ลืมรหัสผ่าน?</p>
           </div>
-          <button className="w-full my-2 py-2 bg-kmuttColor-800 shadow-lg text-white font-semibold rounded-lg">
+          <button className="w-full my-2 py-2 bg-kmuttColor-800 shadow-lg text-white font-semibold rounded-lg" onClick={() => setLoginOn((loginOn) => !loginOn)}>
             เข้าสู่ระบบ
           </button>
         </form>
