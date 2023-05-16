@@ -14,7 +14,7 @@
   body {
     margin: 0;
     padding: 0;
-    font-family: 'kmuttDB';
+    font-family: 'kmuttDB' !important;
     background: #efeff0;
   }
   h1 {
@@ -23,7 +23,7 @@
 }
 
 .link {
-  @apply p-2.5 flex rounded-md gap-6 items-center md:cursor-pointer cursor-default duration-300 font-medium;
+  @apply md:cursor-pointer cursor-default;
 }
 
 .active {
