@@ -9,7 +9,7 @@ import morgan from 'morgan';
 // import generalRoutes from './routes/general.js';
 // import routes
 import assetRoutes from './routes/assetRoute.js';
-import imgRoutes from './routes/imgRoute.js';
+// import imgRoutes from './routes/imgRoute.js';
 // import managementRoutes from "./routes/management.js";
 
 // CONFIGURATION
@@ -28,7 +28,7 @@ dotenv.config();
 
 /* ROUTES */
 app.use('/asset', assetRoutes);
-app.use('/image', imgRoutes);
+// app.use('/image', imgRoutes);
 
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, function (req, res) {
