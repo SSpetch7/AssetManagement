@@ -208,7 +208,7 @@ export default function Admin() {
           icon="pi pi-pencil"
           //   rounded
           outlined
-          className="mr-2"
+          className="editBnt mr-2"
           onClick={() => editProduct(rowData)}
         />
         <Button
@@ -272,20 +272,21 @@ export default function Admin() {
 
   const productDialogFooter = (
     <React.Fragment>
-      <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
-      <Button label="Save" icon="pi pi-check" onClick={saveProduct} />
+      <Button label="ยกเลิก" icon="pi pi-times" outlined onClick={hideDialog} />
+      <Button label="บันทึก" icon="pi pi-check" onClick={saveProduct} />
     </React.Fragment>
   );
   const deleteProductDialogFooter = (
     <React.Fragment>
       <Button
-        label="No"
+        label="ยกเลิก"
         icon="pi pi-times"
+        severity="info"
         outlined
         onClick={hideDeleteProductDialog}
       />
       <Button
-        label="Yes"
+        label="ยืนยัน"
         icon="pi pi-check"
         severity="danger"
         onClick={deleteProduct}

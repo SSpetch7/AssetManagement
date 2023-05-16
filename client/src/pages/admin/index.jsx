@@ -14,6 +14,9 @@ import { InputText } from 'primereact/inputtext';
 import { adminTable } from '../../assets/dummy';
 import { Tag } from 'primereact/tag';
 import AddAdmin from '../../components/AddAdmin';
+import Userinfo from 'components/UserInfo';
+import { Image } from 'primereact/image';
+import ChangeDataAdmin from "components/ChangeDataAdmin";
 
 export default function Admin() {
   let emptyadminTable = {
@@ -26,6 +29,19 @@ export default function Admin() {
     room_id: '',
     inventoryStatus: 'INSTOCK',
   };
+
+  const [visible, setVisible] = useState(false);
+  const footerContent = (
+    <div>
+      <Button
+        label="บันทึก"
+        className="p-Testbutton"
+        icon="pi pi-check"
+        onClick={() => setVisible(false)}
+        autoFocus
+      />
+    </div>
+  );
 
   const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
@@ -220,13 +236,13 @@ export default function Admin() {
           className="mr-2 "
           onClick={() => editProduct(rowData)}
         /> */}
-        <Button
-          icon="pi pi-pencil"
-          //   rounded
-          outlined
-          className="mr-2"
-          onClick={() => editProduct(rowData)}
-        />
+        <ChangeDataAdmin />
+      </React.Fragment>
+    );
+  };
+  const actionDelete = (rowData) => {
+    return (
+      <React.Fragment>
         <Button
           icon="pi pi-trash"
           //   style={{ scale: ' 70%' }}
@@ -304,13 +320,14 @@ export default function Admin() {
   const deleteProductDialogFooter = (
     <React.Fragment>
       <Button
-        label="No"
+        label="ยกเลิก"
         icon="pi pi-times"
+        severity="info"
         outlined
         onClick={hideDeleteProductDialog}
       />
       <Button
-        label="Yes"
+        label="ยืนยัน"
         icon="pi pi-check"
         severity="danger"
         onClick={deleteProduct}
@@ -398,13 +415,59 @@ export default function Admin() {
               <Column
                 body={actionBodyTemplate}
                 // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '8rem' }}
+                style={{ minWidth: '1rem' }}
+              ></Column>
+              <Column
+                body={actionDelete}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '1rem' }}
               ></Column>
             </DataTable>
           </div>
         </div>
       </div>
 
+      <Dialog
+        visible={deleteProductDialog}
+        style={{ width: '32rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="Confirm"
+        modal
+        footer={deleteProductDialogFooter}
+        onHide={hideDeleteProductDialog}
+      >
+        <div className="confirmation-content">
+          <i
+            className="pi pi-exclamation-triangle mr-3"
+            style={{ fontSize: '2rem' }}
+          />
+          {product && (
+            <span>
+              Are you sure you want to delete <b>{product.name}</b>?
+            </span>
+          )}
+        </div>
+      </Dialog>
+
+      <Dialog
+        visible={deleteProductsDialog}
+        style={{ width: '32rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="Confirm"
+        modal
+        footer={deleteProductsDialogFooter}
+        onHide={hideDeleteProductsDialog}
+      >
+        <div className="confirmation-content">
+          <i
+            className="pi pi-exclamation-triangle mr-3"
+            style={{ fontSize: '2rem' }}
+          />
+          {product && (
+            <span>Are you sure you want to delete the selected products?</span>
+          )}
+        </div>
+      </Dialog>
       <div className="m-16">
         <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
       </div>
