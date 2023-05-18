@@ -23,14 +23,17 @@ import { AssetService, AssetOptionService } from '../../service/AssetService';
 export default function AllAsset() {
   let emptydataTable = {
     asset_order: '',
-    asset_id: '',
+    asset_id: null,
     asset_name: '',
     asset_year: null,
-    asset_useable: '',
-    asset_stock: '',
-    asset_status: '',
+    gallery_id: null,
+    detail: null,
     room_id: '',
+    category: '',
     subcategory: '',
+    sck_name: '',
+    s_name: '',
+    u_name: '',
   };
 
   const [filters, setFilters] = useState({
@@ -57,8 +60,11 @@ export default function AllAsset() {
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
-  const [assetID, setAssetID] = useState(emptydataTable);
-
+  //  asset edit data
+  const [asset, setAsset] = useState(emptydataTable);
+  const [selectedSubcategory, setSelectedSubcategory] = useState('');
+  const [selectedAsset, setSelectedAsset] = useState(null);
+  // asset data
   const [assets, setAssets] = useState(null);
   const [galleries, setGalleries] = useState(null);
   const [assetStatus, setAssetStatus] = useState();
@@ -90,11 +96,13 @@ export default function AllAsset() {
     console.log(assets);
   }, []);
 
+  //   update asset data
   const handleOptionChange = (e) => {
-    setAssetComType(e.target.value);
+    setSelectedSubcategory(e.value);
   };
+
   const openNew = () => {
-    setProduct(emptydataTable);
+    setAsset(emptydataTable);
     setSubmitted(false);
     setEditAssetDialog(true);
   };
@@ -113,17 +121,17 @@ export default function AllAsset() {
     setDeleteProductsDialog(false);
   };
 
-  const saveProduct = () => {
+  const saveAsset = () => {
     setSubmitted(true);
 
-    if (product.name.trim()) {
-      let _products = [...assets];
-      let _product = { ...product };
+    if (asset.asset_name.trim()) {
+      let _assets = [...assets];
+      let _asset = { ...asset };
 
-      if (product.id) {
-        const index = findIndexById(product.id);
-
-        _products[index] = _product;
+      if (asset.asset_name) {
+        const index = findIndexById(asset.asset_id);
+        console.log(asset.id);
+        _assets[index] = _asset;
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
@@ -131,9 +139,9 @@ export default function AllAsset() {
           life: 3000,
         });
       } else {
-        _product.id = createId();
-        _product.image = 'product-placeholder.svg';
-        _products.push(_product);
+        _asset.asset_id = createId();
+        _asset.image = 'product-placeholder.svg';
+        _assets.push(_asset);
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
@@ -142,9 +150,9 @@ export default function AllAsset() {
         });
       }
 
-      setAssets(_products);
+      setAssets(_assets);
       setEditAssetDialog(false);
-      setProduct(emptydataTable);
+      setAsset(emptydataTable);
     }
   };
 
@@ -220,24 +228,16 @@ export default function AllAsset() {
   };
 
   const editAsset = (rowData) => {
-    setProduct({ ...product });
+    setAsset({ ...rowData });
     setEditAssetDialog(true);
-    AssetService.getAssetByID(rowData.asset_id)
-      .then((data) => {
-        setAssetID(data);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    console.log('edit product for click');
   };
 
   const showAsset = (rowData) => {
-    setProduct({ ...rowData });
+    setAsset({ ...rowData });
     setShowAssetDialog(true);
     AssetService.getAssetByID(rowData.asset_id)
       .then((data) => {
-        setAssetID(data);
+        setAsset(data);
       })
       .catch((error) => {
         console.log(error);
@@ -254,7 +254,7 @@ export default function AllAsset() {
 
     setAssets(_products);
     setDeleteProductDialog(false);
-    setProduct(emptydataTable);
+    setAsset(emptydataTable);
     toast.current.show({
       severity: 'success',
       summary: 'Successful',
@@ -267,7 +267,7 @@ export default function AllAsset() {
     let index = -1;
 
     for (let i = 0; i < assets.length; i++) {
-      if (assets[i].id === id) {
+      if (assets[i].asset_id === id) {
         index = i;
         break;
       }
@@ -319,11 +319,11 @@ export default function AllAsset() {
 
   const onInputChange = (e, name) => {
     const val = (e.target && e.target.value) || '';
-    let _product = { ...product };
+    let _asset = { ...asset };
 
-    _product[`${name}`] = val;
+    _asset[`${name}`] = val;
 
-    setProduct(_product);
+    setAsset(_asset);
   };
 
   const onInputNumberChange = (e, name) => {
@@ -338,22 +338,6 @@ export default function AllAsset() {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        {/* <Button
-          icon="pi pi-pencil"
-          style={{ scale: ' 70%' }}
-          rounded
-          outlined
-          className="mr-2"
-          onClick={() => editProduct(rowData)}
-        />
-        <Button
-          icon="pi pi-trash"
-          style={{ scale: ' 70%' }}
-          rounded
-          outlined
-          severity="danger"
-          onClick={() => confirmDeleteProduct(rowData)}
-        /> */}
         <Button
           outlined
           icon="pi pi-search"
@@ -362,11 +346,9 @@ export default function AllAsset() {
           className="mr-2 "
           onClick={() => showAsset(rowData)}
         />
-        {/* <BorrowButton /> */}
 
         <Button
           icon="pi pi-pencil"
-          //   rounded
           outlined
           className="editBnt mr-2"
           onClick={() => editAsset(rowData)}
@@ -421,7 +403,7 @@ export default function AllAsset() {
         label="Save"
         icon="pi pi-check"
         className="p-Testbutton"
-        onClick={saveProduct}
+        onClick={saveAsset}
       />
     </React.Fragment>
   );
@@ -473,8 +455,6 @@ export default function AllAsset() {
             <DataTable
               ref={dt}
               value={assets}
-              selection={selectedProducts}
-              onSelectionChange={(e) => setSelectedProducts(e.value)}
               dataKey="id"
               paginator
               rows={10}
@@ -594,7 +574,7 @@ export default function AllAsset() {
               </label>
               <InputText
                 id="no"
-                placeholder={assetID.asset_order}
+                placeholder={asset.asset_order}
                 disabled
                 onChange={(e) => onInputChange(e, 'number')}
                 required
@@ -614,7 +594,7 @@ export default function AllAsset() {
               </label>
               <InputText
                 id="name"
-                placeholder={assetID.asset_name}
+                placeholder={asset.asset_name}
                 disabled
                 onChange={(e) => onInputChange(e, 'name')}
                 required
@@ -630,7 +610,7 @@ export default function AllAsset() {
               </label>
               <InputText
                 id="id"
-                placeholder={assetID.asset_id}
+                placeholder={asset.asset_id}
                 disabled
                 onChange={(e) => onInputChange(e, 'id')}
                 required
@@ -665,7 +645,7 @@ export default function AllAsset() {
               </label>
               <InputText
                 id="room"
-                placeholder={assetID.room_id}
+                placeholder={asset.room_id}
                 disabled
                 onChange={(e) => onInputChange(e, 'room')}
                 required
@@ -681,7 +661,7 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={assetID.sck_name}
+                  placeholder={asset.sck_name}
                   disabled
                   onChange={(e) => setAssetStatus(e.value)}
                   options={assetStock}
@@ -697,7 +677,7 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={assetID.s_name}
+                  placeholder={asset.s_name}
                   disabled
                   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -711,7 +691,7 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={assetID.u_name}
+                  placeholder={asset.u_name}
                   disabled
                   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -725,7 +705,7 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={assetID.category}
+                  placeholder={asset.category}
                   disabled
                   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -738,7 +718,7 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={assetID.subcategory}
+                  placeholder={asset.subcategory}
                   disabled
                   className="w-full md:w-14rem"
                 />
@@ -849,55 +829,53 @@ export default function AllAsset() {
                 ลำดับที่
               </label>
               <InputText
-                id="no"
-                placeholder={assetID.asset_order}
-                value={assetID.asset_order}
-                onChange={(e) => onInputChange(e, 'number')}
+                id="order"
+                value={asset.asset_order}
+                onChange={(e) => onInputChange(e, 'order')}
                 required
                 // autoFocus
                 className={classNames({
-                  'p-invalid': submitted && !assetID.asset_order,
+                  'p-invalid': submitted && !asset.asset_order,
                 })}
               />
-              {submitted && !assetID.asset_order && (
+              {submitted && !asset.asset_order && (
                 <small className="p-error">No. is required.</small>
               )}
             </div>
 
             <div className="field col-start-2 col-end-5">
-              <label htmlFor="name" className="font-bold">
+              <label htmlFor="asset_name" className="font-bold">
                 ชื่อรายการ
               </label>
               <InputText
-                id="name"
-                placeholder={assetID.asset_name}
-                value={assetID.asset_name}
-                onChange={(e) => onInputChange(e, 'name')}
+                id="asset_name"
+                value={asset.asset_name}
+                onChange={(e) => onInputChange(e, 'asset_name')}
                 required
                 className={classNames({
-                  'p-invalid': submitted && !assetID.asset_name,
+                  'p-invalid': submitted && !asset.asset_name,
                 })}
               />
-              {submitted && !assetID.asset_name && (
+              {submitted && !asset.asset_name && (
                 <small className="p-error">Name is required.</small>
               )}
             </div>
 
             <div className="field">
-              <label htmlFor="id" className="font-bold">
+              <label htmlFor="asset_id" className="font-bold">
                 หมายเลขครุภัณฑ์
               </label>
               <InputText
-                id="id"
-                placeholder={assetID.asset_id}
-                value={assetID.asset_id}
-                onChange={(e) => onInputChange(e, 'id')}
+                id="asset_id"
+                disabled
+                value={asset.asset_id}
+                onChange={(e) => onInputChange(e, 'asset_id')}
                 required
                 className={classNames({
-                  'p-invalid': submitted && !assetID.asset_id,
+                  'p-invalid': submitted && !asset.asset_id,
                 })}
               />
-              {submitted && !assetID.asset_id && (
+              {submitted && !asset.asset_id && (
                 <small className="p-error">ProductID is required.</small>
               )}
             </div>
@@ -924,15 +902,15 @@ export default function AllAsset() {
               </label>
               <InputText
                 id="room"
-                placeholder={assetID.room_id}
-                value={assetID.room_id}
+                placeholder={asset.room_id}
+                value={asset.room_id}
                 onChange={(e) => onInputChange(e, 'room')}
                 required
                 className={classNames({
-                  'p-invalid': submitted && !assetID.room_id,
+                  'p-invalid': submitted && !asset.room_id,
                 })}
               />
-              {submitted && !assetID.room_id && (
+              {submitted && !asset.room_id && (
                 <small className="p-error">ProductRoom is required.</small>
               )}
             </div>
@@ -943,8 +921,8 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={assetID.sck_name}
-                  value={assetID.sck_name}
+                  placeholder={asset.sck_name}
+                  value={asset.sck_name}
                   onChange={(e) => setAssetStatus(e.value)}
                   options={assetStock}
                   optionLabel="name"
@@ -963,7 +941,7 @@ export default function AllAsset() {
                   onChange={(e) => setAssetStatus(e.value)}
                   options={assetStatus}
                   optionLabel="name"
-                  placeholder={assetID.s_name}
+                  placeholder={asset.s_name}
                   className="w-full md:w-14rem"
                 />
               </div>
@@ -979,7 +957,7 @@ export default function AllAsset() {
                   onChange={(e) => setAssetStatus(e.value)}
                   options={assetUseable}
                   optionLabel="name"
-                  placeholder={assetID.u_name}
+                  placeholder={asset.u_name}
                   className="w-full md:w-14rem"
                 />
               </div>
@@ -995,7 +973,7 @@ export default function AllAsset() {
                   onChange={(e) => setAssetStatus(e.value)}
                   options={assetType}
                   optionLabel="name"
-                  placeholder={assetID.category}
+                  placeholder={asset.category}
                   className="w-full md:w-14rem"
                 />
               </div>
@@ -1006,12 +984,11 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={assetID.subcategory}
-                  //   onChange={(e) => setAssetComType(e.value)}
+                  value={selectedSubcategory}
                   onChange={handleOptionChange}
                   options={assetComType}
                   optionLabel="subcategory"
-                  placeholder={assetID.subcategory}
+                  placeholder={asset.subcategory}
                   className="w-full md:w-14rem"
                 />
               </div>
@@ -1020,60 +997,6 @@ export default function AllAsset() {
         </div>
 
         <div className="card p-4">
-          {/* <h1 className="text-kmuttColor-800 py-2">ข้อมูลโครงการ</h1>
-          <div className="grid grid-cols-4 gap-4">
-            <div className="field col-start-1 col-end-5">
-              <label htmlFor="project" className="font-bold">
-                ชื่อโครงการ
-              </label>
-              <InputText
-                id="project"
-                value={product.project}
-                onChange={(e) => onInputChange(e, 'ยพน่ำแะ')}
-                required
-                className={classNames({
-                  'p-invalid': submitted && !product.project,
-                })}
-              />
-              {submitted && !product.project && (
-                <small className="p-error">ProjectName is required.</small>
-              )}
-            </div>
-
-            <div className="field col-start-1 col-end-5">
-              <label htmlFor="id" className="font-bold">
-                ชื่อแผนงาน
-              </label>
-              <InputText
-                id="plan"
-                value={product.plan}
-                onChange={(e) => onInputChange(e, 'plan')}
-                required
-                className={classNames({
-                  'p-invalid': submitted && !product.plan,
-                })}
-              />
-              {submitted && !product.plan && (
-                <small className="p-error">PlanName is required.</small>
-              )}
-            </div>
-
-            <div className="field">
-              <label htmlFor="description" className="font-bold">
-                ประเภทแผนงาน
-              </label>
-              <div className="card flex justify-content-center">
-                <Dropdown
-                  value={assetStatus}
-                  onChange={(e) => setAssetStatus(e.value)}
-                  options={assetStatus}
-                  optionLabel="name"
-                  placeholder="เลือกสถานะ"
-                  className="w-full md:w-14rem"
-                />
-              </div>
-            </div>
-          </div> */}
           <div className="field">
             <label htmlFor="description" className="font-bold">
               หมายเหตุ

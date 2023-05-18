@@ -31,7 +31,12 @@ LEFT JOIN category c ON a.cate_id = c.cate_id
 LEFT JOIN subcate s ON a.sub_id = s.sub_id 
 JOIN (${assetJoinState}) as state ON a.asset_id = state.asset_id WHERE a.asset_id = ?`;
 
-const sqlAssetASC = `SELECT ${selectColAsset} FROM (${assetJoinState}) as ajs  ORDER BY asset_order ASC`; // yes
+const sqlAssetASC = `SELECT ${selectColAC}, c.cate_name AS category, s.sub_name AS subcategory,state.sck_name,state.s_name,state.u_name
+FROM asset_detail a
+LEFT JOIN category c ON a.cate_id = c.cate_id
+LEFT JOIN subcate s ON a.sub_id = s.sub_id 
+JOIN (${assetJoinState}) as state ON a.asset_id = state.asset_id ORDER BY asset_order ASC`;
+// const sqlAssetASC = `SELECT ${selectColAsset} FROM (${assetJoinState}) as ajs  ORDER BY asset_order ASC`; // yes
 
 Asset.getAllAsset = (result) => {
   db.query(sqlAssetASC, (err, res) => {
