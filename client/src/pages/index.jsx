@@ -13,3 +13,4 @@ export { default as BorrowHistory } from './borrow/history';
 export { default as Borrower } from './borrow/borrower';
 export { default as Admin } from './admin/index';
 export { default as Login } from './login/index';
+export { default as Register } from './register/index';
