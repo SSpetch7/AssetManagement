@@ -41,7 +41,7 @@ import ResetPassword from 'pages/resetpassword';
 const App = () => {
   const { activeMenu } = useStateContext();
   const { loginOn } = useStateContext();
-
+  axios.defaults.baseURL = 'http://localhost:5000';
   return (
     <div>
       <Router>
