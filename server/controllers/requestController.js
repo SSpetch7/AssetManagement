@@ -1,4 +1,4 @@
-import requestModel from '../models/routeModel.js';
+import requestModel from '../models/requestModel.js';
 
 const requestController = {
     getAllRequestList: (req, res) => {
