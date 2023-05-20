@@ -1,9 +1,16 @@
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+  Redirect,
+} from 'react-router-dom';
 import { Logo } from './assets/logo.png';
 import { Tooltip } from '@mui/material';
 import { Navbar, Sidebar } from './components';
 import './App.css';
+import axios from 'axios';
 import {
   Home,
   AllAsset,
@@ -30,11 +37,20 @@ import 'primeicons/primeicons.css';
 
 const App = () => {
   const { activeMenu } = useStateContext();
+  //   const location = useLocation();
+  //   const isLoginPage = location.pathname === '/login';
+  //   const isRegisterPage = location.pathname === '/register';
+
+  axios.defaults.baseURL = 'http://localhost:5000';
+
+  //   const shouldShowSidebarAndNavbar = !(isLoginPage || isRegisterPage);
 
   return (
     <div>
       <Router>
         <div className="flex relative">
+          {/* {shouldShowSidebarAndNavbar && (
+            <div> */}
           {activeMenu ? (
             <div className="fixed  w-72 labtop:w-62 h-full  sidebar bg-second-bg">
               <Sidebar />
@@ -43,6 +59,8 @@ const App = () => {
             <div className="w-0">
               <Sidebar />
             </div>
+            //   )}
+            // </div>
           )}
           <div
             className={`min-h-screen w-full ${
@@ -51,10 +69,11 @@ const App = () => {
                 : 'bg-main-bg flex-2'
             }`}
           >
+            {/* {shouldShowSidebarAndNavbar && ( */}
             <div className="fixed md:static bg-main-bg navbar w-full">
               <Navbar />
             </div>
-
+            {/* )} */}
             <div>
               <Routes>
                 <Route path="/" element={<Home />} />
@@ -77,6 +96,7 @@ const App = () => {
                 />
                 <Route path="/borrow/borrower" element={<Borrower />} />
                 <Route path="/admin" element={<Admin />} />
+                {/* <Redirect to="/" element={<Home />} /> */}
               </Routes>
             </div>
           </div>

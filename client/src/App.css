@@ -288,3 +288,13 @@
 .statusOptions.p-selectbutton .p-button:focus {
   box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #09af00, 0 1px 2px 0 rgba(0, 0, 0, 0) !important;
 }
+/*  in dialog */
+/* disabled input */
+.p-disabled,
+.p-component:disabled {
+  opacity: 1 !important;
+}
+/* disabled dropdown icon */
+.p-dropdown.p-component.p-inputwrapper.p-disabled .p-dropdown-trigger {
+  display: none !important;
+}
