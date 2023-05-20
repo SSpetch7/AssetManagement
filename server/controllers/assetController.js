@@ -2,7 +2,7 @@ import db from '../config/db.js';
 import assetModel from '../models/assetModel.js';
 
 const assetController = {
-  getAllAssestList: (req, res) => {
+  getAllAssetList: (req, res) => {
     assetModel.getAllAsset((err, assets) => {
       if (err) {
         res.send(err);

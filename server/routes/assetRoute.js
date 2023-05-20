@@ -3,7 +3,7 @@ import controller from '../controllers/assetController.js';
 
 const router = express.Router();
 
-router.get('/', controller.assetController.getAllAssestList);
+router.get('/', controller.assetController.getAllAssetList);
 router.get('/:id', controller.assetController.getAssetByIDList);
 
 router.get('/state/status', controller.optionController.getStatusList);
