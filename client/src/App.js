@@ -28,6 +28,8 @@ import { useStateContext } from './contexts/ContextProvider';
 import 'primereact/resources/primereact.min.css';
 import 'primereact/resources/themes/tailwind-light/theme.css';
 import 'primeicons/primeicons.css';
+import ForgotPassword from 'pages/forgotpassword';
+import ResetPassword from 'pages/resetpassword';
 
 const App = () => {
   const { activeMenu } = useStateContext();
@@ -71,7 +73,8 @@ const App = () => {
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/register" element={<Register />} />
-
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
                 <Route path="/borrow/borrowAsset" element={<Borrowed />} />
                 <Route
                   path="/borrow/borrowHistory"
