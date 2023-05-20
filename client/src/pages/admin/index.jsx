@@ -14,24 +14,21 @@ import { InputText } from 'primereact/inputtext';
 import { adminTable } from '../../assets/dummy';
 import { Tag } from 'primereact/tag';
 import AddAdmin from '../../components/AddAdmin';
+import { AdminService } from '../../service/AdminService';
 
 export default function Admin() {
-  let emptyadminTable = {
-    order: '',
-    asset_id: '',
-    name: '',
-    year: null,
-    status: '',
-    useable: '',
-    room_id: '',
-    inventoryStatus: 'INSTOCK',
+  let emptyAdminTable = {
+    amdin_id: '',
+    admin_email: '',
+    admin_username: '',
+    addmin_addDate: '',
   };
 
-  const [products, setProducts] = useState(null);
+  const [admins, setAdmins] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-  const [product, setProduct] = useState(emptyadminTable);
+  const [product, setProduct] = useState(emptyAdminTable);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
@@ -39,19 +36,12 @@ export default function Admin() {
   const dt = useRef(null);
 
   useEffect(() => {
-    // ProductService.getProducts().then((data) => setProducts(data));
-    adminTable.getAdminDatas().then((data) => setProducts(data));
+    AdminService.getAllAdamin().then((data) => setAdmins(data));
+    console.log(admins + ' test');
   }, []);
 
-  const formatCurrency = (value) => {
-    return value.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    });
-  };
-
   const openNew = () => {
-    setProduct(emptyadminTable);
+    setProduct(emptyAdminTable);
     setSubmitted(false);
     setProductDialog(true);
   };
@@ -73,7 +63,7 @@ export default function Admin() {
     setSubmitted(true);
 
     if (product.name.trim()) {
-      let _products = [...products];
+      let _products = [...admins];
       let _product = { ...product };
 
       if (product.id) {
@@ -98,9 +88,9 @@ export default function Admin() {
         });
       }
 
-      setProducts(_products);
+      setAdmins(_products);
       setProductDialog(false);
-      setProduct(emptyadminTable);
+      setProduct(emptyAdminTable);
     }
   };
 
@@ -115,11 +105,11 @@ export default function Admin() {
   };
 
   const deleteProduct = () => {
-    let _products = products.filter((val) => val.id !== product.id);
+    let _products = admins.filter((val) => val.id !== product.id);
 
-    setProducts(_products);
+    setAdmins(_products);
     setDeleteProductDialog(false);
-    setProduct(emptyadminTable);
+    setProduct(emptyAdminTable);
     toast.current.show({
       severity: 'success',
       summary: 'Successful',
@@ -131,8 +121,8 @@ export default function Admin() {
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < products.length; i++) {
-      if (products[i].id === id) {
+    for (let i = 0; i < admins.length; i++) {
+      if (admins[i].id === id) {
         index = i;
         break;
       }
@@ -162,9 +152,9 @@ export default function Admin() {
   };
 
   const deleteSelectedProducts = () => {
-    let _products = products.filter((val) => !selectedProducts.includes(val));
+    let _products = admins.filter((val) => !selectedProducts.includes(val));
 
-    setProducts(_products);
+    setAdmins(_products);
     setDeleteProductsDialog(false);
     setSelectedProducts(null);
     toast.current.show({
@@ -352,9 +342,8 @@ export default function Admin() {
           <div className="bg-white h-5/6 rounded-xl w-9/12  labtop:m-0 px-8 pt-8 m-3">
             <DataTable
               ref={dt}
-              value={products}
+              value={admins}
               selection={selectedProducts}
-              onSelectionChange={(e) => setSelectedProducts(e.value)}
               dataKey="id"
               paginator
               rows={10}
@@ -371,13 +360,13 @@ export default function Admin() {
                 style={{ minWidth: '12px', width: '12rem' }}
               ></Column>
               <Column
-                field="name"
+                field="admin_username"
                 header="ชื่อ"
                 sortable
                 style={{ minWidth: '12rem', width: '12rem' }}
               ></Column>
               <Column
-                field="email"
+                field="admin_email"
                 header="E-mail"
                 sortable
                 style={{ minWidth: '16rem' }}
@@ -390,7 +379,7 @@ export default function Admin() {
                 style={{ minWidth: '8rem', textAlign: 'start' }}
               ></Column>
               <Column
-                field="date"
+                field="admin_addDate"
                 header="วันที่เพิ่มเข้าสู่ระบบ"
                 sortable
                 style={{ minWidth: '12rem' }}
