@@ -386,19 +386,18 @@ export default function AllAsset() {
             paddingLeft: '13px',
           }}
         />
-        {/* <Button
-          label="Export"
-          icon="pi pi-upload"
-          className="p-button-help"
-          onClick={exportCSV}
-          style={{ width: '120px' }}
-        /> */}
       </div>
     </div>
   );
   const productDialogFooter = (
     <React.Fragment>
-      <Button label="ยกเลิก" icon="pi pi-times" severity="danger" outlined onClick={hideDialog} />
+      <Button
+        label="ยกเลิก"
+        icon="pi pi-times"
+        severity="danger"
+        outlined
+        onClick={hideDialog}
+      />
       <Button
         label="ยืนยัน"
         icon="pi pi-check"

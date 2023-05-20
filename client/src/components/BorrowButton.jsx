@@ -15,7 +15,7 @@ import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { Calendar } from 'primereact/calendar';
 import { Galleria } from 'primereact/galleria';
-import { TestPhoto } from 'assets/testphoto';
+import { TestPhoto } from 'assets/testPhoto.js';
 
 export default function ProductsDemo() {
   let emptyProduct = {
@@ -277,7 +277,13 @@ export default function ProductsDemo() {
 
   const productDialogFooter = (
     <React.Fragment>
-      <Button label="ยกเลิก" icon="pi pi-times" severity="danger" outlined onClick={hideDialog} />
+      <Button
+        label="ยกเลิก"
+        icon="pi pi-times"
+        severity="danger"
+        outlined
+        onClick={hideDialog}
+      />
       <Button
         label="ยืนยัน"
         icon="pi pi-check"

@@ -3,7 +3,7 @@ import { Button } from 'primereact/button';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dialog } from 'primereact/dialog';
 import { Tag } from 'primereact/tag';
-import { TestPhoto } from 'assets/testphoto';
+import { TestPhoto } from 'assets/testPhoto.js';
 import { SelectButton } from 'primereact/selectbutton';
 
 export default function ProductsDemo() {
@@ -249,7 +249,13 @@ export default function ProductsDemo() {
 
   const productDialogFooter = (
     <React.Fragment>
-      <Button label="ยกเลิก" icon="pi pi-times" severity="danger" outlined onClick={hideDialog} />
+      <Button
+        label="ยกเลิก"
+        icon="pi pi-times"
+        severity="danger"
+        outlined
+        onClick={hideDialog}
+      />
       <Button
         label="ยืนยัน"
         icon="pi pi-check"

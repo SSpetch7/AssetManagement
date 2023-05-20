@@ -576,14 +576,12 @@ export default function AllAsset() {
               <Column
                 field="name"
                 header="ประเภท"
-                sortable
                 style={{ minWidth: '30rem' }}
               ></Column>
 
               <Column
                 field="num"
                 header="จำนวน"
-                sortable
                 style={{ minWidth: '4rem' }}
               ></Column>
             </DataTable>

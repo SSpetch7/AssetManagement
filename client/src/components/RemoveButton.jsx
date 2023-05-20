@@ -15,7 +15,7 @@ import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { Calendar } from 'primereact/calendar';
 import { Galleria } from 'primereact/galleria';
-import { TestPhoto } from 'assets/testphoto';
+import { TestPhoto } from 'assets/testPhoto.js';
 
 export default function ProductsDemo() {
   let emptyProduct = {
@@ -277,7 +277,13 @@ export default function ProductsDemo() {
 
   const productDialogFooter = (
     <React.Fragment>
-      <Button label="ยกเลิก" icon="pi pi-times" severity="danger" outlined onClick={hideDialog} />
+      <Button
+        label="ยกเลิก"
+        icon="pi pi-times"
+        severity="danger"
+        outlined
+        onClick={hideDialog}
+      />
       <Button
         label="ยืนยัน"
         icon="pi pi-check"
@@ -286,7 +292,7 @@ export default function ProductsDemo() {
       />
     </React.Fragment>
   );
-  
+
   const deleteProductDialogFooter = (
     <React.Fragment>
       <Button
@@ -344,14 +350,14 @@ export default function ProductsDemo() {
     <div className="p-component mr-2 p-button-outlined">
       <Button
         label="แทงจำหน่าย"
-        rounded 
+        rounded
         //    icon="pi pi-calendar-times"
         //   rounded
         //   style={{ fontSize: '16px' }}
-        style={{ width: '135px' , backgroundColor: 'var(--orange-500)'}}
+        style={{ width: '135px', backgroundColor: 'var(--orange-500)' }}
         severity="warning"
         className="mr-2"
-        size="small" 
+        size="small"
         // label="ยืม"
         icon="pi text-white pi-exclamation-circle"
         // severity="success"
