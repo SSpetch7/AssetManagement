@@ -14,6 +14,7 @@ import connection from './config/db.js';
 // import generalRoutes from './routes/general.js';
 // import routes
 import assetRoutes from './routes/assetRoute.js';
+import requestRoutes from './routes/requestRoute.js';
 // import imgRoutes from './routes/imgRoute.js';
 // import managementRoutes from "./routes/management.js";
 
@@ -42,6 +43,7 @@ dotenv.config();
 
 /* ROUTES */
 app.use('/asset', assetRoutes);
+app.use('/request', requestRoutes);
 // app.use('/image', imgRoutes);
 
 const PORT = process.env.PORT || 9000;
