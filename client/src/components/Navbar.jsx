@@ -104,22 +104,6 @@ const Navbar = () => {
       .then((err) => console.log(err));
   }, []);
 
-  const items = [
-    {
-      label: 'Admin',
-      items: [
-        {
-          label: 'Profile',
-          icon: 'pi pi-fw pi-user',
-        },
-        {
-          label: 'logout',
-          icon: 'pi pi-fw pi-sign-out',
-        },
-      ],
-    },
-  ];
-
   return (
     <>
       {auth ? (
