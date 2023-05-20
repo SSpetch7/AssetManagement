@@ -124,6 +124,7 @@ app.post("/reset-password", async (req, res) => {
     const admin_email = decodedToken.admin_email;
     const passwordFromToken = decodedToken.admin_password;
 
+
     // Hash the new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
@@ -179,7 +180,7 @@ app.post('/login', (req, res) => {
         if(err) return res.json({Error: "Password compare error"});
         if(response) {
           const admin_username = data[0].admin_username;
-          const token = jwt.sign({admin_username}, "jwt-secret-key", {expiresIn: '1d'});
+          const token = jwt.sign({admin_username}, "jwt-secret-key", {expiresIn: '30d'});
           res.cookie('token', token);
           return res.json({Status: "Success"});
         } else {

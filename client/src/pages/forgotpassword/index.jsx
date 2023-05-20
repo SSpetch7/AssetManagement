@@ -25,7 +25,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div>
+    <>
       {!resetSent ? (
         <>
 
@@ -76,7 +76,7 @@ const ForgotPassword = () => {
       ) : (
         <h1>Password reset email sent. Please check your email.</h1>
       )}
-    </div>
+    </>
   );
 };
 

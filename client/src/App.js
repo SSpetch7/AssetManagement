@@ -33,10 +33,10 @@ import ResetPassword from 'pages/resetpassword';
 
 const Layout = ({ children }) => {
   const { activeMenu } = useStateContext();
-  const { loginOn } = useStateContext();
 
   return (
     <div>
+      <div className="flex relative">
       {activeMenu ? (
         <div className="fixed w-72 labtop:w-62 h-full sidebar bg-second-bg">
           <Sidebar />
@@ -56,7 +56,7 @@ const Layout = ({ children }) => {
         </div>
         {children}
       </div>
-    </div>
+    </div></div>
   );
 };
 
@@ -64,7 +64,7 @@ const App = () => {
   return (
     <div>
       <Router>
-        <div className="flex relative">
+        
           <Routes>
             <Route path="/" element={<Layout><Outlet /></Layout>} />
             <Route path="/home" element={<Layout><Home /></Layout>} />
@@ -86,7 +86,7 @@ const App = () => {
             <Route path="/borrow/borrower" element={<Layout><Borrower /></Layout>} />
             <Route path="/admin" element={<Layout><Admin /></Layout>} />
           </Routes>
-        </div>
+        
       </Router>
     </div>
   );
