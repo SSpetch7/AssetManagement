@@ -21,40 +21,32 @@ const assetController = {
   },
 };
 const optionController = {
-  getStatusList: (req, res) => {
-    chartModel.getStatusState((err, assets) => {
+  getNumberAssetList: (req, res) => {
+    chartModel.getNumberAsset((err, assets) => {
       if (err) {
         res.send(err);
       }
       res.json({ data: assets });
     });
   },
-  getStockList: (req, res) => {
-    chartModel.getStockState((err, assets) => {
+  getNumberAssetTableList: (req, res) => {
+    chartModel.getNumberAssetTable((err, assets) => {
       if (err) {
         res.send(err);
       }
       res.json({ data: assets });
     });
   },
-  getUseableList: (req, res) => {
-    chartModel.getUseableState((err, assets) => {
+  getYearAssetList: (req, res) => {
+    chartModel.getYearAsset((err, assets) => {
       if (err) {
         res.send(err);
       }
       res.json({ data: assets });
     });
   },
-  getTypeAssetList: (req, res) => {
-    chartModel.getTypeAsset((err, assets) => {
-      if (err) {
-        res.send(err);
-      }
-      res.json({ data: assets });
-    });
-  },
-  getTypeComList: (req, res) => {
-    chartModel.getTypeCom((err, assets) => {
+  getNumberStatusList: (req, res) => {
+    chartModel.getNumberStatus((err, assets) => {
       if (err) {
         res.send(err);
       }
@@ -62,4 +54,4 @@ const optionController = {
     });
   },
 };
-export default { assetController };
+export default { assetController, optionController };

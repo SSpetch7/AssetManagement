@@ -5,11 +5,9 @@ const router = express.Router();
 
 router.get('/', controller.assetController.getAllAssestList);
 router.get('/:id', controller.assetController.getAssetByIDList);
-
-// router.get('/state/status', controller.optionController.getStatusList);
-// router.get('/state/stock', controller.optionController.getStockList);
-// router.get('/state/useable', controller.optionController.getUseableList);
-// router.get('/v1/types', controller.optionController.getTypeAssetList);
-// router.get('/type/com', controller.optionController.getTypeComList);
+router.get('/number/asset', controller.optionController.getNumberAssetList);
+router.get('/numbertable/asset/', controller.optionController.getNumberAssetTableList);
+router.get('/year/asset', controller.optionController.getYearAssetList);
+router.get('/number/status', controller.optionController.getNumberStatusList);
 
 export default router;

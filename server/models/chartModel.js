@@ -62,9 +62,10 @@ Chart.getAssetByID = (id, callback) => {
   });
 };
 
-const statusState = 'SELECT status_name as name FROM status_state';
-Chart.getStatusState = (result) => {
-  db.query(statusState, (err, res) => {
+
+const numberAsset = 'SELECT cate_name, COUNT("cate_name") as total_asset FROM asset_detail a LEFT JOIN category c ON a.cate_id = c.cate_id GROUP BY cate_name ORDER BY cate_name';
+Chart.getNumberAsset = (result) => {
+  db.query(numberAsset, (err, res) => {
     if (err) {
       console.log('Error while fetching asset ', err);
       result(null, err);
@@ -75,9 +76,9 @@ Chart.getStatusState = (result) => {
   });
 };
 
-const stockState = 'SELECT stock_name as name FROM stock_state';
-Chart.getStockState = (result) => {
-  db.query(stockState, (err, res) => {
+const numberAssetTable = 'SELECT cate_name, COUNT("cate_name") as total_asset FROM asset_detail a LEFT JOIN category c ON a.cate_id = c.cate_id GROUP BY cate_name ORDER BY cate_name';
+Chart.getNumberAssetTable = (result) => {
+  db.query(numberAssetTable, (err, res) => {
     if (err) {
       console.log('Error while fetching asset ', err);
       result(null, err);
@@ -88,9 +89,9 @@ Chart.getStockState = (result) => {
   });
 };
 
-const useableState = 'SELECT useable_name as name FROM useable_state';
-Chart.getUseableState = (result) => {
-  db.query(useableState, (err, res) => {
+const yearAsset = 'SELECT asset_year, COUNT("asset_year") as total_asset_in_year FROM asset_detail GROUP BY asset_year ORDER BY asset_year DESC';
+Chart.getYearAsset = (result) => {
+  db.query(yearAsset, (err, res) => {
     if (err) {
       console.log('Error while fetching asset ', err);
       result(null, err);
@@ -101,22 +102,9 @@ Chart.getUseableState = (result) => {
   });
 };
 
-const typeAsset = `SELECT cate_name as name FROM category `;
-Chart.getTypeAsset = (result) => {
-  db.query(typeAsset, (err, res) => {
-    if (err) {
-      console.log('Error while fetching asset ', err);
-      result(null, err);
-    } else {
-      console.log('Asset fetching successfully');
-      result(null, res);
-    }
-  });
-};
-
-const typeComAsset = 'SELECT sub_name as subcategory FROM subcate ';
-Chart.getTypeCom = (result) => {
-  db.query(typeComAsset, (err, res) => {
+const numberStatus = 'SELECT status_name, COUNT("status_name") as total_status FROM asset_detail a JOIN status_state AS s ON a.asset_status = s.status_id GROUP BY status_name ORDER BY status_name';
+Chart.getNumberStatus = (result) => {
+  db.query(numberStatus, (err, res) => {
     if (err) {
       console.log('Error while fetching asset ', err);
       result(null, err);
