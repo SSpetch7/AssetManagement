@@ -36,18 +36,25 @@ export default function AllAsset() {
     u_name: '',
   };
 
+  const [productStatus, setProductStatus] = useState(null);
+  const status = [
+    { name: 'ใช่งานได้', code: 'CU' },
+    { name: 'รอซ่อม', code: 'FX' },
+    { name: 'สิ้นสภาพ', code: 'BK' },
+  ];
+
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    name: {
+    asset_name: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    order: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    asset_order: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     asset_id: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    year: {
+    asset_year: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
@@ -56,7 +63,7 @@ export default function AllAsset() {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    useable: { value: null, matchMode: FilterMatchMode.EQUALS },
+    asset_useable: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
@@ -84,6 +91,9 @@ export default function AllAsset() {
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
+
+  const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
+  const [useable] = useState(['กำลังใช้', 'ไม่ได้ใช้งาน']);
 
   useEffect(() => {
     AssetService.getAllAsset().then((data) => setAssets(data));
@@ -165,7 +175,7 @@ export default function AllAsset() {
     return (
       <Dropdown
         value={options.value}
-        options={assetStatus}
+        options={statuses}
         onChange={(e) => options.filterApplyCallback(e.value)}
         itemTemplate={statusItemTemplate}
         placeholder="สภาพ"
@@ -202,7 +212,7 @@ export default function AllAsset() {
     return (
       <Dropdown
         value={options.value}
-        options={assetStock}
+        options={useable}
         onChange={(e) => options.filterApplyCallback(e.value)}
         itemTemplate={useableItemTemplate}
         placeholder="การใช้งาน"
