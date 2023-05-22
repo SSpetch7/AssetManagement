@@ -22,4 +22,7 @@ router.get('/images/:imageName', async (req, res, next) => {
   }
 });
 
+// create route
+router.post('/', controller.assetController.createNewAsset);
+
 export default router;

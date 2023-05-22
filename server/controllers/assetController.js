@@ -20,6 +20,15 @@ const assetController = {
       }
     });
   },
+  //   create new asset
+  createNewAsset: (req, res) => {
+    console.log('createNewAsset', req.body);
+    if (req.body.contructor === Object && Object(req.body).length === 0) {
+      res.send(400).send({ success: false, message: 'Please fill all fields' });
+    } else {
+      console.log('valid data');
+    }
+  },
 };
 const optionController = {
   getStatusList: (req, res) => {

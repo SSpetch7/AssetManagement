@@ -127,4 +127,10 @@ Asset.getTypeCom = (result) => {
   });
 };
 
+// create new asset
+const insertAsset = 'INSERT INTO ';
+// Asset.createAsset = (assetReqData,result) {
+//     // db.query()
+// }
+
 export default Asset;
