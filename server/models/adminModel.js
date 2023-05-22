@@ -1,4 +1,4 @@
-import db from '../db.js';
+import db from '../config/db.js';
 
 var Admin = (admin) => {
   this.admin_id = admin.admin_id;
