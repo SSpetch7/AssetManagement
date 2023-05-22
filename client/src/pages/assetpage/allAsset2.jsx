@@ -27,18 +27,18 @@ export default function AllAsset() {
     asset_id: '',
     name: '',
     year: null,
-    status: '',
+    statust: '',
     useable: '',
     room_id: '',
     inventoryStatus: 'INSTOCK',
   };
 
-  const [productStatus, setProductStatus] = useState(null);
-  const status = [
-    { name: 'ใช่งานได้', code: 'CU' },
-    { name: 'รอซ่อม', code: 'FX' },
-    { name: 'สิ้นสภาพ', code: 'BK' },
-  ];
+  //   const [productStatus, setProductStatus] = useState(null);
+  //   const status = [
+  //     { name: 'ใช่งานได้', code: 'CU' },
+  //     { name: 'รอซ่อม', code: 'FX' },
+  //     { name: 'สิ้นสภาพ', code: 'BK' },
+  //   ];
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -76,7 +76,7 @@ export default function AllAsset() {
   const dt = useRef(null);
 
   const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
-  const [useable] = useState(['กำลังใช้', 'ไม่ได้ใช้งาน']);
+  const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
 
   useEffect(() => {
     dataTable.getDatas().then((data) => setProducts(data));
@@ -149,6 +149,9 @@ export default function AllAsset() {
     );
   };
   const statusRowFilterTemplate = (options) => {
+    console.log(options);
+    console.log(options.filterModel);
+    console.log(options.value);
     return (
       <Dropdown
         value={options.value}
@@ -448,8 +451,8 @@ export default function AllAsset() {
             <DataTable
               ref={dt}
               value={products}
-              selection={selectedProducts}
-              onSelectionChange={(e) => setSelectedProducts(e.value)}
+              //   selection={selectedProducts}
+              //   onSelectionChange={(e) => setSelectedProducts(e.value)}
               dataKey="id"
               paginator
               rows={10}
@@ -537,7 +540,7 @@ export default function AllAsset() {
       <div className="m-16">
         <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
       </div>
-      <Dialog
+      {/* <Dialog
         visible={productDialog}
         style={{ width: '64rem' }}
         breakpoints={{ '960px': '75vw', '641px': '90vw' }}
@@ -785,7 +788,7 @@ export default function AllAsset() {
             />
           </div>
         </div>
-      </Dialog>
+      </Dialog> */}
 
       <Dialog
         visible={deleteProductDialog}

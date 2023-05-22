@@ -36,12 +36,12 @@ export default function AllAsset() {
     u_name: '',
   };
 
-  const [productStatus, setProductStatus] = useState(null);
-  const status = [
-    { name: 'ใช่งานได้', code: 'CU' },
-    { name: 'รอซ่อม', code: 'FX' },
-    { name: 'สิ้นสภาพ', code: 'BK' },
-  ];
+  //   const [productStatus, setProductStatus] = useState(null);
+  //   const status = [
+  //     { name: 'ใช่งานได้', code: 'CU' },
+  //     { name: 'รอซ่อม', code: 'FX' },
+  //     { name: 'สิ้นสภาพ', code: 'BK' },
+  //   ];
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -58,12 +58,12 @@ export default function AllAsset() {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    asset_status: { value: null, matchMode: FilterMatchMode.EQUALS },
+    s_name: { value: null, matchMode: FilterMatchMode.EQUALS },
     room_id: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    asset_useable: { value: null, matchMode: FilterMatchMode.EQUALS },
+    u_name: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
@@ -72,7 +72,7 @@ export default function AllAsset() {
   const [selectedSubcategory, setSelectedSubcategory] = useState('');
   const [selectedAsset, setSelectedAsset] = useState(null);
   // asset data
-  const [assets, setAssets] = useState(null);
+  const [assets, setAssets] = useState();
   const [galleries, setGalleries] = useState(null);
   const [assetStatus, setAssetStatus] = useState();
   const [assetStock, setAssetStock] = useState(null);
@@ -93,7 +93,7 @@ export default function AllAsset() {
   const dt = useRef(null);
 
   const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
-  const [useable] = useState(['กำลังใช้', 'ไม่ได้ใช้งาน']);
+  const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
 
   useEffect(() => {
     AssetService.getAllAsset().then((data) => setAssets(data));
@@ -168,10 +168,12 @@ export default function AllAsset() {
 
   const statusBodyTemplate = (rowData) => {
     return (
-      <Tag value={rowData.s_name} severity={getSeverity(rowData.status)} />
+      <Tag value={rowData.s_name} severity={getSeverity(rowData.s_name)} />
     );
   };
   const statusRowFilterTemplate = (options) => {
+    console.log(options.value);
+    console.log(options);
     return (
       <Dropdown
         value={options.value}
@@ -204,9 +206,7 @@ export default function AllAsset() {
   };
 
   const useableBodyTemplate = (rowData) => {
-    return (
-      <Tag value={rowData.u_name} severity={getUseable(rowData.useable)} />
-    );
+    return <Tag value={rowData.u_name} severity={getUseable(rowData.u_name)} />;
   };
   const useableRowFilterTemplate = (options) => {
     return (
@@ -229,7 +229,7 @@ export default function AllAsset() {
 
   const getUseable = (status) => {
     switch (status) {
-      case 'กำลังใช้':
+      case 'ใช้งาน':
         return 'success';
 
       case 'ไม่ได้ใช้งาน':
@@ -511,7 +511,7 @@ export default function AllAsset() {
               ></Column>
 
               <Column
-                field="asset_status"
+                field="s_name"
                 header="สภาพ"
                 sortable
                 filter
@@ -521,7 +521,7 @@ export default function AllAsset() {
                 style={{ minWidth: '4rem' }}
               ></Column>
               <Column
-                field="asset_useable"
+                field="u_name"
                 header="การใช้งาน"
                 sortable
                 filter
