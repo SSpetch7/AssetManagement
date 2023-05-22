@@ -461,7 +461,7 @@ export default function AllAsset() {
         </div>
         <div className="flex justify-center h-full ">
           <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
-            <DataTable
+          <DataTable
               ref={dt}
               value={assets}
               dataKey="id"
