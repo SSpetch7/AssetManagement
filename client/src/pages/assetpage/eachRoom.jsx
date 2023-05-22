@@ -104,7 +104,7 @@ export default function AllAsset() {
   const [typeAsset, setTypeAsset] = useState(type);
 
   const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
-  const [useable] = useState(['กำลังใช้', 'ไม่ได้ใช้งาน']);
+  const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
 
   useEffect(() => {
     dataTable.getDatas().then((data) => setProducts(data));
