@@ -15,55 +15,8 @@ var Chart = (asset) => {
   this.sub_id = asset.sub_id;
 };
 
-const selectColAsset =
-  'asset_order,asset_id ,asset_name,asset_year,room_id,sck_name,s_name,u_name ,cate_id as c_id';
-
-const sckSate = `JOIN stock_state AS sck ON a.asset_stock = sck.stock_id`;
-const sState = `JOIN status_state AS s  ON a.asset_status = s.status_id`;
-const uState = `JOIN useable_state AS u  ON a.asset_status = u.useable_id`;
-const assetJoinState = `SELECT * ,sck.stock_name AS sck_name, s.status_name AS s_name, u.useable_name AS u_name  FROM asset_detail as a ${sckSate} ${sState} ${uState} `;
-
-const selectColAC = `a.asset_order,a.asset_id,a.asset_name,a.asset_year,a.gallery_id,a.detail,a.room_id`;
-
-const sqlAssetByID = `SELECT ${selectColAC}, c.cate_name AS category, s.sub_name AS subcategory,state.sck_name,state.s_name,state.u_name
-FROM asset_detail a
-LEFT JOIN category c ON a.cate_id = c.cate_id
-LEFT JOIN subcate s ON a.sub_id = s.sub_id 
-JOIN (${assetJoinState}) as state ON a.asset_id = state.asset_id WHERE a.asset_id = ?`;
-
-const sqlAssetASC = `SELECT ${selectColAC}, c.cate_name AS category, s.sub_name AS subcategory,state.sck_name,state.s_name,state.u_name
-FROM asset_detail a
-LEFT JOIN category c ON a.cate_id = c.cate_id
-LEFT JOIN subcate s ON a.sub_id = s.sub_id 
-JOIN (${assetJoinState}) as state ON a.asset_id = state.asset_id ORDER BY asset_order ASC`;
-// const sqlAssetASC = `SELECT ${selectColAsset} FROM (${assetJoinState}) as ajs  ORDER BY asset_order ASC`; // yes
-
-Chart.getAllAsset = (result) => {
-  db.query(sqlAssetASC, (err, res) => {
-    if (err) {
-      console.log('Error while fetching asset ', err);
-      result(null, err);
-    } else {
-      console.log('asset_detail fetching successfully');
-      result(null, res);
-    }
-  });
-};
-
-Chart.getAssetByID = (id, callback) => {
-  db.query(sqlAssetByID, [id], (err, results) => {
-    if (err) {
-      console.log('Error while fetching asset ', err);
-      return callback(err, null);
-    } else {
-      console.log('Asset fetching successfully');
-      return callback(null, results[0]);
-    }
-  });
-};
-
-
-const numberAsset = 'SELECT cate_name, COUNT("cate_name") as total_asset FROM asset_detail a LEFT JOIN category c ON a.cate_id = c.cate_id GROUP BY cate_name ORDER BY cate_name';
+const numberAsset =
+  'SELECT cate_name, COUNT("cate_name") as total_asset FROM asset_detail a LEFT JOIN category c ON a.cate_id = c.cate_id GROUP BY cate_name ORDER BY cate_name';
 Chart.getNumberAsset = (result) => {
   db.query(numberAsset, (err, res) => {
     if (err) {
@@ -76,7 +29,8 @@ Chart.getNumberAsset = (result) => {
   });
 };
 
-const numberAssetTable = 'SELECT cate_name, COUNT("cate_name") as total_asset FROM asset_detail a LEFT JOIN category c ON a.cate_id = c.cate_id GROUP BY cate_name ORDER BY cate_name';
+const numberAssetTable =
+  'SELECT cate_name, COUNT("cate_name") as total_asset FROM asset_detail a LEFT JOIN category c ON a.cate_id = c.cate_id GROUP BY cate_name ORDER BY cate_name';
 Chart.getNumberAssetTable = (result) => {
   db.query(numberAssetTable, (err, res) => {
     if (err) {
@@ -89,7 +43,8 @@ Chart.getNumberAssetTable = (result) => {
   });
 };
 
-const yearAsset = 'SELECT asset_year, COUNT("asset_year") as total_asset_in_year FROM asset_detail GROUP BY asset_year ORDER BY asset_year DESC';
+const yearAsset =
+  'SELECT asset_year, COUNT("asset_year") as total_asset_in_year FROM asset_detail GROUP BY asset_year ORDER BY asset_year DESC';
 Chart.getYearAsset = (result) => {
   db.query(yearAsset, (err, res) => {
     if (err) {
@@ -102,7 +57,8 @@ Chart.getYearAsset = (result) => {
   });
 };
 
-const numberStatus = 'SELECT status_name, COUNT("status_name") as total_status FROM asset_detail a JOIN status_state AS s ON a.asset_status = s.status_id GROUP BY status_name ORDER BY status_name';
+const numberStatus =
+  'SELECT status_name, COUNT("status_name") as total_status FROM asset_detail a JOIN status_state AS s ON a.asset_status = s.status_id GROUP BY status_name ORDER BY status_name';
 Chart.getNumberStatus = (result) => {
   db.query(numberStatus, (err, res) => {
     if (err) {

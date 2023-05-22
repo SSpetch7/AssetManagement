@@ -3,11 +3,12 @@ import controller from '../controllers/chartController.js';
 
 const router = express.Router();
 
-router.get('/', controller.assetController.getAllAssestList);
-router.get('/:id', controller.assetController.getAssetByIDList);
-router.get('/number/asset', controller.optionController.getNumberAssetList);
-router.get('/numbertable/asset/', controller.optionController.getNumberAssetTableList);
-router.get('/year/asset', controller.optionController.getYearAssetList);
-router.get('/number/status', controller.optionController.getNumberStatusList);
+router.get('/number/asset', controller.numController.getNumberAssetList);
+router.get(
+  '/numbertable/asset/',
+  controller.numController.getNumberAssetTableList
+);
+router.get('/year/asset', controller.numController.getYearAssetList);
+router.get('/number/status', controller.numController.getNumberStatusList);
 
 export default router;

@@ -1,26 +1,6 @@
 import chartModel from '../models/chartModel.js';
 
-const assetController = {
-  getAllAssestList: (req, res) => {
-    chartModel.getAllAsset((err, assets) => {
-      if (err) {
-        res.send(err);
-      }
-      res.json({ data: assets });
-    });
-  },
-  getAssetByIDList: (req, res) => {
-    const id = req.params.id;
-    chartModel.getAssetByID(id, (err, asset) => {
-      if (err) {
-        res.send(err);
-      } else {
-        res.json({ data: asset });
-      }
-    });
-  },
-};
-const optionController = {
+const numController = {
   getNumberAssetList: (req, res) => {
     chartModel.getNumberAsset((err, assets) => {
       if (err) {
@@ -54,4 +34,4 @@ const optionController = {
     });
   },
 };
-export default { assetController, optionController };
+export default { numController };
