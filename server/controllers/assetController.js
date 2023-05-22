@@ -1,4 +1,5 @@
 import db from '../config/db.js';
+import Asset from '../models/assetModel.js';
 import assetModel from '../models/assetModel.js';
 
 const assetController = {
@@ -63,4 +64,24 @@ const optionController = {
     });
   },
 };
-export default { assetController, optionController };
+
+// Update Controller
+const updateController = {
+  updateAsset: (req, res) =>{
+    const assetReqData = new assetModel(req.body);
+    console.log('assetReqData update', assetReqData);
+
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0){
+      res.send(400).send({success: false, message: 'Please fill all fields'});
+    } else {
+      assetModel.updateAsset(req.params.id, assetReqData, (err, assets) => {
+        console.log('req.params.id', req.params.id);
+        if (err) 
+          res.send(err);
+          res.json({status: true, message: 'Asset updated Successfully'});
+      });
+    }
+  } 
+};
+
+export default { assetController, optionController, updateController };

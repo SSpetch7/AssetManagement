@@ -21,5 +21,6 @@ router.get('/images/:imageName', async (req, res, next) => {
     next(error);
   }
 });
+router.put('/update/:id', controller.updateController.updateAsset)
 
 export default router;

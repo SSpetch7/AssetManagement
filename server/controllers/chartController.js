@@ -9,8 +9,8 @@ const numController = {
       res.json({ data: assets });
     });
   },
-  getNumberAssetTableList: (req, res) => {
-    chartModel.getNumberAssetTable((err, assets) => {
+  getNumberAssetCateList: (req, res) => {
+    chartModel.getNumberAssetCate((err, assets) => {
       if (err) {
         res.send(err);
       }

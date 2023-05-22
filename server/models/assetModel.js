@@ -1,19 +1,19 @@
 import db from '../config/db.js';
 
-var Asset = (asset) => {
-  this.asset_order = asset.asset_order;
-  this.asset_id = asset.asset_id;
-  this.asset_name = asset.asset_name;
-  this.asset_year = asset.asset_year;
-  this.gallery_id = asset.gallery_id;
-  this.detail_id = asset.detail_id;
-  this.asset_useable = asset.asset_useable;
-  this.asset_stock = asset.asset_stock;
-  this.asset_status = asset.asset_status;
-  this.room_id = asset.room_id;
-  this.cate_id = asset.cate_id;
-  this.sub_id = asset.sub_id;
-};
+var Asset = function(asset) {
+    this.asset_order = asset.asset_order;
+    this.asset_id = asset.asset_id;
+    this.asset_name = asset.asset_name;
+    this.asset_year = asset.asset_year;
+    this.gallery_id = asset.gallery_id;
+    this.detail_id = asset.detail_id;
+    this.asset_useable = asset.asset_useable;
+    this.asset_stock = asset.asset_stock;
+    this.asset_status = asset.asset_status;
+    this.room_id = asset.room_id;
+    this.cate_id = asset.cate_id;
+    this.sub_id = asset.sub_id;
+}
 
 const selectColAsset =
   'asset_order,asset_id ,asset_name,asset_year,room_id,sck_name,s_name,u_name ,cate_id as c_id';
@@ -126,5 +126,23 @@ Asset.getTypeCom = (result) => {
     }
   });
 };
+
+// Update Model
+Asset.updateAsset = (asset_id, assetReqData, result)=>{
+  db.query("UPDATE asset_detail SET asset_order=?,asset_id=?,asset_name=?,asset_year=?,gallery_id=?,detail=?,asset_useable=?,asset_stock=?,asset_status=?,room_id=?,cate_id=?,sub_id=? WHERE asset_id=?", 
+  [assetReqData.asset_order,assetReqData.asset_id,assetReqData.asset_name,assetReqData.asset_year,assetReqData.gallery_id,assetReqData.detail,assetReqData.asset_useable,assetReqData.asset_stock,assetReqData.asset_status,assetReqData.room_id,assetReqData.cate_id,assetReqData.sub_id,asset_id], (err, res) => {
+    console.log('...', asset_id);
+    console.log('...', assetReqData);
+    console.log('...', result);
+    console.log('...', res);
+    if (err) {
+      console.log('Error while updating the asset', err);
+      result(null, err);
+    } else {
+      console.log('Asset updating successfully');
+      result(null, res);
+    }
+  });
+}
 
 export default Asset;

@@ -29,10 +29,10 @@ Chart.getNumberAsset = (result) => {
   });
 };
 
-const numberAssetTable =
-  'SELECT cate_name, COUNT("cate_name") as total_asset FROM asset_detail a LEFT JOIN category c ON a.cate_id = c.cate_id GROUP BY cate_name ORDER BY cate_name';
-Chart.getNumberAssetTable = (result) => {
-  db.query(numberAssetTable, (err, res) => {
+const numberAssetCate =
+  'SELECT c.cate_name AS category_name, COUNT(c.cate_name) AS total_asset FROM asset_detail a LEFT JOIN category c ON a.cate_id = c.cate_id GROUP BY c.cate_name UNION SELECT s.sub_name COLLATE utf8mb4_general_ci AS category_name, COUNT(s.sub_name) AS total_subasset FROM asset_detail a INNER JOIN subcate s ON a.sub_id = s.sub_id GROUP BY s.sub_name ORDER BY category_name ASC';
+Chart.getNumberAssetCate = (result) => {
+  db.query(numberAssetCate, (err, res) => {
     if (err) {
       console.log('Error while fetching asset ', err);
       result(null, err);
