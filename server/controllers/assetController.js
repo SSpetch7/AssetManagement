@@ -75,7 +75,6 @@ const updateController = {
       res.send(400).send({success: false, message: 'Please fill all fields'});
     } else {
       assetModel.updateAsset(req.params.id, assetReqData, (err, assets) => {
-        console.log('req.params.id', req.params.id);
         if (err) 
           res.send(err);
           res.json({status: true, message: 'Asset updated Successfully'});
@@ -84,4 +83,17 @@ const updateController = {
   } 
 };
 
-export default { assetController, optionController, updateController };
+// Delete Controller
+const deleteController = {
+  deleteAsset: (req, res) =>{
+    assetModel.deleteAsset(req.params.id, (err, assets)=>{
+      console.log('req.params.id', req.params.id);
+      if(err)
+      res.send(err);
+      res.json({success:true, message: 'Asset deleted successully!'});
+  })
+  } 
+};
+
+
+export default { assetController, optionController, updateController, deleteController };

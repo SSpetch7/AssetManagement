@@ -21,6 +21,7 @@ router.get('/images/:imageName', async (req, res, next) => {
     next(error);
   }
 });
-router.put('/update/:id', controller.updateController.updateAsset)
+router.put('/update/:id', controller.updateController.updateAsset);
+router.delete('/delete/:id', controller.deleteController.deleteAsset);
 
 export default router;
