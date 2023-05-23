@@ -439,9 +439,9 @@ export default function EditeAsset() {
       <div className="mt-12">
         <div className="pb-10">
           <span className="pl-32 font-bold  text-4xl text-gray-600 items-start">
-            All Asset
+            Edit Asset
           </span>
-          <span className="pl-2  text-gray-400">ครุภัณฑ์ทั้งหมด</span>
+          <span className="pl-2  text-gray-400">แก้ไขครุภัณฑ์</span>
         </div>
         <div className="flex justify-center h-full ">
           <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">

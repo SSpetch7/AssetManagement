@@ -238,14 +238,13 @@ export default function CheckAsset() {
           className="mr-2 "
           onClick={() => editProduct(rowData)}
         /> */}
-        <BorrowButton />
-        {/* <Button
-          icon="pi pi-pencil"
-          //   rounded
+        {/* <BorrowButton /> */}
+        <Button
+          icon="pi pi-check-square"
           outlined
-          className="editBnt mr-2"
-          onClick={() => editProduct(rowData)}
-        /> */}
+          className=" mr-2 "
+          //   onClick={() => editProduct(rowData)}
+        />
       </React.Fragment>
     );
   };

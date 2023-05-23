@@ -67,6 +67,9 @@ export default function AllAsset() {
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
+  // asset new data
+  const [newAssetDialog, setNewAssetDialog] = useState(false);
+
   //  asset edit data
   const [asset, setAsset] = useState(emptydataTable);
 
@@ -129,11 +132,12 @@ export default function AllAsset() {
   const openNew = () => {
     setAsset(emptydataTable);
     setSubmitted(false);
-    setEditAssetDialog(true);
+    setNewAssetDialog(true);
   };
 
   const hideDialog = () => {
     setSubmitted(false);
+    setNewAssetDialog(false);
     setEditAssetDialog(false);
     setShowAssetDialog(false);
   };
@@ -153,9 +157,9 @@ export default function AllAsset() {
       let _assets = [...assets];
       let _asset = { ...asset };
 
-      if (asset.asset_name) {
+      if (asset.asset_id) {
         const index = findIndexById(asset.asset_id);
-        console.log(asset.id);
+        console.log(asset.asset_id + ' id');
         _assets[index] = _asset;
         toast.current.show({
           severity: 'success',
@@ -176,7 +180,9 @@ export default function AllAsset() {
       }
 
       setAssets(_assets);
+      console.log(_assets);
       setEditAssetDialog(false);
+      setNewAssetDialog(false);
       setAsset(emptydataTable);
     }
   };
@@ -385,9 +391,9 @@ export default function AllAsset() {
             style={{ width: '400px' }}
           />
         </span>
-        <div className="flex gap-2">
+        {/* <div className="flex gap-2">
           <AssetFilter />
-        </div>
+        </div> */}
       </div>
       <div className="flex gap-2">
         <Button
@@ -619,7 +625,7 @@ export default function AllAsset() {
                 <label htmlFor="year" className="font-bold">
                   ปีงบประมาณ
                 </label>
-                <InputText id="asset_year" value={asset.asset_year} />
+                <InputText id="asset_year" disabled value={asset.asset_year} />
               </div>
             </div>
 
@@ -764,6 +770,218 @@ export default function AllAsset() {
               id="description"
               disabled
               value={product.detail}
+              required
+              rows={3}
+              cols={20}
+            />
+          </div>
+        </div>
+      </Dialog>
+
+      {/*new asset */}
+      <Dialog
+        visible={newAssetDialog}
+        style={{ width: '64rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="เพิ่มครุภัณฑ์ใหม่"
+        modal
+        className="p-fluid"
+        footer={productDialogFooter}
+        onHide={hideDialog}
+      >
+        <div className="card p-4">
+          <FileUpload
+            name="demo[]"
+            url={'/api/upload'}
+            multiple
+            accept="image/*"
+            maxFileSize={1000000}
+            emptyTemplate={<p className="m-0">อัพโหลดรูปครุภัณฑ์ที่นี่</p>}
+          />
+        </div>
+
+        <div className="card p-4">
+          <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1">
+              <label htmlFor="asset_order" className="font-bold">
+                ลำดับที่
+              </label>
+              <InputText
+                id="asset_order"
+                value={asset.asset_order}
+                onChange={(e) => onInputChange(e, 'asset_order')}
+                required
+                // autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !asset.asset_order,
+                })}
+              />
+              {submitted && !asset.asset_order && (
+                <small className="p-error">No. is required.</small>
+              )}
+            </div>
+
+            <div className="field col-start-2 col-end-5">
+              <label htmlFor="asset_name" className="font-bold">
+                ชื่อรายการ
+              </label>
+              <InputText
+                id="asset_name"
+                value={asset.asset_name}
+                onChange={(e) => onInputChange(e, 'asset_name')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !asset.asset_name,
+                })}
+              />
+              {submitted && !asset.asset_name && (
+                <small className="p-error">Name is required.</small>
+              )}
+            </div>
+
+            <div className="field">
+              <label htmlFor="asset_id" className="font-bold">
+                หมายเลขครุภัณฑ์
+              </label>
+              <InputText
+                id="asset_id"
+                // disabled
+                value={asset.asset_id}
+                onChange={(e) => onInputChange(e, 'asset_id')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !asset.asset_id,
+                })}
+              />
+              {submitted && !asset.asset_id && (
+                <small className="p-error">ProductID is required.</small>
+              )}
+            </div>
+
+            <div className="formgrid grid">
+              <div className="field col">
+                <label htmlFor="asset_year" className="font-bold">
+                  ปีงบประมาณ
+                </label>
+                <InputText
+                  id="asset_year"
+                  value={asset.asset_year}
+                  onChange={(e) => onInputChange(e, 'asset_year')}
+                />
+              </div>
+            </div>
+
+            <div className="field col-start-3 col-end-5">
+              <label htmlFor="room_id" className="font-bold">
+                ประจำที่
+              </label>
+              <InputText
+                id="room_id"
+                value={asset.room_id}
+                placeholder={asset.room_id}
+                onChange={(e) => onInputChange(e, 'room_id')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !asset.room_id,
+                })}
+              />
+              {submitted && !asset.room_id && (
+                <small className="p-error">ProductRoom is required.</small>
+              )}
+            </div>
+
+            <div className="field">
+              <label htmlFor="sck_name" className="font-bold">
+                สถานะ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  id="sck_name"
+                  value={asset.sck_name}
+                  placeholder={asset.sck_name}
+                  onChange={(e) => handleOptionChange(e, 'sck_name')}
+                  options={assetStock}
+                  optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+            <div className="field">
+              <label htmlFor="s_name" className="font-bold">
+                สภาพ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  id="s_name"
+                  value={asset.s_name}
+                  placeholder={asset.s_name}
+                  onChange={(e) => handleOptionChange(e, 's_name')}
+                  options={assetStatus}
+                  //   optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+            <div className="field">
+              <label htmlFor="u_name" className="font-bold">
+                การใช้งาน
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  id="u_name"
+                  value={asset.u_name}
+                  placeholder={asset.u_name}
+                  onChange={(e) => handleOptionChange(e, 'u_name')}
+                  options={assetUseable}
+                  //   optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="category" className="font-bold">
+                ประเภทครุภัณฑ์
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={asset.category}
+                  placeholder={asset.category}
+                  onChange={(e) => handleOptionChange(e, 'category')}
+                  options={assetType}
+                  optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+            <div className="field">
+              <label htmlFor="subcategory" className="font-bold">
+                ประเภทครุภัณฑ์คอมพิวเตอร์
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={asset.subcategory}
+                  placeholder={asset.subcategory}
+                  onChange={(e) => handleOptionChange(e, 'subcategory')}
+                  options={assetComType}
+                  optionLabel="subcategory"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card p-4">
+          <div className="field">
+            <label htmlFor="description" className="font-bold">
+              หมายเหตุ
+            </label>
+            <InputTextarea
+              id="description"
+              value={product.description}
+              onChange={(e) => onInputChange(e, 'description')}
               required
               rows={3}
               cols={20}
