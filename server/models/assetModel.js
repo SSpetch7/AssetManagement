@@ -1,12 +1,12 @@
 import db from '../config/db.js';
 
-var Asset = (asset) => {
+var Asset = function (asset) {
   this.asset_order = asset.asset_order;
   this.asset_id = asset.asset_id;
   this.asset_name = asset.asset_name;
   this.asset_year = asset.asset_year;
   this.gallery_id = asset.gallery_id;
-  this.detail_id = asset.detail_id;
+  this.detail = asset.detail;
   this.asset_useable = asset.asset_useable;
   this.asset_stock = asset.asset_stock;
   this.asset_status = asset.asset_status;
@@ -128,9 +128,17 @@ Asset.getTypeCom = (result) => {
 };
 
 // create new asset
-const insertAsset = 'INSERT INTO ';
-// Asset.createAsset = (assetReqData,result) {
-//     // db.query()
-// }
+const insertAsset = 'INSERT INTO asset_detail SET ?';
+Asset.createAsset = (assetReqData, result) => {
+  db.query(insertAsset, assetReqData, (err, res) => {
+    if (err) {
+      console.log('Error while inserting data', err);
+      result(null, err);
+    } else {
+      console.log('Employee created successfully');
+      result(null, res);
+    }
+  });
+};
 
 export default Asset;
