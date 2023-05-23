@@ -133,4 +133,24 @@ Asset.getTypeCom = (result) => {
   });
 };
 
+const sqlLatestOrder =
+  'SELECT asset_order FROM asset_detail ORDER BY asset_order DESC LIMIT 1';
+
+const tteset =
+  'SELECT a.asset_id, a.asset_name, a.asset_description, COUNT(o.asset_id) AS order_count FROM assets a LEFT JOIN orders o ON a.asset_id = o.asset_id GROUP BY a.asset_id, a.asset_name, a.asset_description ORDER BY order_count DESC;';
+Asset.getLOrder = (result) => {
+  db.query(sqlLatestOrder, (err, res) => {
+    if (err) {
+      console.log('Error while fetching asset ', err);
+      result(null, err);
+    } else {
+      console.log('Asset fetching successfully');
+      const numValues = res.reduce((values, row) => {
+        return values.concat(Object.values(row));
+      }, []);
+      return result(null, numValues);
+    }
+  });
+};
+
 export default Asset;

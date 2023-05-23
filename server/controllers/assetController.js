@@ -63,4 +63,15 @@ const optionController = {
     });
   },
 };
-export default { assetController, optionController };
+
+const numController = {
+  getLatestOrderList: (req, res) => {
+    assetModel.getLOrder((err, assets) => {
+      if (err) {
+        res.send(err);
+      }
+      res.json(assets);
+    });
+  },
+};
+export default { assetController, optionController, numController };

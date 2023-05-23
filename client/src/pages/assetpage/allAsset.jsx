@@ -18,7 +18,11 @@ import { Calendar } from 'primereact/calendar';
 import { dataTable } from '../../assets/dummy';
 import BorrowButton from '../../components/BorrowButton';
 import AssetFilter from '../../components/AssetFilter';
-import { AssetService, AssetOptionService } from '../../service/AssetService';
+import {
+  AssetService,
+  AssetOptionService,
+  NumService,
+} from '../../service/AssetService';
 
 export default function AllAsset() {
   let emptydataTable = {
@@ -69,6 +73,7 @@ export default function AllAsset() {
 
   // asset new data
   const [newAssetDialog, setNewAssetDialog] = useState(false);
+  const [assetLstOrder, setAssetLstOrder] = useState();
 
   //  asset edit data
   const [asset, setAsset] = useState(emptydataTable);
@@ -99,12 +104,15 @@ export default function AllAsset() {
 
   useEffect(() => {
     AssetService.getAllAsset().then((data) => setAssets(data));
+    NumService.getLstOrderAsset().then((data) => setAssetLstOrder(data));
     // AssetService.getAssetByID().then((data) => setAssetID(data));
+
     AssetOptionService.getStatusAsset().then((data) => setAssetStatus(data));
     AssetOptionService.getStockAsset().then((data) => setAssetStock(data));
     AssetOptionService.getUseableAsset().then((data) => setAssetUseable(data));
     AssetOptionService.getTypeAsset().then((data) => setAssetType(data));
     AssetOptionService.getTypeCom().then((data) => setAssetComType(data));
+    console.log(assetLstOrder + ' test oder1');
     console.log(assets);
     console.log(assetStatus);
   }, []);
@@ -115,21 +123,27 @@ export default function AllAsset() {
     let _asset = { ...asset };
 
     console.log('test input');
-    console.log(_asset);
+
     _asset[`${name}`] = val;
 
     setAsset(_asset);
   };
 
+  //   const firstState=
+
   const handleOptionChange = (e, name) => {
     let _asset = { ...asset };
     console.log('test');
+    console.log(name);
+
     _asset[`${name}`] = e.value;
     console.log(_asset);
     setAsset(_asset);
   };
 
   const openNew = () => {
+    NumService.getLstOrderAsset().then((data) => setAssetLstOrder(data));
+    console.log(assetLstOrder + '');
     setAsset(emptydataTable);
     setSubmitted(false);
     setNewAssetDialog(true);
@@ -809,7 +823,8 @@ export default function AllAsset() {
               </label>
               <InputText
                 id="asset_order"
-                value={asset.asset_order}
+                value={assetLstOrder}
+                placeholder={assetLstOrder}
                 onChange={(e) => onInputChange(e, 'asset_order')}
                 required
                 // autoFocus
@@ -899,7 +914,7 @@ export default function AllAsset() {
                 <Dropdown
                   id="sck_name"
                   value={asset.sck_name}
-                  placeholder={asset.sck_name}
+                  placeholder={asset.sck_name[0]}
                   onChange={(e) => handleOptionChange(e, 'sck_name')}
                   options={assetStock}
                   optionLabel="name"
