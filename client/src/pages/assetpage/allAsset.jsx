@@ -69,8 +69,7 @@ export default function AllAsset() {
 
   //  asset edit data
   const [asset, setAsset] = useState(emptydataTable);
-  const [selectedSubcategory, setSelectedSubcategory] = useState('');
-  const [selectedAsset, setSelectedAsset] = useState(null);
+
   // asset data
   const [assets, setAssets] = useState();
   const [galleries, setGalleries] = useState(null);
@@ -106,9 +105,24 @@ export default function AllAsset() {
     console.log(assets);
   }, []);
 
-  //   update asset data
-  const handleOptionChange = (e) => {
-    setSelectedSubcategory(e.value);
+  //   edit asset data
+  const onInputChange = (e, name) => {
+    const val = (e.target && e.target.value) || '';
+    let _asset = { ...asset };
+
+    console.log('test input');
+    console.log(_asset);
+    _asset[`${name}`] = val;
+
+    setAsset(_asset);
+  };
+
+  const handleOptionChange = (e, name) => {
+    let _asset = { ...asset };
+    console.log('test');
+    _asset[`${name}`] = e.value;
+    console.log(_asset);
+    setAsset(_asset);
   };
 
   const openNew = () => {
@@ -172,8 +186,6 @@ export default function AllAsset() {
     );
   };
   const statusRowFilterTemplate = (options) => {
-    console.log(options.value);
-    console.log(options);
     return (
       <Dropdown
         value={options.value}
@@ -239,6 +251,7 @@ export default function AllAsset() {
 
   const editAsset = (rowData) => {
     setAsset({ ...rowData });
+    console.log(asset.sck_name);
     setEditAssetDialog(true);
   };
 
@@ -325,15 +338,6 @@ export default function AllAsset() {
 
     _product['category'] = e.value;
     setProduct(_product);
-  };
-
-  const onInputChange = (e, name) => {
-    const val = (e.target && e.target.value) || '';
-    let _asset = { ...asset };
-
-    _asset[`${name}`] = val;
-
-    setAsset(_asset);
   };
 
   const onInputNumberChange = (e, name) => {
@@ -585,16 +589,9 @@ export default function AllAsset() {
                 id="no"
                 placeholder={asset.asset_order}
                 disabled
-                onChange={(e) => onInputChange(e, 'number')}
                 required
                 autoFocus
-                className={classNames({
-                  'p-invalid': submitted && !product.number,
-                })}
               />
-              {submitted && !product.number && (
-                <small className="p-error">No. is required.</small>
-              )}
             </div>
 
             <div className="field col-start-2 col-end-5">
@@ -605,11 +602,7 @@ export default function AllAsset() {
                 id="name"
                 placeholder={asset.asset_name}
                 disabled
-                onChange={(e) => onInputChange(e, 'name')}
                 required
-                className={classNames({
-                  'p-invalid': submitted && !product.name,
-                })}
               />
             </div>
 
@@ -617,34 +610,15 @@ export default function AllAsset() {
               <label htmlFor="id" className="font-bold">
                 หมายเลขครุภัณฑ์
               </label>
-              <InputText
-                id="id"
-                placeholder={asset.asset_id}
-                disabled
-                onChange={(e) => onInputChange(e, 'id')}
-                required
-                className={classNames({
-                  'p-invalid': submitted && !product.id,
-                })}
-              />
-              {submitted && !product.id && (
-                <small className="p-error">ProductID is required.</small>
-              )}
+              <InputText id="id" placeholder={asset.asset_id} disabled />
             </div>
 
             <div className="formgrid grid">
               <div className="field col">
-                <label htmlFor="price" className="font-bold">
-                  ราคา
+                <label htmlFor="year" className="font-bold">
+                  ปีงบประมาณ
                 </label>
-                <InputNumber
-                  id="price"
-                  value={product.price}
-                  onValueChange={(e) => onInputNumberChange(e, 'price')}
-                  mode="currency"
-                  currency="THB"
-                  locale="en-US"
-                />
+                <InputText id="asset_year" value={asset.asset_year} />
               </div>
             </div>
 
@@ -652,16 +626,7 @@ export default function AllAsset() {
               <label htmlFor="room" className="font-bold">
                 ประจำที่
               </label>
-              <InputText
-                id="room"
-                placeholder={asset.room_id}
-                disabled
-                onChange={(e) => onInputChange(e, 'room')}
-                required
-                className={classNames({
-                  'p-invalid': submitted && !product.room,
-                })}
-              />
+              <InputText id="room" placeholder={asset.room_id} disabled />
             </div>
 
             <div className="field">
@@ -672,7 +637,6 @@ export default function AllAsset() {
                 <Dropdown
                   placeholder={asset.sck_name}
                   disabled
-                  onChange={(e) => setAssetStatus(e.value)}
                   options={assetStock}
                   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -799,7 +763,6 @@ export default function AllAsset() {
               id="description"
               disabled
               value={product.detail}
-              onChange={(e) => onInputChange(e, 'description')}
               required
               rows={3}
               cols={20}
@@ -891,17 +854,10 @@ export default function AllAsset() {
 
             <div className="formgrid grid">
               <div className="field col">
-                <label htmlFor="price" className="font-bold">
+                <label htmlFor="year" className="font-bold">
                   ราคา
                 </label>
-                <InputNumber
-                  id="price"
-                  value={product.price}
-                  onValueChange={(e) => onInputNumberChange(e, 'price')}
-                  mode="currency"
-                  currency="THB"
-                  locale="en-US"
-                />
+                <InputText id="asset_year" value={asset.asset_year} />
               </div>
             </div>
 
@@ -925,79 +881,80 @@ export default function AllAsset() {
             </div>
 
             <div className="field">
-              <label htmlFor="description" className="font-bold">
+              <label htmlFor="sck_name" className="font-bold">
                 สถานะ
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={asset.sck_name}
+                  id="sck_name"
                   value={asset.sck_name}
-                  onChange={(e) => setAssetStatus(e.value)}
+                  placeholder={asset.sck_name}
+                  onChange={(e) => handleOptionChange(e, 'sck_name')}
                   options={assetStock}
                   optionLabel="name"
                   className="w-full md:w-14rem"
                 />
               </div>
             </div>
-
             <div className="field">
-              <label htmlFor="description" className="font-bold">
+              <label htmlFor="s_name" className="font-bold">
                 สภาพ
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={assetStatus}
-                  onChange={(e) => setAssetStatus(e.value)}
+                  id="s_name"
+                  value={asset.s_name}
+                  placeholder={asset.s_name}
+                  onChange={(e) => handleOptionChange(e, 's_name')}
                   options={assetStatus}
                   optionLabel="name"
-                  placeholder={asset.s_name}
                   className="w-full md:w-14rem"
                 />
               </div>
             </div>
-
             <div className="field">
-              <label htmlFor="description" className="font-bold">
+              <label htmlFor="u_name" className="font-bold">
                 การใช้งาน
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={assetUseable}
-                  onChange={(e) => setAssetStatus(e.value)}
+                  id="u_name"
+                  value={asset.u_name}
+                  placeholder={asset.u_name}
+                  onChange={(e) => handleOptionChange(e, 'u_name')}
                   options={assetUseable}
                   optionLabel="name"
-                  placeholder={asset.u_name}
                   className="w-full md:w-14rem"
                 />
               </div>
             </div>
 
             <div className="field">
-              <label htmlFor="description" className="font-bold">
+              <label htmlFor="category" className="font-bold">
                 ประเภทครุภัณฑ์
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={assetType}
-                  onChange={(e) => setAssetStatus(e.value)}
+                  value={asset.category}
+                  placeholder={asset.category}
+                  onChange={(e) => handleOptionChange(e, 'category')}
                   options={assetType}
                   optionLabel="name"
-                  placeholder={asset.category}
                   className="w-full md:w-14rem"
                 />
               </div>
             </div>
             <div className="field">
-              <label htmlFor="description" className="font-bold">
+              <label htmlFor="subcategory" className="font-bold">
                 ประเภทครุภัณฑ์คอมพิวเตอร์
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={selectedSubcategory}
-                  onChange={handleOptionChange}
+                  value={asset.subcategory}
+                  placeholder={asset.subcategory}
+                  onChange={(e) => handleOptionChange(e, 'subcategory')}
                   options={assetComType}
                   optionLabel="subcategory"
-                  placeholder={asset.subcategory}
                   className="w-full md:w-14rem"
                 />
               </div>
