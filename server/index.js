@@ -10,12 +10,10 @@ import bcrypt from 'bcrypt';
 import cookieParser from 'cookie-parser';
 import nodemailer from 'nodemailer';
 import connection from './config/db.js';
-// import clientRoutes from './routes/client.js';
-// import generalRoutes from './routes/general.js';
-// import routes
+
 import assetRoutes from './routes/assetRoute.js';
-// import imgRoutes from './routes/imgRoute.js';
-// import managementRoutes from "./routes/management.js";
+
+import adminRoutes from './routes/adminRoute.js';
 
 // CONFIGURATION
 
@@ -42,7 +40,7 @@ dotenv.config();
 
 /* ROUTES */
 app.use('/asset', assetRoutes);
-// app.use('/image', imgRoutes);
+app.use('/admin', adminRoutes);
 
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, function (req, res) {
@@ -182,7 +180,7 @@ app.post('/login', (req, res) => {
           if (response) {
             const admin_username = data[0].admin_username;
             const token = jwt.sign({ admin_username }, 'jwt-secret-key', {
-              expiresIn: '1d',
+              expiresIn: '30d',
             });
             res.cookie('token', token);
             return res.json({ Status: 'Success' });

@@ -38,7 +38,7 @@ const Sidebar = () => {
         <>
           <div className="flex justify-between item-center">
             <Link
-              to="/"
+              to="/Home"
               onClick={() => handleCloseSidebar}
               className="items-center gap-3 ml-3 mt-4 flex "
             >
