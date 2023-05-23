@@ -103,6 +103,7 @@ export default function AllAsset() {
     AssetOptionService.getTypeAsset().then((data) => setAssetType(data));
     AssetOptionService.getTypeCom().then((data) => setAssetComType(data));
     console.log(assets);
+    console.log(assetStatus);
   }, []);
 
   //   edit asset data
@@ -159,7 +160,7 @@ export default function AllAsset() {
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
-          detail: 'Product Updated',
+          detail: 'Asset Updated',
           life: 3000,
         });
       } else {
@@ -803,7 +804,7 @@ export default function AllAsset() {
               <InputText
                 id="order"
                 value={asset.asset_order}
-                onChange={(e) => onInputChange(e, 'order')}
+                onChange={(e) => onInputChange(e, 'asset_order')}
                 required
                 // autoFocus
                 className={classNames({
@@ -855,7 +856,7 @@ export default function AllAsset() {
             <div className="formgrid grid">
               <div className="field col">
                 <label htmlFor="year" className="font-bold">
-                  ราคา
+                  ปีงบประมาณ
                 </label>
                 <InputText id="asset_year" value={asset.asset_year} />
               </div>
@@ -907,7 +908,7 @@ export default function AllAsset() {
                   placeholder={asset.s_name}
                   onChange={(e) => handleOptionChange(e, 's_name')}
                   options={assetStatus}
-                  optionLabel="name"
+                  //   optionLabel="name"
                   className="w-full md:w-14rem"
                 />
               </div>
@@ -923,7 +924,7 @@ export default function AllAsset() {
                   placeholder={asset.u_name}
                   onChange={(e) => handleOptionChange(e, 'u_name')}
                   options={assetUseable}
-                  optionLabel="name"
+                  //   optionLabel="name"
                   className="w-full md:w-14rem"
                 />
               </div>

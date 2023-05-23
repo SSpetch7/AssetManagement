@@ -70,7 +70,10 @@ Asset.getStatusState = (result) => {
       result(null, err);
     } else {
       console.log('Asset fetching successfully');
-      result(null, res);
+      const statusValues = res.reduce((values, row) => {
+        return values.concat(Object.values(row));
+      }, []);
+      return result(null, statusValues);
     }
   });
 };
@@ -96,7 +99,10 @@ Asset.getUseableState = (result) => {
       result(null, err);
     } else {
       console.log('Asset fetching successfully');
-      result(null, res);
+      const useableValues = res.reduce((values, row) => {
+        return values.concat(Object.values(row));
+      }, []);
+      return result(null, useableValues);
     }
   });
 };
