@@ -7,8 +7,6 @@ import { Paginator } from 'primereact/paginator';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
 import { FileUpload } from 'primereact/fileupload';
-import { Rating } from 'primereact/rating';
-import { Toolbar } from 'primereact/toolbar';
 import { Dropdown } from 'primereact/dropdown';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { RadioButton } from 'primereact/radiobutton';
@@ -20,25 +18,23 @@ import { Calendar } from 'primereact/calendar';
 import { dataTable } from '../../assets/dummy';
 import BorrowButton from '../../components/BorrowButton';
 import AssetFilter from '../../components/AssetFilter';
+import { AssetService, AssetOptionService } from '../../service/AssetService';
 
-export default function EditeAsset() {
+export default function EditAsset() {
   let emptydataTable = {
-    order: '',
+    asset_order: '',
     asset_id: '',
-    name: '',
-    year: null,
-    status: '',
-    useable: '',
+    asset_name: '',
+    asset_year: null,
+    gallery_id: null,
+    detail: null,
     room_id: '',
-    inventoryStatus: 'INSTOCK',
+    category: '',
+    subcategory: '',
+    sck_name: '',
+    s_name: '',
+    u_name: '',
   };
-
-  const [productStatus, setProductStatus] = useState(null);
-  const status = [
-    { name: 'ใช่งานได้', code: 'CU' },
-    { name: 'รอซ่อม', code: 'FX' },
-    { name: 'สิ้นสภาพ', code: 'BK' },
-  ];
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -55,7 +51,7 @@ export default function EditeAsset() {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    status: { value: null, matchMode: FilterMatchMode.EQUALS },
+    asset_status: { value: null, matchMode: FilterMatchMode.EQUALS },
     room_id: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
@@ -64,8 +60,22 @@ export default function EditeAsset() {
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
-  const [products, setProducts] = useState(null);
-  const [productDialog, setProductDialog] = useState(false);
+  //  asset edit data
+  const [asset, setAsset] = useState(emptydataTable);
+  const [selectedSubcategory, setSelectedSubcategory] = useState('');
+  const [selectedAsset, setSelectedAsset] = useState(null);
+  // asset data
+  const [assets, setAssets] = useState(null);
+  const [galleries, setGalleries] = useState(null);
+  const [assetStatus, setAssetStatus] = useState();
+  const [assetStock, setAssetStock] = useState(null);
+  const [assetUseable, setAssetUseable] = useState(null);
+  const [assetType, setAssetType] = useState(null);
+  const [assetComType, setAssetComType] = useState(null);
+
+  const [editAssetDialog, setEditAssetDialog] = useState(false);
+  const [showAssetDialog, setShowAssetDialog] = useState(false);
+
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [product, setProduct] = useState(emptydataTable);
@@ -75,29 +85,32 @@ export default function EditeAsset() {
   const toast = useRef(null);
   const dt = useRef(null);
 
-  const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
-  const [useable] = useState(['กำลังใช้', 'ไม่ได้ใช้งาน']);
-
   useEffect(() => {
-    dataTable.getDatas().then((data) => setProducts(data));
+    AssetService.getAllAsset().then((data) => setAssets(data));
+    // AssetService.getAssetByID().then((data) => setAssetID(data));
+    AssetOptionService.getStatusAsset().then((data) => setAssetStatus(data));
+    AssetOptionService.getStockAsset().then((data) => setAssetStock(data));
+    AssetOptionService.getUseableAsset().then((data) => setAssetUseable(data));
+    AssetOptionService.getTypeAsset().then((data) => setAssetType(data));
+    AssetOptionService.getTypeCom().then((data) => setAssetComType(data));
+    console.log(assets);
   }, []);
 
-  const formatCurrency = (value) => {
-    return value.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    });
+  //   update asset data
+  const handleOptionChange = (e) => {
+    setSelectedSubcategory(e.value);
   };
 
   const openNew = () => {
-    setProduct(emptydataTable);
+    setAsset(emptydataTable);
     setSubmitted(false);
-    setProductDialog(true);
+    setEditAssetDialog(true);
   };
 
   const hideDialog = () => {
     setSubmitted(false);
-    setProductDialog(false);
+    setEditAssetDialog(false);
+    setShowAssetDialog(false);
   };
 
   const hideDeleteProductDialog = () => {
@@ -108,17 +121,17 @@ export default function EditeAsset() {
     setDeleteProductsDialog(false);
   };
 
-  const saveProduct = () => {
+  const saveAsset = () => {
     setSubmitted(true);
 
-    if (product.name.trim()) {
-      let _products = [...products];
-      let _product = { ...product };
+    if (asset.asset_name.trim()) {
+      let _assets = [...assets];
+      let _asset = { ...asset };
 
-      if (product.id) {
-        const index = findIndexById(product.id);
-
-        _products[index] = _product;
+      if (asset.asset_name) {
+        const index = findIndexById(asset.asset_id);
+        console.log(asset.id);
+        _assets[index] = _asset;
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
@@ -126,9 +139,9 @@ export default function EditeAsset() {
           life: 3000,
         });
       } else {
-        _product.id = createId();
-        _product.image = 'product-placeholder.svg';
-        _products.push(_product);
+        _asset.asset_id = createId();
+        _asset.image = 'product-placeholder.svg';
+        _assets.push(_asset);
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
@@ -137,22 +150,22 @@ export default function EditeAsset() {
         });
       }
 
-      setProducts(_products);
-      setProductDialog(false);
-      setProduct(emptydataTable);
+      setAssets(_assets);
+      setEditAssetDialog(false);
+      setAsset(emptydataTable);
     }
   };
 
   const statusBodyTemplate = (rowData) => {
     return (
-      <Tag value={rowData.status} severity={getSeverity(rowData.status)} />
+      <Tag value={rowData.s_name} severity={getSeverity(rowData.status)} />
     );
   };
   const statusRowFilterTemplate = (options) => {
     return (
       <Dropdown
         value={options.value}
-        options={statuses}
+        options={assetStatus}
         onChange={(e) => options.filterApplyCallback(e.value)}
         itemTemplate={statusItemTemplate}
         placeholder="สภาพ"
@@ -182,14 +195,14 @@ export default function EditeAsset() {
 
   const useableBodyTemplate = (rowData) => {
     return (
-      <Tag value={rowData.useable} severity={getUseable(rowData.useable)} />
+      <Tag value={rowData.u_name} severity={getUseable(rowData.useable)} />
     );
   };
   const useableRowFilterTemplate = (options) => {
     return (
       <Dropdown
         value={options.value}
-        options={useable}
+        options={assetStock}
         onChange={(e) => options.filterApplyCallback(e.value)}
         itemTemplate={useableItemTemplate}
         placeholder="การใช้งาน"
@@ -214,10 +227,21 @@ export default function EditeAsset() {
     }
   };
 
-  const editProduct = (product) => {
-    setProduct({ ...product });
-    setProductDialog(true);
-    console.log('edit product for click');
+  const editAsset = (rowData) => {
+    setAsset({ ...rowData });
+    setEditAssetDialog(true);
+  };
+
+  const showAsset = (rowData) => {
+    setAsset({ ...rowData });
+    setShowAssetDialog(true);
+    AssetService.getAssetByID(rowData.asset_id)
+      .then((data) => {
+        setAsset(data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   };
 
   const confirmDeleteProduct = (product) => {
@@ -226,11 +250,11 @@ export default function EditeAsset() {
   };
 
   const deleteProduct = () => {
-    let _products = products.filter((val) => val.id !== product.id);
+    let _products = assets.filter((val) => val.id !== product.id);
 
-    setProducts(_products);
+    setAssets(_products);
     setDeleteProductDialog(false);
-    setProduct(emptydataTable);
+    setAsset(emptydataTable);
     toast.current.show({
       severity: 'success',
       summary: 'Successful',
@@ -242,8 +266,8 @@ export default function EditeAsset() {
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < products.length; i++) {
-      if (products[i].id === id) {
+    for (let i = 0; i < assets.length; i++) {
+      if (assets[i].asset_id === id) {
         index = i;
         break;
       }
@@ -273,9 +297,9 @@ export default function EditeAsset() {
   };
 
   const deleteSelectedProducts = () => {
-    let _products = products.filter((val) => !selectedProducts.includes(val));
+    let _products = assets.filter((val) => !selectedProducts.includes(val));
 
-    setProducts(_products);
+    setAssets(_products);
     setDeleteProductsDialog(false);
     setSelectedProducts(null);
     toast.current.show({
@@ -295,11 +319,11 @@ export default function EditeAsset() {
 
   const onInputChange = (e, name) => {
     const val = (e.target && e.target.value) || '';
-    let _product = { ...product };
+    let _asset = { ...asset };
 
-    _product[`${name}`] = val;
+    _asset[`${name}`] = val;
 
-    setProduct(_product);
+    setAsset(_asset);
   };
 
   const onInputNumberChange = (e, name) => {
@@ -314,38 +338,21 @@ export default function EditeAsset() {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        {/* <Button
-          icon="pi pi-pencil"
-          style={{ scale: ' 70%' }}
-          rounded
-          outlined
-          className="mr-2"
-          onClick={() => editProduct(rowData)}
-        />
         <Button
-          icon="pi pi-trash"
-          style={{ scale: ' 70%' }}
-          rounded
           outlined
-          severity="danger"
-          onClick={() => confirmDeleteProduct(rowData)}
-        /> */}
-        {/* <Button
-          outlined
-          icon="pi pi-calendar-times"
+          icon="pi pi-search"
           //   rounded
           //   style={{ fontSize: '16px' }}
           className="mr-2 "
-          onClick={() => editProduct(rowData)}
-        /> */}
-        <BorrowButton />
-        {/* <Button
+          onClick={() => showAsset(rowData)}
+        />
+
+        <Button
           icon="pi pi-pencil"
-          //   rounded
           outlined
           className="editBnt mr-2"
-          onClick={() => editProduct(rowData)}
-        /> */}
+          onClick={() => editAsset(rowData)}
+        />
       </React.Fragment>
     );
   };
@@ -363,9 +370,7 @@ export default function EditeAsset() {
             style={{ width: '400px' }}
           />
         </span>
-        <div className="flex gap-2">
-          <AssetFilter />
-        </div>
+        <div className="flex gap-2">{/* <AssetFilter /> */}</div>
       </div>
       <div className="flex gap-2">
         <Button
@@ -379,24 +384,23 @@ export default function EditeAsset() {
             paddingLeft: '13px',
           }}
         />
-        {/* <Button
-          label="Export"
-          icon="pi pi-upload"
-          className="p-button-help"
-          onClick={exportCSV}
-          style={{ width: '120px' }}
-        /> */}
       </div>
     </div>
   );
   const productDialogFooter = (
     <React.Fragment>
-      <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
       <Button
-        label="Save"
+        label="ยกเลิก"
+        icon="pi pi-times"
+        severity="danger"
+        outlined
+        onClick={hideDialog}
+      />
+      <Button
+        label="ยืนยัน"
         icon="pi pi-check"
         className="p-Testbutton"
-        onClick={saveProduct}
+        onClick={saveAsset}
       />
     </React.Fragment>
   );
@@ -439,17 +443,15 @@ export default function EditeAsset() {
       <div className="mt-12">
         <div className="pb-10">
           <span className="pl-32 font-bold  text-4xl text-gray-600 items-start">
-            All Asset
+            Edit Asset
           </span>
-          <span className="pl-2  text-gray-400">ครุภัณฑ์ทั้งหมด</span>
+          <span className="pl-2  text-gray-400">แก้ไขครุภัณฑ์</span>
         </div>
         <div className="flex justify-center h-full ">
           <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
             <DataTable
               ref={dt}
-              value={products}
-              selection={selectedProducts}
-              onSelectionChange={(e) => setSelectedProducts(e.value)}
+              value={assets}
               dataKey="id"
               paginator
               rows={10}
@@ -463,7 +465,7 @@ export default function EditeAsset() {
               tableStyle={{ minHeight: '10rem' }}
             >
               <Column
-                field="order"
+                field="asset_order"
                 header="ลำดับ"
                 sortable
                 style={{ minWidth: '4rem' }}
@@ -478,7 +480,7 @@ export default function EditeAsset() {
                 style={{ minWidth: '13rem', width: '13rem' }}
               ></Column>
               <Column
-                field="name"
+                field="asset_name"
                 header="ชื่อ"
                 sortable
                 filter
@@ -488,7 +490,7 @@ export default function EditeAsset() {
               ></Column>
 
               <Column
-                field="year"
+                field="asset_year"
                 header="ปีงบประมาณ"
                 sortable
                 filter
@@ -497,7 +499,7 @@ export default function EditeAsset() {
               ></Column>
 
               <Column
-                field="status"
+                field="asset_status"
                 header="สภาพ"
                 sortable
                 filter
@@ -507,7 +509,7 @@ export default function EditeAsset() {
                 style={{ minWidth: '4rem' }}
               ></Column>
               <Column
-                field="useable"
+                field="asset_useable"
                 header="การใช้งาน"
                 sortable
                 filter
@@ -537,6 +539,518 @@ export default function EditeAsset() {
       <div className="m-16">
         <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
       </div>
+
+      {/* view asset */}
+      <Dialog
+        visible={showAssetDialog}
+        style={{ width: '64rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="รายละเอียดครุภัณฑ์"
+        modal
+        className="p-fluid"
+        // footer={productDialogFooter}
+        onHide={hideDialog}
+      >
+        <div className="card p-4">
+          <FileUpload
+            name="demo[]"
+            url={'/api/upload'}
+            multiple
+            accept="image/*"
+            maxFileSize={1000000}
+            emptyTemplate={<p className="m-0">อัพโหลดรูปครุภัณฑ์ที่นี่</p>}
+          />
+        </div>
+
+        <div className="card p-4">
+          <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1">
+              <label htmlFor="name" className="font-bold">
+                ลำดับที่
+              </label>
+              <InputText
+                id="no"
+                placeholder={asset.asset_order}
+                disabled
+                onChange={(e) => onInputChange(e, 'number')}
+                required
+                autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !product.number,
+                })}
+              />
+              {submitted && !product.number && (
+                <small className="p-error">No. is required.</small>
+              )}
+            </div>
+
+            <div className="field col-start-2 col-end-5">
+              <label htmlFor="name" className="font-bold">
+                ชื่อรายการ
+              </label>
+              <InputText
+                id="name"
+                placeholder={asset.asset_name}
+                disabled
+                onChange={(e) => onInputChange(e, 'name')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !product.name,
+                })}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="id" className="font-bold">
+                หมายเลขครุภัณฑ์
+              </label>
+              <InputText
+                id="id"
+                placeholder={asset.asset_id}
+                disabled
+                onChange={(e) => onInputChange(e, 'id')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !product.id,
+                })}
+              />
+              {submitted && !product.id && (
+                <small className="p-error">ProductID is required.</small>
+              )}
+            </div>
+
+            <div className="formgrid grid">
+              <div className="field col">
+                <label htmlFor="price" className="font-bold">
+                  ราคา
+                </label>
+                <InputNumber
+                  id="price"
+                  value={product.price}
+                  onValueChange={(e) => onInputNumberChange(e, 'price')}
+                  mode="currency"
+                  currency="THB"
+                  locale="en-US"
+                />
+              </div>
+            </div>
+
+            <div className="field col-start-3 col-end-5">
+              <label htmlFor="room" className="font-bold">
+                ประจำที่
+              </label>
+              <InputText
+                id="room"
+                placeholder={asset.room_id}
+                disabled
+                onChange={(e) => onInputChange(e, 'room')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !product.room,
+                })}
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                สถานะ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  placeholder={asset.sck_name}
+                  disabled
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetStock}
+                  optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                สภาพ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  placeholder={asset.s_name}
+                  disabled
+                  optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                การใช้งาน
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  placeholder={asset.u_name}
+                  disabled
+                  optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                ประเภทครุภัณฑ์
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  placeholder={asset.category}
+                  disabled
+                  optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                ประเภทครุภัณฑ์คอมพิวเตอร์
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  placeholder={asset.subcategory}
+                  disabled
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card p-4">
+          {/* <h1 className="text-kmuttColor-800 py-2">ข้อมูลโครงการ</h1>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1 col-end-5">
+              <label htmlFor="project" className="font-bold">
+                ชื่อโครงการ
+              </label>
+              <InputText
+                id="project"
+                value={product.project}
+                onChange={(e) => onInputChange(e, 'ยพน่ำแะ')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !product.project,
+                })}
+              />
+              {submitted && !product.project && (
+                <small className="p-error">ProjectName is required.</small>
+              )}
+            </div>
+
+            <div className="field col-start-1 col-end-5">
+              <label htmlFor="id" className="font-bold">
+                ชื่อแผนงาน
+              </label>
+              <InputText
+                id="plan"
+                value={product.plan}
+                onChange={(e) => onInputChange(e, 'plan')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !product.plan,
+                })}
+              />
+              {submitted && !product.plan && (
+                <small className="p-error">PlanName is required.</small>
+              )}
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                ประเภทแผนงาน
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={assetStatus}
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetStatus}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+          </div> */}
+          <div className="field">
+            <label htmlFor="description" className="font-bold">
+              หมายเหตุ
+            </label>
+            <InputTextarea
+              id="description"
+              disabled
+              value={product.detail}
+              onChange={(e) => onInputChange(e, 'description')}
+              required
+              rows={3}
+              cols={20}
+            />
+          </div>
+        </div>
+      </Dialog>
+
+      {/* edit asset */}
+      <Dialog
+        visible={editAssetDialog}
+        style={{ width: '64rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="แก้ไขครุภัณฑ์"
+        modal
+        className="p-fluid"
+        footer={productDialogFooter}
+        onHide={hideDialog}
+      >
+        <div className="card p-4">
+          <FileUpload
+            name="demo[]"
+            url={'/api/upload'}
+            multiple
+            accept="image/*"
+            maxFileSize={1000000}
+            emptyTemplate={<p className="m-0">อัพโหลดรูปครุภัณฑ์ที่นี่</p>}
+          />
+        </div>
+
+        <div className="card p-4">
+          <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1">
+              <label htmlFor="name" className="font-bold">
+                ลำดับที่
+              </label>
+              <InputText
+                id="order"
+                value={asset.asset_order}
+                onChange={(e) => onInputChange(e, 'order')}
+                required
+                // autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !asset.asset_order,
+                })}
+              />
+              {submitted && !asset.asset_order && (
+                <small className="p-error">No. is required.</small>
+              )}
+            </div>
+
+            <div className="field col-start-2 col-end-5">
+              <label htmlFor="asset_name" className="font-bold">
+                ชื่อรายการ
+              </label>
+              <InputText
+                id="asset_name"
+                value={asset.asset_name}
+                onChange={(e) => onInputChange(e, 'asset_name')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !asset.asset_name,
+                })}
+              />
+              {submitted && !asset.asset_name && (
+                <small className="p-error">Name is required.</small>
+              )}
+            </div>
+
+            <div className="field">
+              <label htmlFor="asset_id" className="font-bold">
+                หมายเลขครุภัณฑ์
+              </label>
+              <InputText
+                id="asset_id"
+                disabled
+                value={asset.asset_id}
+                onChange={(e) => onInputChange(e, 'asset_id')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !asset.asset_id,
+                })}
+              />
+              {submitted && !asset.asset_id && (
+                <small className="p-error">ProductID is required.</small>
+              )}
+            </div>
+
+            <div className="formgrid grid">
+              <div className="field col">
+                <label htmlFor="price" className="font-bold">
+                  ราคา
+                </label>
+                <InputNumber
+                  id="price"
+                  value={product.price}
+                  onValueChange={(e) => onInputNumberChange(e, 'price')}
+                  mode="currency"
+                  currency="THB"
+                  locale="en-US"
+                />
+              </div>
+            </div>
+
+            <div className="field col-start-3 col-end-5">
+              <label htmlFor="room" className="font-bold">
+                ประจำที่
+              </label>
+              <InputText
+                id="room"
+                placeholder={asset.room_id}
+                value={asset.room_id}
+                onChange={(e) => onInputChange(e, 'room')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !asset.room_id,
+                })}
+              />
+              {submitted && !asset.room_id && (
+                <small className="p-error">ProductRoom is required.</small>
+              )}
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                สถานะ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  placeholder={asset.sck_name}
+                  value={asset.sck_name}
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetStock}
+                  optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                สภาพ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={assetStatus}
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetStatus}
+                  optionLabel="name"
+                  placeholder={asset.s_name}
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                การใช้งาน
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={assetUseable}
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetUseable}
+                  optionLabel="name"
+                  placeholder={asset.u_name}
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                ประเภทครุภัณฑ์
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={assetType}
+                  onChange={(e) => setAssetStatus(e.value)}
+                  options={assetType}
+                  optionLabel="name"
+                  placeholder={asset.category}
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                ประเภทครุภัณฑ์คอมพิวเตอร์
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={selectedSubcategory}
+                  onChange={handleOptionChange}
+                  options={assetComType}
+                  optionLabel="subcategory"
+                  placeholder={asset.subcategory}
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card p-4">
+          <div className="field">
+            <label htmlFor="description" className="font-bold">
+              หมายเหตุ
+            </label>
+            <InputTextarea
+              id="description"
+              value={product.description}
+              onChange={(e) => onInputChange(e, 'description')}
+              required
+              rows={3}
+              cols={20}
+            />
+          </div>
+        </div>
+      </Dialog>
+
+      <Dialog
+        visible={deleteProductDialog}
+        style={{ width: '32rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="Confirm"
+        modal
+        footer={deleteProductDialogFooter}
+        onHide={hideDeleteProductDialog}
+      >
+        <div className="confirmation-content">
+          <i
+            className="pi pi-exclamation-triangle mr-3"
+            style={{ fontSize: '2rem' }}
+          />
+          {product && (
+            <span>
+              Are you sure you want to delete <b>{product.name}</b>?
+            </span>
+          )}
+        </div>
+      </Dialog>
+
+      <Dialog
+        visible={deleteProductsDialog}
+        style={{ width: '32rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="Confirm"
+        modal
+        footer={deleteProductsDialogFooter}
+        onHide={hideDeleteProductsDialog}
+      >
+        <div className="confirmation-content">
+          <i
+            className="pi pi-exclamation-triangle mr-3"
+            style={{ fontSize: '2rem' }}
+          />
+          {product && (
+            <span>Are you sure you want to delete the selected products?</span>
+          )}
+        </div>
+      </Dialog>
     </div>
   );
 }
