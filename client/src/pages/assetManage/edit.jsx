@@ -18,12 +18,16 @@ import { Calendar } from 'primereact/calendar';
 import { dataTable } from '../../assets/dummy';
 import BorrowButton from '../../components/BorrowButton';
 import AssetFilter from '../../components/AssetFilter';
-import { AssetService, AssetOptionService } from '../../service/AssetService';
+import {
+  AssetService,
+  AssetOptionService,
+  //   NumService,
+} from '../../service/AssetService';
 
-export default function EditAsset() {
+export default function AllAsset() {
   let emptydataTable = {
     asset_order: '',
-    asset_id: '',
+    asset_id: null,
     asset_name: '',
     asset_year: null,
     gallery_id: null,
@@ -36,36 +40,46 @@ export default function EditAsset() {
     u_name: '',
   };
 
+  //   const [productStatus, setProductStatus] = useState(null);
+  //   const status = [
+  //     { name: 'ใช่งานได้', code: 'CU' },
+  //     { name: 'รอซ่อม', code: 'FX' },
+  //     { name: 'สิ้นสภาพ', code: 'BK' },
+  //   ];
+
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    name: {
+    asset_name: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    order: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    asset_order: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     asset_id: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    year: {
+    asset_year: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    asset_status: { value: null, matchMode: FilterMatchMode.EQUALS },
+    s_name: { value: null, matchMode: FilterMatchMode.EQUALS },
     room_id: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    useable: { value: null, matchMode: FilterMatchMode.EQUALS },
+    u_name: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
+  // asset new data
+  const [newAssetDialog, setNewAssetDialog] = useState(false);
+  const [assetLstOrder, setAssetLstOrder] = useState();
+
   //  asset edit data
   const [asset, setAsset] = useState(emptydataTable);
-  const [selectedSubcategory, setSelectedSubcategory] = useState('');
-  const [selectedAsset, setSelectedAsset] = useState(null);
+
   // asset data
-  const [assets, setAssets] = useState(null);
+  const [assets, setAssets] = useState();
   const [galleries, setGalleries] = useState(null);
   const [assetStatus, setAssetStatus] = useState();
   const [assetStock, setAssetStock] = useState(null);
@@ -85,30 +99,59 @@ export default function EditAsset() {
   const toast = useRef(null);
   const dt = useRef(null);
 
+  const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
+  const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
+
   useEffect(() => {
     AssetService.getAllAsset().then((data) => setAssets(data));
+    // NumService.getLstOrderAsset().then((data) => setAssetLstOrder(data));
     // AssetService.getAssetByID().then((data) => setAssetID(data));
+
     AssetOptionService.getStatusAsset().then((data) => setAssetStatus(data));
     AssetOptionService.getStockAsset().then((data) => setAssetStock(data));
     AssetOptionService.getUseableAsset().then((data) => setAssetUseable(data));
     AssetOptionService.getTypeAsset().then((data) => setAssetType(data));
     AssetOptionService.getTypeCom().then((data) => setAssetComType(data));
+    console.log(assetLstOrder + ' test oder1');
     console.log(assets);
+    console.log(assetStatus);
   }, []);
 
-  //   update asset data
-  const handleOptionChange = (e) => {
-    setSelectedSubcategory(e.value);
+  //   edit asset data
+  const onInputChange = (e, name) => {
+    const val = (e.target && e.target.value) || '';
+    let _asset = { ...asset };
+
+    console.log('test input');
+
+    _asset[`${name}`] = val;
+
+    setAsset(_asset);
+  };
+
+  //   const firstState=
+
+  const handleOptionChange = (e, name) => {
+    let _asset = { ...asset };
+    console.log('test');
+    console.log(name);
+
+    _asset[`${name}`] = e.value;
+    console.log(_asset);
+    setAsset(_asset);
   };
 
   const openNew = () => {
+    // NumService.getLstOrderAsset().then((data) => setAssetLstOrder(data));
+    console.log(assetLstOrder + '');
     setAsset(emptydataTable);
     setSubmitted(false);
-    setEditAssetDialog(true);
+    setNewAssetDialog(true);
   };
 
   const hideDialog = () => {
     setSubmitted(false);
+    setNewAssetDialog(false);
     setEditAssetDialog(false);
     setShowAssetDialog(false);
   };
@@ -128,14 +171,14 @@ export default function EditAsset() {
       let _assets = [...assets];
       let _asset = { ...asset };
 
-      if (asset.asset_name) {
+      if (asset.asset_id) {
         const index = findIndexById(asset.asset_id);
-        console.log(asset.id);
+        console.log(asset.asset_id + ' id');
         _assets[index] = _asset;
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
-          detail: 'Product Updated',
+          detail: 'Asset Updated',
           life: 3000,
         });
       } else {
@@ -151,21 +194,23 @@ export default function EditAsset() {
       }
 
       setAssets(_assets);
+      console.log(_assets);
       setEditAssetDialog(false);
+      setNewAssetDialog(false);
       setAsset(emptydataTable);
     }
   };
 
   const statusBodyTemplate = (rowData) => {
     return (
-      <Tag value={rowData.s_name} severity={getSeverity(rowData.status)} />
+      <Tag value={rowData.s_name} severity={getSeverity(rowData.s_name)} />
     );
   };
   const statusRowFilterTemplate = (options) => {
     return (
       <Dropdown
         value={options.value}
-        options={assetStatus}
+        options={statuses}
         onChange={(e) => options.filterApplyCallback(e.value)}
         itemTemplate={statusItemTemplate}
         placeholder="สภาพ"
@@ -194,15 +239,13 @@ export default function EditAsset() {
   };
 
   const useableBodyTemplate = (rowData) => {
-    return (
-      <Tag value={rowData.u_name} severity={getUseable(rowData.useable)} />
-    );
+    return <Tag value={rowData.u_name} severity={getUseable(rowData.u_name)} />;
   };
   const useableRowFilterTemplate = (options) => {
     return (
       <Dropdown
         value={options.value}
-        options={assetStock}
+        options={useable}
         onChange={(e) => options.filterApplyCallback(e.value)}
         itemTemplate={useableItemTemplate}
         placeholder="การใช้งาน"
@@ -219,7 +262,7 @@ export default function EditAsset() {
 
   const getUseable = (status) => {
     switch (status) {
-      case 'กำลังใช้':
+      case 'ใช้งาน':
         return 'success';
 
       case 'ไม่ได้ใช้งาน':
@@ -229,6 +272,7 @@ export default function EditAsset() {
 
   const editAsset = (rowData) => {
     setAsset({ ...rowData });
+    console.log(asset.sck_name);
     setEditAssetDialog(true);
   };
 
@@ -317,15 +361,6 @@ export default function EditAsset() {
     setProduct(_product);
   };
 
-  const onInputChange = (e, name) => {
-    const val = (e.target && e.target.value) || '';
-    let _asset = { ...asset };
-
-    _asset[`${name}`] = val;
-
-    setAsset(_asset);
-  };
-
   const onInputNumberChange = (e, name) => {
     const val = e.value || 0;
     let _product = { ...product };
@@ -370,7 +405,9 @@ export default function EditAsset() {
             style={{ width: '400px' }}
           />
         </span>
-        <div className="flex gap-2">{/* <AssetFilter /> */}</div>
+        {/* <div className="flex gap-2">
+          <AssetFilter />
+        </div> */}
       </div>
       <div className="flex gap-2">
         <Button
@@ -499,7 +536,7 @@ export default function EditAsset() {
               ></Column>
 
               <Column
-                field="asset_status"
+                field="s_name"
                 header="สภาพ"
                 sortable
                 filter
@@ -509,7 +546,7 @@ export default function EditAsset() {
                 style={{ minWidth: '4rem' }}
               ></Column>
               <Column
-                field="asset_useable"
+                field="u_name"
                 header="การใช้งาน"
                 sortable
                 filter
@@ -573,16 +610,9 @@ export default function EditAsset() {
                 id="no"
                 placeholder={asset.asset_order}
                 disabled
-                onChange={(e) => onInputChange(e, 'number')}
                 required
                 autoFocus
-                className={classNames({
-                  'p-invalid': submitted && !product.number,
-                })}
               />
-              {submitted && !product.number && (
-                <small className="p-error">No. is required.</small>
-              )}
             </div>
 
             <div className="field col-start-2 col-end-5">
@@ -593,11 +623,7 @@ export default function EditAsset() {
                 id="name"
                 placeholder={asset.asset_name}
                 disabled
-                onChange={(e) => onInputChange(e, 'name')}
                 required
-                className={classNames({
-                  'p-invalid': submitted && !product.name,
-                })}
               />
             </div>
 
@@ -605,34 +631,15 @@ export default function EditAsset() {
               <label htmlFor="id" className="font-bold">
                 หมายเลขครุภัณฑ์
               </label>
-              <InputText
-                id="id"
-                placeholder={asset.asset_id}
-                disabled
-                onChange={(e) => onInputChange(e, 'id')}
-                required
-                className={classNames({
-                  'p-invalid': submitted && !product.id,
-                })}
-              />
-              {submitted && !product.id && (
-                <small className="p-error">ProductID is required.</small>
-              )}
+              <InputText id="id" placeholder={asset.asset_id} disabled />
             </div>
 
             <div className="formgrid grid">
               <div className="field col">
-                <label htmlFor="price" className="font-bold">
-                  ราคา
+                <label htmlFor="year" className="font-bold">
+                  ปีงบประมาณ
                 </label>
-                <InputNumber
-                  id="price"
-                  value={product.price}
-                  onValueChange={(e) => onInputNumberChange(e, 'price')}
-                  mode="currency"
-                  currency="THB"
-                  locale="en-US"
-                />
+                <InputText id="asset_year" disabled value={asset.asset_year} />
               </div>
             </div>
 
@@ -640,16 +647,7 @@ export default function EditAsset() {
               <label htmlFor="room" className="font-bold">
                 ประจำที่
               </label>
-              <InputText
-                id="room"
-                placeholder={asset.room_id}
-                disabled
-                onChange={(e) => onInputChange(e, 'room')}
-                required
-                className={classNames({
-                  'p-invalid': submitted && !product.room,
-                })}
-              />
+              <InputText id="room" placeholder={asset.room_id} disabled />
             </div>
 
             <div className="field">
@@ -660,7 +658,6 @@ export default function EditAsset() {
                 <Dropdown
                   placeholder={asset.sck_name}
                   disabled
-                  onChange={(e) => setAssetStatus(e.value)}
                   options={assetStock}
                   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -787,6 +784,218 @@ export default function EditAsset() {
               id="description"
               disabled
               value={product.detail}
+              required
+              rows={3}
+              cols={20}
+            />
+          </div>
+        </div>
+      </Dialog>
+
+      {/*new asset */}
+      <Dialog
+        visible={newAssetDialog}
+        style={{ width: '64rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="เพิ่มครุภัณฑ์ใหม่"
+        modal
+        className="p-fluid"
+        footer={productDialogFooter}
+        onHide={hideDialog}
+      >
+        <div className="card p-4">
+          <FileUpload
+            name="demo[]"
+            url={'/api/upload'}
+            multiple
+            accept="image/*"
+            maxFileSize={1000000}
+            emptyTemplate={<p className="m-0">อัพโหลดรูปครุภัณฑ์ที่นี่</p>}
+          />
+        </div>
+
+        <div className="card p-4">
+          <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1">
+              <label htmlFor="asset_order" className="font-bold">
+                ลำดับที่
+              </label>
+              <InputText
+                id="asset_order"
+                value={assetLstOrder}
+                placeholder={assetLstOrder}
+                onChange={(e) => onInputChange(e, 'asset_order')}
+                required
+                // autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !asset.asset_order,
+                })}
+              />
+              {submitted && !asset.asset_order && (
+                <small className="p-error">No. is required.</small>
+              )}
+            </div>
+
+            <div className="field col-start-2 col-end-5">
+              <label htmlFor="asset_name" className="font-bold">
+                ชื่อรายการ
+              </label>
+              <InputText
+                id="asset_name"
+                value={asset.asset_name}
+                onChange={(e) => onInputChange(e, 'asset_name')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !asset.asset_name,
+                })}
+              />
+              {submitted && !asset.asset_name && (
+                <small className="p-error">Name is required.</small>
+              )}
+            </div>
+
+            <div className="field">
+              <label htmlFor="asset_id" className="font-bold">
+                หมายเลขครุภัณฑ์
+              </label>
+              <InputText
+                id="asset_id"
+                // disabled
+                value={asset.asset_id}
+                onChange={(e) => onInputChange(e, 'asset_id')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !asset.asset_id,
+                })}
+              />
+              {submitted && !asset.asset_id && (
+                <small className="p-error">ProductID is required.</small>
+              )}
+            </div>
+
+            <div className="formgrid grid">
+              <div className="field col">
+                <label htmlFor="asset_year" className="font-bold">
+                  ปีงบประมาณ
+                </label>
+                <InputText
+                  id="asset_year"
+                  value={asset.asset_year}
+                  onChange={(e) => onInputChange(e, 'asset_year')}
+                />
+              </div>
+            </div>
+
+            <div className="field col-start-3 col-end-5">
+              <label htmlFor="room_id" className="font-bold">
+                ประจำที่
+              </label>
+              <InputText
+                id="room_id"
+                value={asset.room_id}
+                placeholder={asset.room_id}
+                onChange={(e) => onInputChange(e, 'room_id')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !asset.room_id,
+                })}
+              />
+              {submitted && !asset.room_id && (
+                <small className="p-error">ProductRoom is required.</small>
+              )}
+            </div>
+
+            <div className="field">
+              <label htmlFor="sck_name" className="font-bold">
+                สถานะ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  id="sck_name"
+                  value={asset.sck_name}
+                  placeholder={asset.sck_name[0]}
+                  onChange={(e) => handleOptionChange(e, 'sck_name')}
+                  options={assetStock}
+                  optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+            <div className="field">
+              <label htmlFor="s_name" className="font-bold">
+                สภาพ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  id="s_name"
+                  value={asset.s_name}
+                  placeholder={asset.s_name}
+                  onChange={(e) => handleOptionChange(e, 's_name')}
+                  options={assetStatus}
+                  optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+            <div className="field">
+              <label htmlFor="u_name" className="font-bold">
+                การใช้งาน
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  id="u_name"
+                  value={asset.u_name}
+                  placeholder={asset.u_name}
+                  onChange={(e) => handleOptionChange(e, 'u_name')}
+                  options={assetUseable}
+                  optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="category" className="font-bold">
+                ประเภทครุภัณฑ์
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={asset.category}
+                  placeholder={asset.category}
+                  onChange={(e) => handleOptionChange(e, 'category')}
+                  options={assetType}
+                  optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+            {/* <div className="field">
+              <label htmlFor="subcategory" className="font-bold">
+                ประเภทครุภัณฑ์คอมพิวเตอร์
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={asset.subcategory}
+                  placeholder={asset.subcategory}
+                  onChange={(e) => handleOptionChange(e, 'subcategory')}
+                  options={assetComType}
+                  optionLabel="subcategory"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div> */}
+          </div>
+        </div>
+
+        <div className="card p-4">
+          <div className="field">
+            <label htmlFor="description" className="font-bold">
+              หมายเหตุ
+            </label>
+            <InputTextarea
+              id="description"
+              value={product.description}
               onChange={(e) => onInputChange(e, 'description')}
               required
               rows={3}
@@ -828,7 +1037,7 @@ export default function EditAsset() {
               <InputText
                 id="order"
                 value={asset.asset_order}
-                onChange={(e) => onInputChange(e, 'order')}
+                onChange={(e) => onInputChange(e, 'asset_order')}
                 required
                 // autoFocus
                 className={classNames({
@@ -879,17 +1088,10 @@ export default function EditAsset() {
 
             <div className="formgrid grid">
               <div className="field col">
-                <label htmlFor="price" className="font-bold">
-                  ราคา
+                <label htmlFor="year" className="font-bold">
+                  ปีงบประมาณ
                 </label>
-                <InputNumber
-                  id="price"
-                  value={product.price}
-                  onValueChange={(e) => onInputNumberChange(e, 'price')}
-                  mode="currency"
-                  currency="THB"
-                  locale="en-US"
-                />
+                <InputText id="asset_year" value={asset.asset_year} />
               </div>
             </div>
 
@@ -913,79 +1115,82 @@ export default function EditAsset() {
             </div>
 
             <div className="field">
-              <label htmlFor="description" className="font-bold">
+              <label htmlFor="sck_name" className="font-bold">
                 สถานะ
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={asset.sck_name}
+                  id="sck_name"
                   value={asset.sck_name}
-                  onChange={(e) => setAssetStatus(e.value)}
+                  placeholder={asset.sck_name}
+                  onChange={(e) => handleOptionChange(e, 'sck_name')}
                   options={assetStock}
                   optionLabel="name"
                   className="w-full md:w-14rem"
                 />
               </div>
             </div>
-
             <div className="field">
-              <label htmlFor="description" className="font-bold">
-                สภาพ
-              </label>
-              <div className="card flex justify-content-center">
-                <Dropdown
-                  value={assetStatus}
-                  onChange={(e) => setAssetStatus(e.value)}
-                  options={assetStatus}
-                  optionLabel="name"
-                  placeholder={asset.s_name}
-                  className="w-full md:w-14rem"
-                />
+              <div className="field">
+                <label htmlFor="s_name" className="font-bold">
+                  สภาพ
+                </label>
+                <div className="card flex justify-content-center">
+                  <Dropdown
+                    id="s_name"
+                    value={asset.s_name}
+                    placeholder={asset.s_name}
+                    onChange={(e) => handleOptionChange(e, 's_name')}
+                    options={assetStatus}
+                    optionLabel="name"
+                    className="w-full md:w-14rem"
+                  />
+                </div>
               </div>
             </div>
-
             <div className="field">
-              <label htmlFor="description" className="font-bold">
+              <label htmlFor="u_name" className="font-bold">
                 การใช้งาน
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={assetUseable}
-                  onChange={(e) => setAssetStatus(e.value)}
+                  id="u_name"
+                  value={asset.u_name}
+                  placeholder={asset.u_name}
+                  onChange={(e) => handleOptionChange(e, 'u_name')}
                   options={assetUseable}
                   optionLabel="name"
-                  placeholder={asset.u_name}
                   className="w-full md:w-14rem"
                 />
               </div>
             </div>
 
             <div className="field">
-              <label htmlFor="description" className="font-bold">
+              <label htmlFor="category" className="font-bold">
                 ประเภทครุภัณฑ์
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={assetType}
-                  onChange={(e) => setAssetStatus(e.value)}
+                  value={asset.category}
+                  placeholder={asset.category}
+                  onChange={(e) => handleOptionChange(e, 'category')}
                   options={assetType}
                   optionLabel="name"
-                  placeholder={asset.category}
                   className="w-full md:w-14rem"
                 />
               </div>
             </div>
             <div className="field">
-              <label htmlFor="description" className="font-bold">
+              <label htmlFor="subcategory" className="font-bold">
                 ประเภทครุภัณฑ์คอมพิวเตอร์
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={selectedSubcategory}
-                  onChange={handleOptionChange}
+                  value={asset.subcategory}
+                  placeholder={asset.subcategory}
+                  onChange={(e) => handleOptionChange(e, 'subcategory')}
                   options={assetComType}
                   optionLabel="subcategory"
-                  placeholder={asset.subcategory}
                   className="w-full md:w-14rem"
                 />
               </div>
