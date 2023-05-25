@@ -446,6 +446,16 @@ export default function Remove() {
               tableStyle={{ minHeight: '10rem' }}
             >
               <Column
+                body={actionChangeStatus}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '1rem' }}
+              ></Column>
+              <Column
+                body={actionRemove}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '1rem' }}
+              ></Column>
+              <Column
                 field="order"
                 header="ลำดับ"
                 sortable
@@ -506,16 +516,6 @@ export default function Remove() {
                 filter
                 showFilterMatchModes={false}
                 style={{ minWidth: '10rem' }}
-              ></Column>
-              <Column
-                body={actionChangeStatus}
-                // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '1rem' }}
-              ></Column>
-              <Column
-                body={actionRemove}
-                // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '1rem' }}
               ></Column>
             </DataTable>
           </div>

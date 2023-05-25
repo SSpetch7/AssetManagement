@@ -28,12 +28,12 @@ export const overviewAsset = [
         iconColor: '#FFA048',
         number: 33,
       },
-      {
-        icon: <CancelIcon sx={{ fontSize: 35 }} />,
-        title: 'จำนวนสิ้นสภาพ',
-        iconColor: '#FF6666',
-        number: 44,
-      },
+      //   {
+      //     icon: <CancelIcon sx={{ fontSize: 35 }} />,
+      //     title: 'จำนวนสิ้นสภาพ',
+      //     iconColor: '#FF6666',
+      //     number: 44,
+      //   },
     ],
   },
   {
@@ -57,12 +57,12 @@ export const overviewAsset = [
         iconColor: '#FFA048',
         number: 77,
       },
-      {
-        icon: <CancelIcon sx={{ fontSize: 35 }} />,
-        title: 'จำนวนสิ้นสภาพ',
-        iconColor: '#FF6666',
-        number: 88,
-      },
+      //   {
+      //     icon: <CancelIcon sx={{ fontSize: 35 }} />,
+      //     title: 'จำนวนสิ้นสภาพ',
+      //     iconColor: '#FF6666',
+      //     number: 88,
+      //   },
     ],
   },
 ];

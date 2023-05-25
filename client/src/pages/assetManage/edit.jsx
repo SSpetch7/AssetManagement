@@ -502,6 +502,11 @@ export default function AllAsset() {
               tableStyle={{ minHeight: '10rem' }}
             >
               <Column
+                body={actionBodyTemplate}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '8rem' }}
+              ></Column>
+              <Column
                 field="asset_order"
                 header="ลำดับ"
                 sortable
@@ -562,11 +567,6 @@ export default function AllAsset() {
                 filter
                 showFilterMatchModes={false}
                 style={{ minWidth: '10rem' }}
-              ></Column>
-              <Column
-                body={actionBodyTemplate}
-                // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '6rem' }}
               ></Column>
             </DataTable>
           </div>

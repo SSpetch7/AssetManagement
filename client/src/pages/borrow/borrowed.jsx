@@ -443,6 +443,11 @@ export default function BorrowAsset() {
               tableStyle={{ minHeight: '10rem' }}
             >
               <Column
+                body={actionBodyTemplate}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '6rem' }}
+              ></Column>
+              <Column
                 field="order"
                 header="ลำดับ"
                 sortable
@@ -503,11 +508,6 @@ export default function BorrowAsset() {
                 filter
                 showFilterMatchModes={false}
                 style={{ minWidth: '10rem' }}
-              ></Column>
-              <Column
-                body={actionBodyTemplate}
-                // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '6rem' }}
               ></Column>
             </DataTable>
           </div>
