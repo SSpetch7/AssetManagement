@@ -79,7 +79,7 @@ const App = () => {
             path="/"
             element={
               <Layout>
-                <Outlet />
+                <Home />
               </Layout>
             }
           />

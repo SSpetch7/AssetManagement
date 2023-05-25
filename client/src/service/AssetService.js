@@ -25,3 +25,9 @@ export const AssetOptionService = {
     return axios.get('/asset/type/com').then((res) => res.data.data);
   },
 };
+
+export const NumService = {
+  getLstOrderAsset() {
+    return axios.get('/asset/lst/order').then((res) => res.data.data);
+  },
+};

@@ -349,7 +349,8 @@ export default function ProductsDemo() {
         //   style={{ fontSize: '16px' }}
         className="mr-2 "
         // label="ยืม"
-        icon="pi pi-gift"
+        icon="pi pi-arrow-right-arrow-left
+        "
         // severity="success"
         onClick={openNew}
       />
