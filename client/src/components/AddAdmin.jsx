@@ -5,17 +5,73 @@ import { Image } from 'primereact/image';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { FileUpload } from 'primereact/fileupload';
+import { classNames } from 'primereact/utils';
+import { AdminService } from '../service/AdminService';
 
 export default function AddUser() {
+  const [newAdmin, setNewAdmin] = useState('');
+  const [submitted, setSubmitted] = useState(false);
+  const [isValidEmail, setIsValidEmail] = useState(true);
   const [visible, setVisible] = useState(false);
+
+  function validateEmail(email) {
+    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
+    return emailRegex.test(email);
+  }
+
+  const handleInputChange = (e) => {
+    const inputValue = e.target.value;
+    setNewAdmin.admin_email(inputValue);
+    setIsValidEmail(validateEmail(inputValue));
+  };
+  const onInputChange = (e, name) => {
+    const val = (e.target && e.target.value) || '';
+    let _newAdmin = { ...newAdmin };
+    _newAdmin[`${name}`] = val;
+
+    setNewAdmin(_newAdmin);
+  };
+
+  let emptydataAmdmin = {
+    admin_username: '',
+    admin_email: '',
+  };
+  const openNew = () => {
+    setNewAdmin('');
+    setSubmitted(false);
+    setVisible(true);
+  };
+  const saveAdmin = () => {
+    setSubmitted(true);
+    AdminService.createAdmin(newAdmin);
+    setVisible(false);
+  };
+
+  const hideDialog = () => {
+    setVisible(false);
+  };
+
+  //   const handleCreateAdmin = () => {
+  //     // AdminService.createAdmin(newAdmin);
+  //     // //   .then((response) => {
+  //     // //     console.log('New admin created:', response);
+  //     // //   })
+  //     // //   .catch((error) => {
+  //     // //     console.error('Error creating admin:', error);
+  //     // //   });
+  //     // setVisible(false);
+  //   };
+
+  const createEmail = () => {};
+
   const footerContent = (
     <div>
       <Button
         label="บันทึก"
         className="p-Testbutton"
         icon="pi pi-check"
-        onClick={() => setVisible(false)}
-        autoFocus
+        // text
+        onClick={saveAdmin}
       />
     </div>
   );
@@ -35,20 +91,21 @@ export default function AddUser() {
         className="p-Addbutton"
         label="เพิ่มผู้ดูแล"
         icon="pi pi-user"
-        onClick={() => setVisible(true)}
+        onClick={openNew}
         style={{ width: '120px' }}
       />
       <Dialog
         header="เพิ่มข้อมูลผู้ดูแล"
         visible={visible}
+        modal
         style={{ width: '40vw' }}
-        onHide={() => setVisible(false)}
+        onHide={hideDialog}
         footer={footerContent}
       >
         <div className="flex flex-col pt-6">
           <div className="flex justify-center p-2">
             <Image
-              src="https://media.discordapp.net/attachments/949160978145214484/1001939245566533795/unknown.png"
+              //   src="https://media.discordapp.net/attachments/949160978145214484/1001939245566533795/unknown.png"
               alt="Image"
               width="250"
             />
@@ -68,20 +125,37 @@ export default function AddUser() {
           </div>
 
           <div className="content-evenly mt-4 ">
-            <div className="flex justify-evenly py-4">
-              <div className="mb-2 lg:col-6 lg:mb-0">
-                <span className="p-input-icon-left">
+            <div className="flex justify-evenly py-4 ">
+              <div className="flex mb-2 lg:col-6 lg:mb-0 field col-start-1">
+                <div className="p-input-icon-left">
                   <i className="pi pi-user" />
                   <InputText
+                    required
                     className="inputForm"
                     placeholder="ใส่ชื่อของผู้ดูแล"
+                    value={newAdmin.admin_username}
+                    onChange={(e) => onInputChange(e, 'admin_username')}
                   />
-                </span>
+                  {submitted && !newAdmin.admin_username && (
+                    <small className="p-error">user name is required.</small>
+                  )}
+                </div>
               </div>
               <div className="mb-2 lg:col-6 lg:mb-0">
                 <span className="p-input-icon-left">
                   <i className="pi pi-envelope" />
-                  <InputText className="inputForm" placeholder="Email" />
+                  <InputText
+                    placeholder="Email"
+                    id="email"
+                    value={newAdmin.admin_email}
+                    onChange={(e) => onInputChange(e, 'admin_email')}
+                    className={classNames({
+                      'p-invalid': submitted && !newAdmin.admin_email,
+                    })}
+                  />
+                  {submitted && !newAdmin.admin_email && (
+                    <small className="p-error">Email is required.</small>
+                  )}
                 </span>
               </div>
             </div>

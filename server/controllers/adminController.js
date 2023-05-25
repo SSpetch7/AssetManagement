@@ -9,6 +9,15 @@ const adminController = {
       res.json({ data: admins });
     });
   },
+  createAdmin: (req, res) => {
+    const adminData = req.body;
+    adminModel.createAdmin(adminData, (err, result) => {
+      if (err) {
+        return res.json({ error: 'Error creating admin' });
+      }
+      return res.json({ message: 'Admin created successfully' });
+    });
+  },
 };
 
 export default { adminController };

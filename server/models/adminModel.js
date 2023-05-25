@@ -1,10 +1,12 @@
 import db from '../config/db.js';
+import bcrypt from 'bcrypt';
 
-var Admin = (admin) => {
+var Admin = function (admin) {
   this.admin_id = admin.admin_id;
   this.admin_username = admin.admin_username;
   this.admin_email = admin.admin_email;
   this.admin_addDate = admin.admin_addDate;
+  this.role = admin.role;
 };
 
 const sqlAllAdmin =
@@ -18,6 +20,49 @@ Admin.getAllAdmin = (result) => {
       console.log('asset_detail fetching successfully');
       result(null, res);
     }
+  });
+};
+
+const generateRandomPassword = () => {
+  const length = 10; // Length of the random password
+  const characters =
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
+  let password = '';
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    password += characters.charAt(randomIndex);
+  }
+
+  return password;
+};
+
+const sql =
+  'INSERT INTO admin (admin_username, admin_email, admin_password, role) VALUES (?, ?, ?, ?)';
+Admin.createAdmin = (newAdmin, callback) => {
+  const { admin_username, admin_email } = newAdmin;
+  const admin_password = generateRandomPassword();
+  bcrypt.genSalt(10, (err, salt) => {
+    if (err) {
+      return callback(err, null);
+    }
+
+    bcrypt.hash(admin_password, salt, (err, hash) => {
+      if (err) {
+        return callback(err, null);
+      }
+
+      db.query(
+        sql,
+        [admin_username, admin_email, hash, 'admin'],
+        (err, result) => {
+          if (err) {
+            return callback(err, null);
+          }
+          return callback(null, result);
+        }
+      );
+    });
   });
 };
 

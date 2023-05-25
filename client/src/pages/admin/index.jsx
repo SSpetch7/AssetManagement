@@ -94,7 +94,6 @@ export default function Admin() {
           life: 3000,
         });
       } else {
-        _product.id = createId();
         _product.image = 'product-placeholder.svg';
         _products.push(_product);
         toast.current.show({
@@ -148,18 +147,6 @@ export default function Admin() {
     return index;
   };
 
-  const createId = () => {
-    let id = '';
-    let chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-    for (let i = 0; i < 5; i++) {
-      id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-
-    return id;
-  };
-
   const exportCSV = () => {
     dt.current.exportCSV();
   };
@@ -210,23 +197,6 @@ export default function Admin() {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        {/* <Button
-          icon="pi pi-pencil"
-          style={{ scale: ' 70%' }}
-          rounded
-          outlined
-          className="mr-2"
-          onClick={() => editProduct(rowData)}
-        /> */}
-
-        {/* <Button
-          outlined
-          icon="pi pi-calendar-times"
-          //   rounded
-          //   style={{ fontSize: '16px' }}
-          className="mr-2 "
-          onClick={() => editProduct(rowData)}
-        /> */}
         <ChangeDataAdmin />
       </React.Fragment>
     );

@@ -12,19 +12,26 @@ import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { classNames } from 'primereact/utils';
 import React, { useEffect, useRef, useState } from 'react';
-import { ProductService } from '../../../demo/service/ProductService';
+import {
+  AssetService,
+  AssetOptionService,
+  NumService,
+} from '../../service/AssetService';
 
 const Crud = () => {
   let emptyProduct = {
-    id: null,
-    name: '',
-    image: null,
-    description: '',
-    category: null,
-    price: 0,
-    quantity: 0,
-    rating: 0,
-    inventoryStatus: 'INSTOCK',
+    asset_order: '',
+    asset_id: '',
+    asset_name: '',
+    asset_year: null,
+    gallery_id: null,
+    detail: null,
+    room_id: '',
+    category: '',
+    subcategory: '',
+    sck_name: '',
+    s_name: '',
+    u_name: '',
   };
 
   const [products, setProducts] = useState(null);
@@ -39,7 +46,7 @@ const Crud = () => {
   const dt = useRef(null);
 
   useEffect(() => {
-    ProductService.getProducts().then((data) => setProducts(data));
+    AssetService.getAllAsset().then((data) => setProducts(data));
   }, []);
 
   const formatCurrency = (value) => {
@@ -408,50 +415,20 @@ const Crud = () => {
               headerStyle={{ width: '4rem' }}
             ></Column>
             <Column
-              field="code"
+              field="asset_id"
               header="Code"
               sortable
               body={codeBodyTemplate}
               headerStyle={{ minWidth: '15rem' }}
             ></Column>
             <Column
-              field="name"
+              field="asset_name"
               header="Name"
               sortable
               body={nameBodyTemplate}
               headerStyle={{ minWidth: '15rem' }}
             ></Column>
             <Column header="Image" body={imageBodyTemplate}></Column>
-            <Column
-              field="price"
-              header="Price"
-              body={priceBodyTemplate}
-              sortable
-            ></Column>
-            <Column
-              field="category"
-              header="Category"
-              sortable
-              body={categoryBodyTemplate}
-              headerStyle={{ minWidth: '10rem' }}
-            ></Column>
-            <Column
-              field="rating"
-              header="Reviews"
-              body={ratingBodyTemplate}
-              sortable
-            ></Column>
-            <Column
-              field="inventoryStatus"
-              header="Status"
-              body={statusBodyTemplate}
-              sortable
-              headerStyle={{ minWidth: '10rem' }}
-            ></Column>
-            <Column
-              body={actionBodyTemplate}
-              headerStyle={{ minWidth: '10rem' }}
-            ></Column>
           </DataTable>
 
           <Dialog
