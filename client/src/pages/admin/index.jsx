@@ -274,20 +274,7 @@ export default function Admin() {
         </span>
       </div>
       <div className="flex gap-2">
-        {/* <Button
-          label="เพิ่มผู้ดูแล"
-          icon="pi pi-plus"
-          severity="success"
-          style={{ width: '120px' }}
-          //   onClick={openNew}
-        /> */}
         <AddAdmin />
-        {/* <Button
-          label="Export"
-          icon="pi pi-upload"
-          className="p-button-help"
-          //   onClick={exportCSV}
-        /> */}
       </div>
     </div>
   );
