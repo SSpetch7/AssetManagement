@@ -376,6 +376,11 @@ export default function CheckAsset() {
               tableStyle={{ minHeight: '10rem' }}
             >
               <Column
+                body={actionBodyTemplate}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '8rem', textAlign: 'center' }}
+              ></Column>
+              <Column
                 field="order"
                 header="ลำดับ"
                 sortable
@@ -417,11 +422,6 @@ export default function CheckAsset() {
                 header="ประจำที่"
                 sortable
                 style={{ minWidth: '8rem' }}
-              ></Column>
-              <Column
-                body={actionBodyTemplate}
-                // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '8rem', textAlign: 'center' }}
               ></Column>
             </DataTable>
           </div>

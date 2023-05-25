@@ -481,6 +481,11 @@ export default function AllAsset() {
               tableStyle={{ minHeight: '10rem' }}
             >
               <Column
+                body={actionBodyTemplate}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '8rem' }}
+              ></Column>
+              <Column
                 field="order"
                 header="ลำดับ"
                 sortable
@@ -504,7 +509,6 @@ export default function AllAsset() {
                 filterPlaceholder="ค้นหาชื่อ"
                 style={{ minWidth: '18rem' }}
               ></Column>
-
               <Column
                 field="year"
                 header="ปีงบประมาณ"
@@ -513,7 +517,6 @@ export default function AllAsset() {
                 showFilterMatchModes={false}
                 style={{ minWidth: '4rem' }}
               ></Column>
-
               <Column
                 field="status"
                 header="สภาพ"
@@ -541,11 +544,6 @@ export default function AllAsset() {
                 filter
                 showFilterMatchModes={false}
                 style={{ minWidth: '10rem' }}
-              ></Column>
-              <Column
-                body={actionBodyTemplate}
-                // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '6rem' }}
               ></Column>
             </DataTable>
           </div>

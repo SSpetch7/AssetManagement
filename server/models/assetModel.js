@@ -6,7 +6,7 @@ var Asset = function (asset) {
   this.asset_name = asset.asset_name;
   this.asset_year = asset.asset_year;
   this.gallery_id = asset.gallery_id;
-  this.detail_id = asset.detail_id;
+  this.detail = asset.detail;
   this.asset_useable = asset.asset_useable;
   this.asset_stock = asset.asset_stock;
   this.asset_status = asset.asset_status;
@@ -170,6 +170,20 @@ Asset.deleteAsset = (id, result) => {
       result(null, err);
     } else {
       console.log("Error while deleting the asset");
+      result(null, res);
+    }
+  });
+};
+
+// create new asset
+const insertAsset = 'INSERT INTO asset_detail SET ?';
+Asset.createAsset = (assetReqData, result) => {
+  db.query(insertAsset, assetReqData, (err, res) => {
+    if (err) {
+      console.log('Error while inserting data', err);
+      result(null, err);
+    } else {
+      console.log('Employee created successfully');
       result(null, res);
     }
   });

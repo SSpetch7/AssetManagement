@@ -21,6 +21,23 @@ const assetController = {
       }
     });
   },
+  //   create new asset
+  createNewAsset: (req, res) => {
+    console.log('createNewAsset', req.body);
+    const assetReqData = new assetModel(req.body);
+    if (req.body.constructor === Object && Object.keys(req.body).length === 0) {
+      res.send(400).send({ success: false, message: 'Please fill all fields' });
+    } else {
+      assetModel.createAsset(assetReqData, (err, asset) => {
+        if (err) res.send(err);
+        res.json({
+          status: true,
+          message: 'Employee Created Successfully',
+          data: asset.insertId,
+        });
+      });
+    }
+  },
 };
 const optionController = {
   getStatusList: (req, res) => {

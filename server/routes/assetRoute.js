@@ -24,4 +24,7 @@ router.get('/images/:imageName', async (req, res, next) => {
 router.put('/update/:id', controller.updateController.updateAsset);
 router.delete('/delete/:id', controller.deleteController.deleteAsset);
 
+// create route
+router.post('/', controller.assetController.createNewAsset);
+
 export default router;

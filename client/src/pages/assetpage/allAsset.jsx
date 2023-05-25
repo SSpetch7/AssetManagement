@@ -23,7 +23,7 @@ import { AssetService, AssetOptionService } from '../../service/AssetService';
 export default function AllAsset() {
   let emptydataTable = {
     asset_order: '',
-    asset_id: null,
+    asset_id: '',
     asset_name: '',
     asset_year: null,
     gallery_id: null,
@@ -357,12 +357,12 @@ export default function AllAsset() {
           onClick={() => showAsset(rowData)}
         />
 
-        <Button
+        {/* <Button
           icon="pi pi-pencil"
           outlined
           className="editBnt mr-2"
           onClick={() => editAsset(rowData)}
-        />
+        /> */}
       </React.Fragment>
     );
   };
@@ -380,11 +380,9 @@ export default function AllAsset() {
             style={{ width: '400px' }}
           />
         </span>
-        <div className="flex gap-2">
-          <AssetFilter />
-        </div>
+        <div className="flex gap-2">{/* <AssetFilter /> */}</div>
       </div>
-      <div className="flex gap-2">
+      {/* <div className="flex gap-2">
         <Button
           label="เพิ่มครุภัณฑ์"
           icon="pi pi-plus"
@@ -396,7 +394,7 @@ export default function AllAsset() {
             paddingLeft: '13px',
           }}
         />
-      </div>
+      </div> */}
     </div>
   );
   const productDialogFooter = (
@@ -477,6 +475,11 @@ export default function AllAsset() {
               tableStyle={{ minHeight: '10rem' }}
             >
               <Column
+                body={actionBodyTemplate}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '6rem' }}
+              ></Column>
+              <Column
                 field="asset_order"
                 header="ลำดับ"
                 sortable
@@ -537,11 +540,6 @@ export default function AllAsset() {
                 filter
                 showFilterMatchModes={false}
                 style={{ minWidth: '10rem' }}
-              ></Column>
-              <Column
-                body={actionBodyTemplate}
-                // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '6rem' }}
               ></Column>
             </DataTable>
           </div>
