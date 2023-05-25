@@ -332,14 +332,7 @@ export default function Remove() {
           severity="danger"
           onClick={() => confirmDeleteProduct(rowData)}
         /> */}
-        <Button
-          outlined
-          icon="pi pi-calendar-times"
-          //   rounded
-          //   style={{ fontSize: '16px' }}
-          className="mr-2 "
-          onClick={() => editProduct(rowData)}
-        />
+
         <RemoveButton />
         {/* <Button
           icon="pi pi-pencil"
@@ -453,6 +446,16 @@ export default function Remove() {
               tableStyle={{ minHeight: '10rem' }}
             >
               <Column
+                body={actionChangeStatus}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '1rem' }}
+              ></Column>
+              <Column
+                body={actionRemove}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '1rem' }}
+              ></Column>
+              <Column
                 field="order"
                 header="ลำดับ"
                 sortable
@@ -513,16 +516,6 @@ export default function Remove() {
                 filter
                 showFilterMatchModes={false}
                 style={{ minWidth: '10rem' }}
-              ></Column>
-              <Column
-                body={actionChangeStatus}
-                // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '1rem' }}
-              ></Column>
-              <Column
-                body={actionRemove}
-                // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '1rem' }}
               ></Column>
             </DataTable>
           </div>

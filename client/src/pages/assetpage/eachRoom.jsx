@@ -104,7 +104,7 @@ export default function AllAsset() {
   const [typeAsset, setTypeAsset] = useState(type);
 
   const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
-  const [useable] = useState(['กำลังใช้', 'ไม่ได้ใช้งาน']);
+  const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
 
   useEffect(() => {
     dataTable.getDatas().then((data) => setProducts(data));
@@ -481,6 +481,11 @@ export default function AllAsset() {
               tableStyle={{ minHeight: '10rem' }}
             >
               <Column
+                body={actionBodyTemplate}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '8rem' }}
+              ></Column>
+              <Column
                 field="order"
                 header="ลำดับ"
                 sortable
@@ -504,7 +509,6 @@ export default function AllAsset() {
                 filterPlaceholder="ค้นหาชื่อ"
                 style={{ minWidth: '18rem' }}
               ></Column>
-
               <Column
                 field="year"
                 header="ปีงบประมาณ"
@@ -513,7 +517,6 @@ export default function AllAsset() {
                 showFilterMatchModes={false}
                 style={{ minWidth: '4rem' }}
               ></Column>
-
               <Column
                 field="status"
                 header="สภาพ"
@@ -541,11 +544,6 @@ export default function AllAsset() {
                 filter
                 showFilterMatchModes={false}
                 style={{ minWidth: '10rem' }}
-              ></Column>
-              <Column
-                body={actionBodyTemplate}
-                // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '6rem' }}
               ></Column>
             </DataTable>
           </div>
@@ -576,14 +574,12 @@ export default function AllAsset() {
               <Column
                 field="name"
                 header="ประเภท"
-                sortable
                 style={{ minWidth: '30rem' }}
               ></Column>
 
               <Column
                 field="num"
                 header="จำนวน"
-                sortable
                 style={{ minWidth: '4rem' }}
               ></Column>
             </DataTable>

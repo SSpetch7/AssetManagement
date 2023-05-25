@@ -21,7 +21,7 @@ import { dataTable } from '../../assets/dummy';
 import BorrowButton from '../../components/BorrowButton';
 import AssetFilter from '../../components/AssetFilter';
 
-export default function AllAsset() {
+export default function BorrowAsset() {
   let emptydataTable = {
     order: '',
     asset_id: '',
@@ -42,16 +42,26 @@ export default function AllAsset() {
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    name: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    name: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
     order: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-    asset_id: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
-    year: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    asset_id: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
+    year: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
     status: { value: null, matchMode: FilterMatchMode.EQUALS },
-    room_id: { operator: FilterOperator.AND, constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }] },
+    room_id: {
+      operator: FilterOperator.AND,
+      constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
+    },
     useable: { value: null, matchMode: FilterMatchMode.EQUALS },
-    
-    
-});
+  });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
   const [products, setProducts] = useState(null);
@@ -71,7 +81,6 @@ export default function AllAsset() {
   useEffect(() => {
     dataTable.getDatas().then((data) => setProducts(data));
   }, []);
-  
 
   const formatCurrency = (value) => {
     return value.toLocaleString('en-US', {
@@ -135,55 +144,75 @@ export default function AllAsset() {
   };
 
   const statusBodyTemplate = (rowData) => {
-    return <Tag value={rowData.status} severity={getSeverity(rowData.status)} />;
-};
-const statusRowFilterTemplate = (options) => {
-  return (
-      <Dropdown value={options.value} options={statuses} onChange={(e) => options.filterApplyCallback(e.value)} itemTemplate={statusItemTemplate} placeholder="สภาพ" className="p-column-filter" showClear style={{ minWidth: '12rem' }} />
-  );
-};
+    return (
+      <Tag value={rowData.status} severity={getSeverity(rowData.status)} />
+    );
+  };
+  const statusRowFilterTemplate = (options) => {
+    return (
+      <Dropdown
+        value={options.value}
+        options={statuses}
+        onChange={(e) => options.filterApplyCallback(e.value)}
+        itemTemplate={statusItemTemplate}
+        placeholder="สภาพ"
+        className="p-column-filter"
+        showClear
+        style={{ minWidth: '12rem' }}
+      />
+    );
+  };
 
-const statusItemTemplate = (option) => {
-  return <Tag value={option} severity={getSeverity(option)} />;
-};
+  const statusItemTemplate = (option) => {
+    return <Tag value={option} severity={getSeverity(option)} />;
+  };
 
-const getSeverity = (status) => {
-  switch (status) {
+  const getSeverity = (status) => {
+    switch (status) {
       case 'ใช้งานได้':
-          return 'success';
-
-      case 'กำลังซ่อม':
-          return 'info';
-
-      case 'สิ้นสภาพ':
-          return 'danger';
-
-  }
-};
-
-const useableBodyTemplate = (rowData) => {
-  return <Tag value={rowData.useable} severity={getUseable(rowData.useable)} />;
-};
-const useableRowFilterTemplate = (options) => {
-return (
-    <Dropdown value={options.value} options={useable} onChange={(e) => options.filterApplyCallback(e.value)} itemTemplate={useableItemTemplate} placeholder="การใช้งาน" className="p-column-filter" showClear style={{ minWidth: '12rem' }} />
-);
-};
-
-const useableItemTemplate = (option) => {
-return <Tag value={option} severity={getUseable(option)} />;
-};
-
-const getUseable = (status) => {
-switch (status) {
-    case 'กำลังใช้':
         return 'success';
 
-    case 'ไม่ได้ใช้งาน':
-        return 'danger';
+      case 'กำลังซ่อม':
+        return 'info';
 
-}
-};
+      case 'สิ้นสภาพ':
+        return 'danger';
+    }
+  };
+
+  const useableBodyTemplate = (rowData) => {
+    return (
+      <Tag value={rowData.useable} severity={getUseable(rowData.useable)} />
+    );
+  };
+  const useableRowFilterTemplate = (options) => {
+    return (
+      <Dropdown
+        value={options.value}
+        options={useable}
+        onChange={(e) => options.filterApplyCallback(e.value)}
+        itemTemplate={useableItemTemplate}
+        placeholder="การใช้งาน"
+        className="p-column-filter"
+        showClear
+        style={{ minWidth: '12rem' }}
+      />
+    );
+  };
+
+  const useableItemTemplate = (option) => {
+    return <Tag value={option} severity={getUseable(option)} />;
+  };
+
+  const getUseable = (status) => {
+    switch (status) {
+      case 'กำลังใช้':
+        return 'success';
+
+      case 'ไม่ได้ใช้งาน':
+        return 'danger';
+    }
+  };
 
   const editProduct = (product) => {
     setProduct({ ...product });
@@ -282,7 +311,6 @@ switch (status) {
     setProduct(_product);
   };
 
-
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
@@ -317,11 +345,10 @@ switch (status) {
           outlined
           className="editBnt mr-2"
           onClick={() => editProduct(rowData)}
-        /> */}                 
+        /> */}
       </React.Fragment>
     );
   };
-
 
   const header = (
     <div className="flex  flex-wrap gap-2 align-items-center justify-between">
@@ -339,26 +366,6 @@ switch (status) {
         <div className="flex gap-2">
           <AssetFilter />
         </div>
-      </div>
-      <div className="flex gap-2">
-        <Button
-          label="เพิ่มครุภัณฑ์"
-          icon="pi pi-plus"
-          severity="success"
-          onClick={openNew}
-          style={{
-            minWidth: '2rem',
-            paddingRight: '13px',
-            paddingLeft: '13px',
-          }}
-        />
-        {/* <Button
-          label="Export"
-          icon="pi pi-upload"
-          className="p-button-help"
-          onClick={exportCSV}
-          style={{ width: '120px' }}
-        /> */}
       </div>
     </div>
   );
@@ -412,9 +419,9 @@ switch (status) {
       <div className="mt-12">
         <div className="pb-10">
           <span className="pl-32 font-bold  text-4xl text-gray-600 items-start">
-            All Asset
+            Borrow Asset
           </span>
-          <span className="pl-2  text-gray-400">ครุภัณฑ์ทั้งหมด</span>
+          <span className="pl-2  text-gray-400">ยืมครุภัณฑ์ส่วนกลาง</span>
         </div>
         <div className="flex justify-center h-full ">
           <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
@@ -435,6 +442,11 @@ switch (status) {
               //   scrollHeight="700px"
               tableStyle={{ minHeight: '10rem' }}
             >
+              <Column
+                body={actionBodyTemplate}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '6rem' }}
+              ></Column>
               <Column
                 field="order"
                 header="ลำดับ"
@@ -468,7 +480,7 @@ switch (status) {
                 showFilterMatchModes={false}
                 style={{ minWidth: '4rem' }}
               ></Column>
-              
+
               <Column
                 field="status"
                 header="สภาพ"
@@ -497,11 +509,6 @@ switch (status) {
                 showFilterMatchModes={false}
                 style={{ minWidth: '10rem' }}
               ></Column>
-              <Column
-                body={actionBodyTemplate}
-                // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '6rem' }}
-              ></Column>
             </DataTable>
           </div>
         </div>
@@ -510,7 +517,6 @@ switch (status) {
       <div className="m-16">
         <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
       </div>
-      
     </div>
   );
 }

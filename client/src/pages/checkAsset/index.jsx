@@ -238,14 +238,13 @@ export default function CheckAsset() {
           className="mr-2 "
           onClick={() => editProduct(rowData)}
         /> */}
-        <BorrowButton />
-        {/* <Button
-          icon="pi pi-pencil"
-          //   rounded
+        {/* <BorrowButton /> */}
+        <Button
+          icon="pi pi-check-square"
           outlined
-          className="editBnt mr-2"
-          onClick={() => editProduct(rowData)}
-        /> */}
+          className=" mr-2 "
+          //   onClick={() => editProduct(rowData)}
+        />
       </React.Fragment>
     );
   };
@@ -376,6 +375,11 @@ export default function CheckAsset() {
               tableStyle={{ minHeight: '10rem' }}
             >
               <Column
+                body={actionBodyTemplate}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '8rem', textAlign: 'center' }}
+              ></Column>
+              <Column
                 field="order"
                 header="ลำดับ"
                 sortable
@@ -417,11 +421,6 @@ export default function CheckAsset() {
                 header="ประจำที่"
                 sortable
                 style={{ minWidth: '8rem' }}
-              ></Column>
-              <Column
-                body={actionBodyTemplate}
-                // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '8rem', textAlign: 'center' }}
               ></Column>
             </DataTable>
           </div>

@@ -15,7 +15,6 @@ import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { Calendar } from 'primereact/calendar';
 import { Galleria } from 'primereact/galleria';
-import { TestPhoto } from 'assets/testphoto';
 
 export default function ProductsDemo() {
   let emptyProduct = {
@@ -68,10 +67,6 @@ export default function ProductsDemo() {
       numVisible: 1,
     },
   ];
-
-  useEffect(() => {
-    TestPhoto.getImages().then((data) => setImages(data));
-  }, []);
 
   const formatCurrency = (value) => {
     return value.toLocaleString('en-US', {
@@ -277,7 +272,13 @@ export default function ProductsDemo() {
 
   const productDialogFooter = (
     <React.Fragment>
-      <Button label="ยกเลิก" icon="pi pi-times" severity="danger" outlined onClick={hideDialog} />
+      <Button
+        label="ยกเลิก"
+        icon="pi pi-times"
+        severity="danger"
+        outlined
+        onClick={hideDialog}
+      />
       <Button
         label="ยืนยัน"
         icon="pi pi-check"
@@ -348,7 +349,8 @@ export default function ProductsDemo() {
         //   style={{ fontSize: '16px' }}
         className="mr-2 "
         // label="ยืม"
-        icon="pi pi-gift"
+        icon="pi pi-arrow-right-arrow-left
+        "
         // severity="success"
         onClick={openNew}
       />
