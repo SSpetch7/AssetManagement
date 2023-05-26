@@ -11,6 +11,10 @@ router.get('/state/stock', controller.optionController.getStockList);
 router.get('/state/useable', controller.optionController.getUseableList);
 router.get('/v1/types', controller.optionController.getTypeAssetList);
 router.get('/type/com', controller.optionController.getTypeComList);
+
+// router.get('/lst/order', controller.optionController.getTypeComList);
+router.get('/lst/order', controller.numController.getLatestOrderList);
+
 router.get('/images/:imageName', async (req, res, next) => {
   try {
     const imageName = req.params.imageName;
@@ -21,5 +25,10 @@ router.get('/images/:imageName', async (req, res, next) => {
     next(error);
   }
 });
+router.put('/update/:id', controller.updateController.updateAsset);
+router.delete('/delete/:id', controller.deleteController.deleteAsset);
+
+// create route
+router.post('/', controller.assetController.createNewAsset);
 
 export default router;

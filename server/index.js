@@ -14,6 +14,7 @@ import connection from './config/db.js';
 import assetRoutes from './routes/assetRoute.js';
 
 import adminRoutes from './routes/adminRoute.js';
+import chartRoutes from './routes/chartRoute.js';
 
 // CONFIGURATION
 
@@ -39,8 +40,9 @@ const salt = 10;
 dotenv.config();
 
 /* ROUTES */
-app.use('/asset', assetRoutes);
 app.use('/admin', adminRoutes);
+app.use('/asset', assetRoutes);
+app.use('/chart', chartRoutes);
 
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, function (req, res) {
