@@ -21,23 +21,38 @@ import AssetFilter from '../../components/AssetFilter';
 import {
   AssetService,
   AssetOptionService,
-  //   NumService,
+  UpdateAssetService,
 } from '../../service/AssetService';
 
 export default function AllAsset() {
   let emptydataTable = {
     asset_order: null,
-    asset_id: null,
+    asset_id: '',
     asset_name: '',
-    asset_year: null,
+    asset_year: '',
     gallery_id: null,
     detail: null,
-    room_id: '',
+    room_id: null,
     category: '',
     subcategory: '',
     sck_name: '',
     s_name: '',
     u_name: '',
+  };
+
+  let emptyDataAssetDetail = {
+    asset_order: null,
+    asset_id: '',
+    asset_name: '',
+    asset_year: '',
+    gallery_id: null,
+    detail: null,
+    room_id: null,
+    cate_id: null,
+    sub_id: null,
+    asset_stock: null,
+    asset_status: null,
+    asset_useable: null,
   };
 
   //   const [productStatus, setProductStatus] = useState(null);
@@ -77,6 +92,7 @@ export default function AllAsset() {
 
   //  asset edit data
   const [asset, setAsset] = useState(emptydataTable);
+  const [assetDetail, setAssetDetail] = useState(emptyDataAssetDetail);
 
   // asset data
   const [assets, setAssets] = useState();
@@ -113,16 +129,36 @@ export default function AllAsset() {
     AssetOptionService.getTypeAsset().then((data) => setAssetType(data));
     AssetOptionService.getTypeCom().then((data) => setAssetComType(data));
     console.log(assetLstOrder + ' test oder1');
-    console.log(assets);
-    console.log(assetStatus);
   }, []);
 
+  useEffect(() => {
+    UpdateAssetService.updateAsset(
+      assetDetail.asset_id,
+      assetDetail,
+      (error, updateAsset) => {
+        if (error) {
+          console.log('Error updating to DB admin:', error);
+        } else {
+          console.log('Assset updated to DB successfully:', updateAsset);
+        }
+      }
+    );
+  }, [assetDetail]);
+
   //   edit asset data
+  const onInputChangeOrder = (e, name) => {
+    const val = e.value;
+    let _asset = { ...asset };
+    _asset[`${name}`] = val;
+    setAsset(_asset);
+  };
+
   const onInputChange = (e, name) => {
     const val = (e.target && e.target.value) || '';
     let _asset = { ...asset };
 
-    console.log('test input');
+    let _assetDetail = { ...assetDetail };
+    _assetDetail[`${name}`] = val;
 
     _asset[`${name}`] = val;
 
@@ -133,11 +169,7 @@ export default function AllAsset() {
 
   const handleOptionChange = (e, name) => {
     let _asset = { ...asset };
-    console.log('test');
-    console.log(name);
-
     _asset[`${name}`] = e.value;
-    console.log(_asset);
     setAsset(_asset);
   };
 
@@ -189,13 +221,124 @@ export default function AllAsset() {
           life: 3000,
         });
       }
-
       setAssets(_assets);
-      console.log(_assets);
+      setAsset(_asset);
+      console.log('_asset');
+      console.log(asset);
+      upDateToDB(asset);
       setEditAssetDialog(false);
       setNewAssetDialog(false);
+
       setAsset(emptydataTable);
     }
+    console.log('null ???');
+    console.log(assetDetail);
+    // setAssetDetail();
+  };
+
+  const upDateToDB = (assetData) => {
+    let _assetData = { ...assetData };
+    let _assetDetail = { ...assetDetail };
+
+    const keysToUpdate = [
+      'asset_order',
+      'asset_id',
+      'asset_name',
+      'asset_year',
+      'gallery_id',
+      'detail',
+      'room_id',
+    ];
+    keysToUpdate.forEach((key) => {
+      if (_assetData.hasOwnProperty(key)) {
+        _assetDetail[key] = _assetData[key];
+      }
+    });
+
+    if (_assetData['sck_name']) {
+      switch (_assetData['sck_name']) {
+        case 'มีให้ตรวจสอบ':
+          _assetDetail['asset_stock'] = 1;
+          break;
+        case 'ไม่มีให้ตรวจสอบ':
+          _assetDetail['asset_stock'] = 2;
+          break;
+
+        default:
+          console.log('ใช้ค่าเดิม sck');
+      }
+    }
+    if (_assetData['s_name']) {
+      switch (_assetData['s_name']) {
+        case 'ใช้งานได้':
+          _assetDetail['asset_status'] = 1;
+          break;
+        case 'รอซ่อม':
+          _assetDetail['asset_status'] = 2;
+          break;
+        case 'สิ้นสภาพ':
+          _assetDetail['asset_status'] = 3;
+          break;
+        case 'แทงจำหน่าย':
+          _assetDetail['asset_status'] = 4;
+          break;
+        default:
+          console.log('ใช้ค่าเดิม s');
+      }
+    }
+    if (_assetData['u_name']) {
+      switch (_assetData['u_name']) {
+        case 'ใช้งาน':
+          _assetDetail['asset_useable'] = 1;
+          break;
+        case 'ไม่ได้ใช้งาน':
+          _assetDetail['asset_useable'] = 2;
+          break;
+        default:
+          console.log('ใช้ค่าเดิม u');
+      }
+    }
+    if (_assetData['category']) {
+      switch (_assetData['category']) {
+        case 'สำนักงาน':
+          _assetDetail['cate_id'] = 1;
+          break;
+        case 'การศึกษา':
+          _assetDetail['cate_id'] = 2;
+          break;
+        case 'คอมพิวเตอร์':
+          _assetDetail['cate_id'] = 3;
+          break;
+        case 'อาคารสำนักงาน':
+          _assetDetail['cate_id'] = 4;
+          break;
+        case 'อื่น ๆ ':
+          _assetDetail['cate_id'] = 5;
+          break;
+        default:
+          console.log('ใช้ค่าเดิม');
+      }
+    }
+    if (_assetData['subcategory']) {
+      switch (_assetData['subcategory']) {
+        case 'เครื่องคอมพิวเตอร์':
+          _assetDetail['sub_id'] = 1;
+          break;
+        case 'โน๊ตบุ๊ค':
+          _assetDetail['sub_id'] = 2;
+          break;
+        case 'แท็บเล็ต':
+          _assetDetail['sub_id'] = 3;
+          break;
+        default:
+          console.log('ใช้ค่าเดิม');
+      }
+    }
+    console.log('_assetData');
+    console.log(_assetData);
+    console.log('_assetDetail');
+    console.log(_assetDetail);
+    setAssetDetail(_assetDetail);
   };
 
   const statusBodyTemplate = (rowData) => {
@@ -351,22 +494,6 @@ export default function AllAsset() {
     });
   };
 
-  const onCategoryChange = (e) => {
-    let _product = { ...product };
-
-    _product['category'] = e.value;
-    setProduct(_product);
-  };
-
-  const onInputNumberChange = (e, name) => {
-    const val = e.value || 0;
-    let _product = { ...product };
-
-    _product[`${name}`] = val;
-
-    setProduct(_product);
-  };
-
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
@@ -391,7 +518,6 @@ export default function AllAsset() {
 
   const header = (
     <div className="flex  flex-wrap gap-2 align-items-center justify-between">
-      {/* <h4 className="m-0">จัดการครุภัณฑ์</h4> */}
       <div className="flex">
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
@@ -402,9 +528,6 @@ export default function AllAsset() {
             style={{ width: '400px' }}
           />
         </span>
-        {/* <div className="flex gap-2">
-          <AssetFilter />
-        </div> */}
       </div>
       <div className="flex gap-2">
         <Button
@@ -603,7 +726,7 @@ export default function AllAsset() {
               <label htmlFor="name" className="font-bold">
                 ลำดับที่
               </label>
-              <InputText
+              <InputNumber
                 id="no"
                 placeholder={asset.asset_order}
                 disabled
@@ -636,7 +759,11 @@ export default function AllAsset() {
                 <label htmlFor="year" className="font-bold">
                   ปีงบประมาณ
                 </label>
-                <InputText id="asset_year" disabled value={asset.asset_year} />
+                <InputNumber
+                  id="asset_year"
+                  disabled
+                  value={asset.asset_year}
+                />
               </div>
             </div>
 
@@ -870,7 +997,7 @@ export default function AllAsset() {
                 <label htmlFor="asset_year" className="font-bold">
                   ปีงบประมาณ
                 </label>
-                <InputText
+                <InputNumber
                   id="asset_year"
                   value={asset.asset_year}
                   onChange={(e) => onInputChange(e, 'asset_year')}
@@ -905,7 +1032,7 @@ export default function AllAsset() {
                 <Dropdown
                   id="sck_name"
                   value={asset.sck_name}
-                  placeholder={asset.sck_name[0]}
+                  placeholder={asset.sck_name}
                   onChange={(e) => handleOptionChange(e, 'sck_name')}
                   options={assetStock}
                   optionLabel="name"
@@ -1029,7 +1156,7 @@ export default function AllAsset() {
                 id="order"
                 useGrouping={false}
                 value={asset.asset_order}
-                onChange={(e) => onInputChange(e, 'asset_order')}
+                onChange={(e) => onInputChangeOrder(e, 'asset_order')}
                 required
                 // autoFocus
                 className={classNames({
@@ -1077,7 +1204,12 @@ export default function AllAsset() {
                 <label htmlFor="year" className="font-bold">
                   ปีงบประมาณ
                 </label>
-                <InputText id="asset_year" value={asset.asset_year} />
+                <InputNumber
+                  id="asset_year"
+                  useGrouping={false}
+                  onChange={(e) => onInputChangeOrder(e, 'asset_year')}
+                  value={asset.asset_year}
+                />
               </div>
             </div>
 
@@ -1105,7 +1237,7 @@ export default function AllAsset() {
                   placeholder={asset.sck_name}
                   onChange={(e) => handleOptionChange(e, 'sck_name')}
                   options={assetStock}
-                  optionLabel="name"
+                  //   optionLabel="name"
                   className="w-full md:w-14rem"
                 />
               </div>
@@ -1122,7 +1254,7 @@ export default function AllAsset() {
                     placeholder={asset.s_name}
                     onChange={(e) => handleOptionChange(e, 's_name')}
                     options={assetStatus}
-                    optionLabel="name"
+                    // optionLabel="name"
                     className="w-full md:w-14rem"
                   />
                 </div>
@@ -1139,7 +1271,7 @@ export default function AllAsset() {
                   placeholder={asset.u_name}
                   onChange={(e) => handleOptionChange(e, 'u_name')}
                   options={assetUseable}
-                  optionLabel="name"
+                  //   optionLabel="name"
                   className="w-full md:w-14rem"
                 />
               </div>

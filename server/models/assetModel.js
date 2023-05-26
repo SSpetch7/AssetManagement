@@ -62,7 +62,8 @@ Asset.getAssetByID = (id, callback) => {
   });
 };
 
-const statusState = 'SELECT status_name as name FROM status_state';
+const statusState =
+  'SELECT status_name as name FROM status_state WHERE status_id < 4';
 Asset.getStatusState = (result) => {
   db.query(statusState, (err, res) => {
     if (err) {
@@ -74,6 +75,8 @@ Asset.getStatusState = (result) => {
         return values.concat(Object.values(row));
       }, []);
       return result(null, statusValues);
+      //   console.log('Asset fetching successfully');
+      //   result(null, res);
     }
   });
 };
@@ -86,7 +89,10 @@ Asset.getStockState = (result) => {
       result(null, err);
     } else {
       console.log('Asset fetching successfully');
-      result(null, res);
+      const statusValues = res.reduce((values, row) => {
+        return values.concat(Object.values(row));
+      }, []);
+      return result(null, statusValues);
     }
   });
 };
@@ -103,6 +109,8 @@ Asset.getUseableState = (result) => {
         return values.concat(Object.values(row));
       }, []);
       return result(null, useableValues);
+      //   console.log('Asset fetching successfully');
+      //   result(null, res);
     }
   });
 };
