@@ -26,7 +26,7 @@ import {
 
 export default function AllAsset() {
   let emptydataTable = {
-    asset_order: '',
+    asset_order: null,
     asset_id: null,
     asset_name: '',
     asset_year: null,
@@ -178,13 +178,10 @@ export default function AllAsset() {
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
-          detail: 'Asset Updated',
-          life: 3000,
+          detail: 'อัพเดทครุภัณฑ์สำเร็จ',
+          life: 1000,
         });
-      } else {
-        _asset.asset_id = createId();
-        _asset.image = 'product-placeholder.svg';
-        _assets.push(_asset);
+      } else if (asset.asset_id === '0') {
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
@@ -821,7 +818,7 @@ export default function AllAsset() {
               <label htmlFor="asset_order" className="font-bold">
                 ลำดับที่
               </label>
-              <InputText
+              <InputNumber
                 id="asset_order"
                 value={assetLstOrder}
                 placeholder={assetLstOrder}
@@ -865,13 +862,7 @@ export default function AllAsset() {
                 value={asset.asset_id}
                 onChange={(e) => onInputChange(e, 'asset_id')}
                 required
-                className={classNames({
-                  'p-invalid': submitted && !asset.asset_id,
-                })}
               />
-              {submitted && !asset.asset_id && (
-                <small className="p-error">ProductID is required.</small>
-              )}
             </div>
 
             <div className="formgrid grid">
@@ -1034,8 +1025,9 @@ export default function AllAsset() {
               <label htmlFor="name" className="font-bold">
                 ลำดับที่
               </label>
-              <InputText
+              <InputNumber
                 id="order"
+                useGrouping={false}
                 value={asset.asset_order}
                 onChange={(e) => onInputChange(e, 'asset_order')}
                 required
@@ -1077,13 +1069,7 @@ export default function AllAsset() {
                 value={asset.asset_id}
                 onChange={(e) => onInputChange(e, 'asset_id')}
                 required
-                className={classNames({
-                  'p-invalid': submitted && !asset.asset_id,
-                })}
               />
-              {submitted && !asset.asset_id && (
-                <small className="p-error">ProductID is required.</small>
-              )}
             </div>
 
             <div className="formgrid grid">
@@ -1105,13 +1091,7 @@ export default function AllAsset() {
                 value={asset.room_id}
                 onChange={(e) => onInputChange(e, 'room')}
                 required
-                className={classNames({
-                  'p-invalid': submitted && !asset.room_id,
-                })}
               />
-              {submitted && !asset.room_id && (
-                <small className="p-error">ProductRoom is required.</small>
-              )}
             </div>
 
             <div className="field">
