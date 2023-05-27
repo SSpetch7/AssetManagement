@@ -33,10 +33,15 @@ export default function AllAsset() {
     gallery_id: null,
     detail: null,
     room_id: null,
+    categoryID: null,
     category: '',
+    subcategoryID: null,
     subcategory: '',
+    sck_id: null,
     sck_name: '',
+    s_id: null,
     s_name: '',
+    u_id: null,
     u_name: '',
   };
 
@@ -89,13 +94,14 @@ export default function AllAsset() {
   // asset new data
   const [newAssetDialog, setNewAssetDialog] = useState(false);
   const [assetLstOrder, setAssetLstOrder] = useState();
+  const [assetCreateNew, setAssetCreateNew] = useState(null);
 
   //  asset edit data
   const [asset, setAsset] = useState(emptydataTable);
   const [assetDetail, setAssetDetail] = useState(emptyDataAssetDetail);
 
   // asset data
-  const [assets, setAssets] = useState();
+  const [assets, setAssets] = useState(null);
   const [galleries, setGalleries] = useState(null);
   const [assetStatus, setAssetStatus] = useState();
   const [assetStock, setAssetStock] = useState(null);
@@ -143,10 +149,17 @@ export default function AllAsset() {
         }
       }
     );
-  }, [assetDetail]);
+    UpdateAssetService.newAsset(assetCreateNew, (error, updateAsset) => {
+      if (error) {
+        console.log('Error new create to DB admin:', error);
+      } else {
+        console.log('Assset new create to DB successfully:', updateAsset);
+      }
+    });
+  }, [assetDetail, assetCreateNew]);
 
   //   edit asset data
-  const onInputChangeOrder = (e, name) => {
+  const onInputChangeNumber = (e, name) => {
     const val = e.value;
     let _asset = { ...asset };
     _asset[`${name}`] = val;
@@ -196,9 +209,35 @@ export default function AllAsset() {
     setDeleteProductsDialog(false);
   };
 
-  const saveAsset = () => {
+  const saveNewAsset = () => {
+    let type = 'NEWASSET';
     setSubmitted(true);
 
+    if (asset.asset_name.trim()) {
+      let _assets = [...assets];
+      let _asset = { ...asset };
+      console.log('_asset');
+      console.log(_asset);
+      _assets.push(_asset);
+      toast.current.show({
+        severity: 'success',
+        summary: 'Successful',
+        detail: 'เพิ่มครุภัณฑ์ใหม่สำเร็จ',
+        life: 3000,
+      });
+      console.log('push');
+      setAssets(_assets);
+      console.log(_assets);
+      setAsset(_asset);
+      upDateToDB(_asset, type);
+      setNewAssetDialog(false);
+      setAsset(emptydataTable);
+    }
+  };
+
+  const saveUpDateAsset = () => {
+    setSubmitted(true);
+    let type = 'UPDATEASSET';
     if (asset.asset_name.trim()) {
       let _assets = [...assets];
       let _asset = { ...asset };
@@ -223,20 +262,18 @@ export default function AllAsset() {
       }
       setAssets(_assets);
       setAsset(_asset);
-      console.log('_asset');
-      console.log(asset);
-      upDateToDB(asset);
+      upDateToDB(_asset, type);
       setEditAssetDialog(false);
       setNewAssetDialog(false);
 
       setAsset(emptydataTable);
     }
     console.log('null ???');
-    console.log(assetDetail);
+    console.log(asset);
     // setAssetDetail();
   };
 
-  const upDateToDB = (assetData) => {
+  const upDateToDB = (assetData, type) => {
     let _assetData = { ...assetData };
     let _assetDetail = { ...assetDetail };
 
@@ -334,11 +371,13 @@ export default function AllAsset() {
           console.log('ใช้ค่าเดิม');
       }
     }
+    if (type === 'UPDATEASSET') {
+      setAssetDetail(_assetDetail);
+    } else if (type === 'NEWASSET') {
+      setAssetCreateNew(_assetDetail);
+    }
     console.log('_assetData');
     console.log(_assetData);
-    console.log('_assetDetail');
-    console.log(_assetDetail);
-    setAssetDetail(_assetDetail);
   };
 
   const statusBodyTemplate = (rowData) => {
@@ -544,7 +583,7 @@ export default function AllAsset() {
       </div>
     </div>
   );
-  const productDialogFooter = (
+  const newAssetDialogFooter = (
     <React.Fragment>
       <Button
         label="ยกเลิก"
@@ -557,7 +596,24 @@ export default function AllAsset() {
         label="ยืนยัน"
         icon="pi pi-check"
         className="p-Testbutton"
-        onClick={saveAsset}
+        onClick={saveNewAsset}
+      />
+    </React.Fragment>
+  );
+  const upDateAssetDialogFooter = (
+    <React.Fragment>
+      <Button
+        label="ยกเลิก"
+        icon="pi pi-times"
+        severity="danger"
+        outlined
+        onClick={hideDialog}
+      />
+      <Button
+        label="ยืนยัน"
+        icon="pi pi-check"
+        className="p-Testbutton"
+        onClick={saveUpDateAsset}
       />
     </React.Fragment>
   );
@@ -728,6 +784,7 @@ export default function AllAsset() {
               </label>
               <InputNumber
                 id="no"
+                useGrouping={false}
                 placeholder={asset.asset_order}
                 disabled
                 required
@@ -760,6 +817,7 @@ export default function AllAsset() {
                   ปีงบประมาณ
                 </label>
                 <InputNumber
+                  useGrouping={false}
                   id="asset_year"
                   disabled
                   value={asset.asset_year}
@@ -825,7 +883,7 @@ export default function AllAsset() {
                 <Dropdown
                   placeholder={asset.category}
                   disabled
-                  optionLabel="name"
+                  //   optionLabel="name"
                   className="w-full md:w-14rem"
                 />
               </div>
@@ -924,7 +982,7 @@ export default function AllAsset() {
         header="เพิ่มครุภัณฑ์ใหม่"
         modal
         className="p-fluid"
-        footer={productDialogFooter}
+        footer={newAssetDialogFooter}
         onHide={hideDialog}
       >
         <div className="card p-4">
@@ -948,8 +1006,9 @@ export default function AllAsset() {
               <InputNumber
                 id="asset_order"
                 value={assetLstOrder}
+                useGrouping={false}
                 placeholder={assetLstOrder}
-                onChange={(e) => onInputChange(e, 'asset_order')}
+                onChange={(e) => onInputChangeNumber(e, 'asset_order')}
                 required
                 // autoFocus
                 className={classNames({
@@ -999,8 +1058,9 @@ export default function AllAsset() {
                 </label>
                 <InputNumber
                   id="asset_year"
+                  useGrouping={false}
                   value={asset.asset_year}
-                  onChange={(e) => onInputChange(e, 'asset_year')}
+                  onChange={(e) => onInputChangeNumber(e, 'asset_year')}
                 />
               </div>
             </div>
@@ -1035,7 +1095,7 @@ export default function AllAsset() {
                   placeholder={asset.sck_name}
                   onChange={(e) => handleOptionChange(e, 'sck_name')}
                   options={assetStock}
-                  optionLabel="name"
+                  //   optionLabel="name"
                   className="w-full md:w-14rem"
                 />
               </div>
@@ -1051,7 +1111,7 @@ export default function AllAsset() {
                   placeholder={asset.s_name}
                   onChange={(e) => handleOptionChange(e, 's_name')}
                   options={assetStatus}
-                  optionLabel="name"
+                  //   optionLabel="name"
                   className="w-full md:w-14rem"
                 />
               </div>
@@ -1067,7 +1127,7 @@ export default function AllAsset() {
                   placeholder={asset.u_name}
                   onChange={(e) => handleOptionChange(e, 'u_name')}
                   options={assetUseable}
-                  optionLabel="name"
+                  //   optionLabel="name"
                   className="w-full md:w-14rem"
                 />
               </div>
@@ -1083,12 +1143,12 @@ export default function AllAsset() {
                   placeholder={asset.category}
                   onChange={(e) => handleOptionChange(e, 'category')}
                   options={assetType}
-                  optionLabel="name"
+                  //   optionLabel="name"
                   className="w-full md:w-14rem"
                 />
               </div>
             </div>
-            {/* <div className="field">
+            <div className="field">
               <label htmlFor="subcategory" className="font-bold">
                 ประเภทครุภัณฑ์คอมพิวเตอร์
               </label>
@@ -1102,7 +1162,7 @@ export default function AllAsset() {
                   className="w-full md:w-14rem"
                 />
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
 
@@ -1131,7 +1191,7 @@ export default function AllAsset() {
         header="แก้ไขครุภัณฑ์"
         modal
         className="p-fluid"
-        footer={productDialogFooter}
+        footer={upDateAssetDialogFooter}
         onHide={hideDialog}
       >
         <div className="card p-4">
@@ -1156,7 +1216,7 @@ export default function AllAsset() {
                 id="order"
                 useGrouping={false}
                 value={asset.asset_order}
-                onChange={(e) => onInputChangeOrder(e, 'asset_order')}
+                onChange={(e) => onInputChangeNumber(e, 'asset_order')}
                 required
                 // autoFocus
                 className={classNames({
@@ -1207,7 +1267,7 @@ export default function AllAsset() {
                 <InputNumber
                   id="asset_year"
                   useGrouping={false}
-                  onChange={(e) => onInputChangeOrder(e, 'asset_year')}
+                  onChange={(e) => onInputChangeNumber(e, 'asset_year')}
                   value={asset.asset_year}
                 />
               </div>
@@ -1287,7 +1347,7 @@ export default function AllAsset() {
                   placeholder={asset.category}
                   onChange={(e) => handleOptionChange(e, 'category')}
                   options={assetType}
-                  optionLabel="name"
+                  //   optionLabel="name"
                   className="w-full md:w-14rem"
                 />
               </div>
