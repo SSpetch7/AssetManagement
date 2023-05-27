@@ -16,7 +16,7 @@ var Room = (asset) => {
 };
 
 const roomGroupBy =
-  'SELECT room_id as room_name FROM asset_detail GROUP BY room_id ORDER BY room_id';
+  'SELECT room_id as room_name FROM asset_detail WHERE room_id IS NOT NULL GROUP BY room_id ORDER BY room_id ';
 Room.getRoom = (result) => {
   db.query(roomGroupBy, (err, res) => {
     if (err) {
