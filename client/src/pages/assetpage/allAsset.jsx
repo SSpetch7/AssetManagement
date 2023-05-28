@@ -35,17 +35,10 @@ export default function AllAsset() {
     room_id: '',
     category: '',
     subcategory: '',
-    sck_name: '',
-    s_name: '',
-    u_name: '',
+    asset_stock: '',
+    asset_status: '',
+    asset_useable: '',
   };
-
-  //   const [productStatus, setProductStatus] = useState(null);
-  //   const status = [
-  //     { name: 'ใช่งานได้', code: 'CU' },
-  //     { name: 'รอซ่อม', code: 'FX' },
-  //     { name: 'สิ้นสภาพ', code: 'BK' },
-  //   ];
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -62,12 +55,12 @@ export default function AllAsset() {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    s_name: { value: null, matchMode: FilterMatchMode.EQUALS },
+    asset_status: { value: null, matchMode: FilterMatchMode.EQUALS },
     room_id: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    u_name: { value: null, matchMode: FilterMatchMode.EQUALS },
+    asset_useable: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
@@ -203,7 +196,10 @@ export default function AllAsset() {
 
   const statusBodyTemplate = (rowData) => {
     return (
-      <Tag value={rowData.s_name} severity={getSeverity(rowData.s_name)} />
+      <Tag
+        value={rowData.asset_status}
+        severity={getSeverity(rowData.asset_status)}
+      />
     );
   };
   const statusRowFilterTemplate = (options) => {
@@ -239,7 +235,12 @@ export default function AllAsset() {
   };
 
   const useableBodyTemplate = (rowData) => {
-    return <Tag value={rowData.u_name} severity={getUseable(rowData.u_name)} />;
+    return (
+      <Tag
+        value={rowData.asset_useable}
+        severity={getUseable(rowData.asset_useable)}
+      />
+    );
   };
   const useableRowFilterTemplate = (options) => {
     return (
@@ -272,7 +273,7 @@ export default function AllAsset() {
 
   const editAsset = (rowData) => {
     setAsset({ ...rowData });
-    console.log(asset.sck_name);
+    console.log(asset.asset_stock);
     setEditAssetDialog(true);
   };
 
@@ -541,7 +542,7 @@ export default function AllAsset() {
               ></Column>
 
               <Column
-                field="s_name"
+                field="asset_status"
                 header="สภาพ"
                 sortable
                 filter
@@ -551,7 +552,7 @@ export default function AllAsset() {
                 style={{ minWidth: '4rem' }}
               ></Column>
               <Column
-                field="u_name"
+                field="asset_useable"
                 header="การใช้งาน"
                 sortable
                 filter
@@ -656,7 +657,7 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={asset.sck_name}
+                  placeholder={asset.asset_stock}
                   disabled
                   options={assetStock}
                   optionLabel="name"
@@ -671,7 +672,7 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={asset.s_name}
+                  placeholder={asset.asset_status}
                   disabled
                   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -685,7 +686,7 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  placeholder={asset.u_name}
+                  placeholder={asset.asset_useable}
                   disabled
                   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -907,15 +908,15 @@ export default function AllAsset() {
             </div>
 
             <div className="field">
-              <label htmlFor="sck_name" className="font-bold">
+              <label htmlFor="asset_stock" className="font-bold">
                 สถานะ
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  id="sck_name"
-                  value={asset.sck_name}
-                  placeholder={asset.sck_name[0]}
-                  onChange={(e) => handleOptionChange(e, 'sck_name')}
+                  id="asset_stock"
+                  value={asset.asset_stock}
+                  placeholder={asset.asset_stock}
+                  onChange={(e) => handleOptionChange(e, 'asset_stock')}
                   options={assetStock}
                   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -923,15 +924,15 @@ export default function AllAsset() {
               </div>
             </div>
             <div className="field">
-              <label htmlFor="s_name" className="font-bold">
+              <label htmlFor="asset_status" className="font-bold">
                 สภาพ
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  id="s_name"
-                  value={asset.s_name}
-                  placeholder={asset.s_name}
-                  onChange={(e) => handleOptionChange(e, 's_name')}
+                  id="asset_status"
+                  value={asset.asset_status}
+                  placeholder={asset.asset_status}
+                  onChange={(e) => handleOptionChange(e, 'asset_status')}
                   options={assetStatus}
                   //   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -939,15 +940,15 @@ export default function AllAsset() {
               </div>
             </div>
             <div className="field">
-              <label htmlFor="u_name" className="font-bold">
+              <label htmlFor="asset_useable" className="font-bold">
                 การใช้งาน
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  id="u_name"
-                  value={asset.u_name}
-                  placeholder={asset.u_name}
-                  onChange={(e) => handleOptionChange(e, 'u_name')}
+                  id="asset_useable"
+                  value={asset.asset_useable}
+                  placeholder={asset.asset_useable}
+                  onChange={(e) => handleOptionChange(e, 'asset_useable')}
                   options={assetUseable}
                   //   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -1115,15 +1116,15 @@ export default function AllAsset() {
             </div>
 
             <div className="field">
-              <label htmlFor="sck_name" className="font-bold">
+              <label htmlFor="asset_stock" className="font-bold">
                 สถานะ
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  id="sck_name"
-                  value={asset.sck_name}
-                  placeholder={asset.sck_name}
-                  onChange={(e) => handleOptionChange(e, 'sck_name')}
+                  id="asset_stock"
+                  value={asset.asset_stock}
+                  placeholder={asset.asset_stock}
+                  onChange={(e) => handleOptionChange(e, 'asset_stock')}
                   options={assetStock}
                   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -1131,15 +1132,15 @@ export default function AllAsset() {
               </div>
             </div>
             <div className="field">
-              <label htmlFor="s_name" className="font-bold">
+              <label htmlFor="asset_status" className="font-bold">
                 สภาพ
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  id="s_name"
-                  value={asset.s_name}
-                  placeholder={asset.s_name}
-                  onChange={(e) => handleOptionChange(e, 's_name')}
+                  id="asset_status"
+                  value={asset.asset_status}
+                  placeholder={asset.asset_status}
+                  onChange={(e) => handleOptionChange(e, 'asset_status')}
                   options={assetStatus}
                   //   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -1147,15 +1148,15 @@ export default function AllAsset() {
               </div>
             </div>
             <div className="field">
-              <label htmlFor="u_name" className="font-bold">
+              <label htmlFor="asset_useable" className="font-bold">
                 การใช้งาน
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  id="u_name"
-                  value={asset.u_name}
-                  placeholder={asset.u_name}
-                  onChange={(e) => handleOptionChange(e, 'u_name')}
+                  id="asset_useable"
+                  value={asset.asset_useable}
+                  placeholder={asset.asset_useable}
+                  onChange={(e) => handleOptionChange(e, 'asset_useable')}
                   options={assetUseable}
                   //   optionLabel="name"
                   className="w-full md:w-14rem"

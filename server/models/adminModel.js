@@ -23,6 +23,20 @@ Admin.getAllAdmin = (result) => {
   });
 };
 
+const sqlAdminById =
+  'SELECT admin_id, admin_email, admin_username, admin_addDate FROM admin WHERE admin_email = ?';
+Admin.getAdminById = (admidEmail, result) => {
+  db.query(sqlAdminById, [admidEmail], (err, res) => {
+    if (err) {
+      console.log('Error while fetching asset ', err);
+      result(null, err);
+    } else {
+      console.log('asset_detail fetching successfully');
+      result(null, res);
+    }
+  });
+};
+
 const generateRandomPassword = () => {
   const length = 10; // Length of the random password
   const characters =

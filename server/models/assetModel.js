@@ -38,8 +38,12 @@ LEFT JOIN subcate s ON a.sub_id = s.sub_id
 JOIN (${assetJoinState}) as state ON a.asset_id = state.asset_id ORDER BY asset_order ASC`;
 // const sqlAssetASC = `SELECT ${selectColAsset} FROM (${assetJoinState}) as ajs  ORDER BY asset_order ASC`; // yes
 
+const sqlNewAsset = `SELECT *,c.cate_id AS categoryID ,c.cate_name AS category, s.sub_id AS subcategoryID ,s.sub_name AS subcategory from asset_detail as a
+LEFT JOIN category c ON a.cate_id = c.cate_id
+LEFT JOIN subcate s ON a.sub_id = s.sub_id  ORDER BY asset_order ASC`;
+
 Asset.getAllAsset = (result) => {
-  db.query(sqlAssetASC, (err, res) => {
+  db.query(sqlNewAsset, (err, res) => {
     if (err) {
       console.log('Error while fetching asset ', err);
       result(null, err);
