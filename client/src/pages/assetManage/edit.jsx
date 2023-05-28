@@ -255,7 +255,6 @@ export default function AllAsset() {
       setAssets(_assets);
       setAsset(_asset);
       setAssetDetail(_asset);
-      //   upDateToDB(_asset, type);
       setEditAssetDialog(false);
       setNewAssetDialog(false);
 

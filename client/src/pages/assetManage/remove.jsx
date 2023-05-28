@@ -154,20 +154,6 @@ export default function Remove() {
     console.log(e.value);
     let _asset = { ...asset };
     _asset[`asset_status`] = e.value;
-    switch (e.value) {
-      case 'ใช้งานได้':
-        _asset[`s_id`] = 1;
-        break;
-      case 'รอซ่อม':
-        _asset[`s_id`] = 2;
-        break;
-      case 'สิ้นสภาพ':
-        _asset[`s_id`] = 3;
-        break;
-      default:
-        console.log('unknow');
-        break;
-    }
     console.log('_asset');
     console.log(_asset);
     setAsset(_asset);
@@ -204,14 +190,19 @@ export default function Remove() {
   const saveChangeStatus = () => {
     let _assets = [...assets];
     let _asset = { ...asset };
+    if (asset.asset_id) {
+      const index = findIndexById(asset.asset_id);
+      console.log(asset.asset_id + ' id');
+      _assets[index] = _asset;
+    }
     toast.current.show({
       severity: 'success',
       summary: 'Successful',
       detail: 'เปลี่ยนสถานะครุภัณฑ์สำเร็จ',
       life: 3000,
     });
-
     setAsset(_asset);
+    setAssets(_assets);
     console.log(_asset);
     setAssetDetail(_asset);
     setChangeStatusDialog(false);
