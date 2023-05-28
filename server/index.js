@@ -15,6 +15,7 @@ import assetRoutes from './routes/assetRoute.js';
 
 import adminRoutes from './routes/adminRoute.js';
 import chartRoutes from './routes/chartRoute.js';
+import Admin from './models/adminModel.js';
 
 // CONFIGURATION
 
@@ -49,7 +50,8 @@ app.listen(PORT, function (req, res) {
   console.log('The server has been connect by port : ' + PORT);
 });
 
-const verifyUser = (req, res, next) => {
+
+const  verifyUser = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
     return res.json({ Error: 'You are not authenticated' });
@@ -59,6 +61,7 @@ const verifyUser = (req, res, next) => {
         return res.json({ Error: 'Token is not correct' });
       } else {
         req.admin_username = decoded.admin_username;
+        adminName
         next();
       }
     });
@@ -154,6 +157,7 @@ app.post('/reset-password', async (req, res) => {
 app.get('/', verifyUser, (req, res) => {
   return res.json({ Status: 'Success', admin_username: req.admin_username });
 });
+
 
 app.post('/register', (req, res) => {
   const sql =

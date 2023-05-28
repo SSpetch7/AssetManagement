@@ -1,5 +1,5 @@
-import db from '../config/db.js';
-import bcrypt from 'bcrypt';
+import db from "../config/db.js";
+import bcrypt from "bcrypt";
 
 var Admin = function (admin) {
   this.admin_id = admin.admin_id;
@@ -10,14 +10,42 @@ var Admin = function (admin) {
 };
 
 const sqlAllAdmin =
-  'SELECT admin_id, admin_email, admin_username, admin_addDate FROM admin ';
+  "SELECT admin_id, admin_email, admin_username, admin_addDate, role FROM admin ";
 Admin.getAllAdmin = (result) => {
   db.query(sqlAllAdmin, (err, res) => {
     if (err) {
-      console.log('Error while fetching asset ', err);
+      console.log("Error while fetching asset ", err);
       result(null, err);
     } else {
-      console.log('asset_detail fetching successfully');
+      console.log("asset_detail fetching successfully");
+      result(null, res);
+    }
+  });
+};
+
+const sqlAdminById =
+  "SELECT admin_id, admin_email, admin_username, admin_addDate FROM admin WHERE admin_email = ?";
+Admin.getAdminById = (adminEmail, result) => {
+  db.query(sqlAdminById, [adminEmail], (err, res) => {
+    if (err) {
+      console.log("Error while fetching asset ", err);
+      result(null, err);
+    } else {
+      console.log("asset_detail fetching successfully");
+      result(null, res);
+    }
+  });
+};
+
+const sqlAdminByName =
+  "SELECT admin_id, admin_email, admin_username, admin_addDate, role WHERE admin_username = ?";
+Admin.getAdminByName = (adminName, result) => {
+  db.query(sqlAdminByName, [adminName], (err, res) => {
+    if (err) {
+      console.log("Error while fetching asset ", err);
+      result(null, err);
+    } else {
+      console.log("asset_detail fetching successfully");
       result(null, res);
     }
   });
@@ -26,8 +54,8 @@ Admin.getAllAdmin = (result) => {
 const generateRandomPassword = () => {
   const length = 10; // Length of the random password
   const characters =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()';
-  let password = '';
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+  let password = "";
 
   for (let i = 0; i < length; i++) {
     const randomIndex = Math.floor(Math.random() * characters.length);
@@ -38,7 +66,7 @@ const generateRandomPassword = () => {
 };
 
 const sql =
-  'INSERT INTO admin (admin_username, admin_email, admin_password, role) VALUES (?, ?, ?, ?)';
+  "INSERT INTO admin (admin_username, admin_email, admin_password, role) VALUES (?, ?, ?, ?)";
 Admin.createAdmin = (newAdmin, callback) => {
   const { admin_username, admin_email } = newAdmin;
   const admin_password = generateRandomPassword();
@@ -54,7 +82,7 @@ Admin.createAdmin = (newAdmin, callback) => {
 
       db.query(
         sql,
-        [admin_username, admin_email, hash, 'admin'],
+        [admin_username, admin_email, hash, "admin"],
         (err, result) => {
           if (err) {
             return callback(err, null);
