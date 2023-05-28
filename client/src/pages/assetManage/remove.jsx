@@ -29,12 +29,9 @@ export default function Remove() {
     category: '',
     subcategoryID: null,
     subcategory: '',
-    sck_id: null,
-    sck_name: '',
-    s_id: null,
-    s_name: '',
-    u_id: null,
-    u_name: '',
+    asset_stock: '',
+    asset_status: '',
+    asset_useable: '',
   };
 
   let emptyDataAssetDetail = {
@@ -67,12 +64,12 @@ export default function Remove() {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    s_name: { value: null, matchMode: FilterMatchMode.EQUALS },
+    asset_status: { value: null, matchMode: FilterMatchMode.EQUALS },
     room_id: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    u_name: { value: null, matchMode: FilterMatchMode.EQUALS },
+    asset_useable: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
@@ -156,7 +153,7 @@ export default function Remove() {
     console.log('e.value');
     console.log(e.value);
     let _asset = { ...asset };
-    _asset[`s_name`] = e.value;
+    _asset[`asset_status`] = e.value;
     switch (e.value) {
       case 'ใช้งานได้':
         _asset[`s_id`] = 1;
@@ -247,7 +244,10 @@ export default function Remove() {
 
   const statusBodyTemplate = (rowData) => {
     return (
-      <Tag value={rowData.s_name} severity={getSeverity(rowData.s_name)} />
+      <Tag
+        value={rowData.asset_status}
+        severity={getSeverity(rowData.asset_status)}
+      />
     );
   };
   const statusRowFilterTemplate = (options) => {
@@ -283,7 +283,12 @@ export default function Remove() {
   };
 
   const useableBodyTemplate = (rowData) => {
-    return <Tag value={rowData.u_name} severity={getUseable(rowData.u_name)} />;
+    return (
+      <Tag
+        value={rowData.asset_useable}
+        severity={getUseable(rowData.asset_useable)}
+      />
+    );
   };
   const useableRowFilterTemplate = (options) => {
     return (
@@ -532,7 +537,7 @@ export default function Remove() {
               ></Column>
 
               <Column
-                field="s_name"
+                field="asset_status"
                 header="สภาพ"
                 sortable
                 filter
@@ -542,7 +547,7 @@ export default function Remove() {
                 style={{ minWidth: '4rem' }}
               ></Column>
               <Column
-                field="u_name"
+                field="asset_useable"
                 header="การใช้งาน"
                 sortable
                 filter
@@ -614,7 +619,7 @@ export default function Remove() {
                   //   value={asset.s_id}
                   className="statusOptions"
                   options={options}
-                  value={asset.s_name}
+                  value={asset.asset_status}
                   onChange={handleStatusChange}
                 />
                 <div className="col-span-3 row-span-1"></div>
