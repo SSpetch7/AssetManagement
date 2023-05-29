@@ -32,14 +32,6 @@ export const NumService = {
   },
 };
 
-export const EachRoomService = {
-  getAllRoom() {
-    return axios.get('/dropdown/room').then((res) => res.data.data);
-  },
-  getAssetByRoom(room) {
-    return axios.get(`/dropdown/room/${room}`).then((res) => res.data.data);
-  },
-};
 export const UpdateAssetService = {
   updateAsset(assetID, ReqAssetData, callback) {
     return axios

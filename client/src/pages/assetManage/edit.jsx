@@ -25,8 +25,6 @@ import {
 } from '../../service/AssetService';
 import { gridColumnGroupsLookupSelector } from '@mui/x-data-grid';
 
-
-
 export default function AllAsset() {
   let emptydataTable = {
     asset_order: null,

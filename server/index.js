@@ -18,6 +18,7 @@ import chartRoutes from './routes/chartRoute.js';
 import Admin from './models/adminModel.js';
 import roomRoutes from './routes/roomRoute.js';
 import dropdownRoutes from './routes/dropdownRoute.js';
+import eachRoomRoutes from './routes/eachRoomRoute.js';
 
 // CONFIGURATION
 
@@ -48,6 +49,7 @@ app.use('/asset', assetRoutes);
 app.use('/chart', chartRoutes);
 app.use('/room', roomRoutes);
 app.use('/dropdown', dropdownRoutes);
+app.use('/eachroom', eachRoomRoutes);
 
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, function (req, res) {
