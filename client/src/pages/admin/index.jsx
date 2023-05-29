@@ -42,6 +42,7 @@ export default function Admin() {
 
   const [products, setProducts] = useState(null);
   const [admins, setAdmins] = useState(null);
+  const [admin, setAdmin] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
@@ -56,6 +57,32 @@ export default function Admin() {
     AdminService.getAllAdamin().then((data) => setAdmins(data));
     console.log(admins + ' test');
   }, []);
+  
+  const changeDate = (rowData) => {
+  const date = new Date(rowData)
+  const result = date.toLocaleDateString('th-TH', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+      return result;
+  };
+
+  const changeAdmin = (rowData) => {
+    
+    switch (rowData) {
+      case 'Head_Admin':
+        return 'หัวหน้าผู้ดูแล';
+
+      case 'Admin':
+        return 'ผู้ดูแล';
+    };}
+ 
+
+  const reformBodyTemplate = (rowData)=>{
+    return changeDate(rowData.admin_addDate)}
+    
+  
 
   const openNew = () => {
     setProduct(emptyAdminTable);
@@ -229,6 +256,7 @@ export default function Admin() {
     }
   };
 
+
   const header = (
     <div className="flex  flex-wrap gap-2 align-items-center justify-between">
       {/* <h4 className="m-0">จัดการครุภัณฑ์</h4> */}
@@ -299,8 +327,8 @@ export default function Admin() {
     </React.Fragment>
   );
 
-  const statusBodyTemplate = (product) => {
-    return <Tag value={product.role} severity={getSeverity(product)}></Tag>;
+  const roleBodyTemplate = (product) => {
+    return <Tag value={changeAdmin(product.role)} severity={getSeverity(product)}></Tag>;
   };
 
   return (
@@ -349,7 +377,7 @@ export default function Admin() {
 
               <Column
                 header="Role"
-                body={statusBodyTemplate}
+                body={roleBodyTemplate}
                 // sortable
                 style={{ minWidth: '8rem', textAlign: 'start' }}
               ></Column>
@@ -358,6 +386,7 @@ export default function Admin() {
                 header="วันที่เพิ่มเข้าสู่ระบบ"
                 sortable
                 style={{ minWidth: '12rem' }}
+                body={reformBodyTemplate}
               ></Column>
               <Column
                 body={actionBodyTemplate}

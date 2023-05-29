@@ -24,6 +24,8 @@ import {
   //   NumService,
 } from '../../service/AssetService';
 
+
+
 export default function AllAsset() {
   let emptydataTable = {
     asset_order: null,

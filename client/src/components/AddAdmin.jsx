@@ -51,16 +51,6 @@ export default function AddUser() {
     setVisible(false);
   };
 
-  //   const handleCreateAdmin = () => {
-  //     // AdminService.createAdmin(newAdmin);
-  //     // //   .then((response) => {
-  //     // //     console.log('New admin created:', response);
-  //     // //   })
-  //     // //   .catch((error) => {
-  //     // //     console.error('Error creating admin:', error);
-  //     // //   });
-  //     // setVisible(false);
-  //   };
 
   const createEmail = () => {};
 

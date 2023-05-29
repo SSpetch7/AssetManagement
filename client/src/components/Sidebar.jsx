@@ -18,6 +18,8 @@ import MenuIcon from '@mui/icons-material/Menu';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
 import PlagiarismIcon from '@mui/icons-material/Plagiarism';
 import DescriptionIcon from '@mui/icons-material/Description';
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 const Sidebar = () => {
   const { activeMenu, setActiveMenu, screenSize } = useStateContext();
@@ -26,11 +28,14 @@ const Sidebar = () => {
       setActiveMenu(false);
     }
   };
+  
 
   const activeLink =
     'flex items-center  gap-5 pl-4 pt-3 pb-2.5 rounded-lg  text-white  text-md m-2';
   const normalLink =
     'flex items-center  gap-5 pl-4  pt-3 pb-2.5 rounded-lg text-md text-gray-500  hover:bg-light-gray m-2';
+
+  
 
   return (
     <div className="w-64  labtop:w-50 ml-3 h-screen md:overflow-hidden  overflow-auto md:hover:overflow-auto pb-10">
@@ -58,6 +63,7 @@ const Sidebar = () => {
               </Tooltip>
             </div>
           </div>
+       
 
           <div className="mt-10">
             <NavLink
@@ -91,17 +97,7 @@ const Sidebar = () => {
               <PublishedWithChangesIcon />
               <span className="text-xl font-bold ">ตรวจเช็คครุภัณฑ์</span>
             </NavLink>
-            {/* <NavLink
-              to="/assetSearching"
-              onClick={handleCloseSidebar}
-              style={({ isActive }) => ({
-                backgroundColor: isActive ? '#FF8261' : '',
-              })}
-              className={({ isActive }) => (isActive ? activeLink : normalLink)}
-            >
-              <PlagiarismIcon />
-              <span className="text-xl font-bold ">ค้นหาครุภัณฑ์</span>
-            </NavLink> */}
+      
             <NavLink
               to="/report"
               onClick={handleCloseSidebar}
@@ -132,7 +128,6 @@ const Sidebar = () => {
                 <SubMenu data={menu} />
               </div>
             ))}
-
             <NavLink
               to="/admin"
               onClick={handleCloseSidebar}
@@ -144,10 +139,11 @@ const Sidebar = () => {
               <AdminPanelSettingsIcon />
               <span className="text-xl font-bold ">ผู้ดูแล</span>
             </NavLink>
-          </div>
-        </>
-      )}
-    </div>
+        
+          </div> 
+        </> 
+      )} 
+    </div> 
   );
 };
 
