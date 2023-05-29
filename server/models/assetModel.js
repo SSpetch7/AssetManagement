@@ -21,7 +21,7 @@ const selectColAsset =
 const sckSate = `JOIN stock_state AS sck ON a.asset_stock = sck.stock_id`;
 const sState = `JOIN status_state AS s  ON a.asset_status = s.status_id`;
 const uState = `JOIN useable_state AS u  ON a.asset_status = u.useable_id`;
-const assetJoinState = `SELECT * ,sck.stock_name AS sck_name, s.status_name AS s_name, u.useable_name AS u_name  FROM asset_detail as a ${sckSate} ${sState} ${uState} `;
+const assetJoinState = `SELECT * ,sck.stock_id AS sck_id,sck.stock_name AS sck_name, s.status_id AS s_id,s.status_name AS s_name, u.useable_id AS u_id,u.useable_name AS u_name  FROM asset_detail as a ${sckSate} ${sState} ${uState} `;
 
 const selectColAC = `a.asset_order,a.asset_id,a.asset_name,a.asset_year,a.gallery_id,a.detail,a.room_id`;
 
@@ -31,15 +31,19 @@ LEFT JOIN category c ON a.cate_id = c.cate_id
 LEFT JOIN subcate s ON a.sub_id = s.sub_id 
 JOIN (${assetJoinState}) as state ON a.asset_id = state.asset_id WHERE a.asset_id = ?`;
 
-const sqlAssetASC = `SELECT ${selectColAC}, c.cate_name AS category, s.sub_name AS subcategory,state.sck_name,state.s_name,state.u_name
+const sqlAssetASC = `SELECT ${selectColAC}, c.cate_id AS categoryID ,c.cate_name AS category, s.sub_id AS subcategoryID ,s.sub_name AS subcategory,state.sck_id,state.sck_name,state.s_id,state.s_name,state.u_id,state.u_name
 FROM asset_detail a
 LEFT JOIN category c ON a.cate_id = c.cate_id
 LEFT JOIN subcate s ON a.sub_id = s.sub_id 
 JOIN (${assetJoinState}) as state ON a.asset_id = state.asset_id ORDER BY asset_order ASC`;
 // const sqlAssetASC = `SELECT ${selectColAsset} FROM (${assetJoinState}) as ajs  ORDER BY asset_order ASC`; // yes
 
+const sqlNewAsset = `SELECT *,c.cate_id AS categoryID ,c.cate_name AS category, s.sub_id AS subcategoryID ,s.sub_name AS subcategory from asset_detail as a
+LEFT JOIN category c ON a.cate_id = c.cate_id
+LEFT JOIN subcate s ON a.sub_id = s.sub_id  ORDER BY asset_order ASC`;
+
 Asset.getAllAsset = (result) => {
-  db.query(sqlAssetASC, (err, res) => {
+  db.query(sqlNewAsset, (err, res) => {
     if (err) {
       console.log('Error while fetching asset ', err);
       result(null, err);
@@ -62,7 +66,8 @@ Asset.getAssetByID = (id, callback) => {
   });
 };
 
-const statusState = 'SELECT status_name as name FROM status_state';
+const statusState =
+  'SELECT status_name as name FROM status_state WHERE status_id < 4';
 Asset.getStatusState = (result) => {
   db.query(statusState, (err, res) => {
     if (err) {
@@ -74,6 +79,8 @@ Asset.getStatusState = (result) => {
         return values.concat(Object.values(row));
       }, []);
       return result(null, statusValues);
+      //   console.log('Asset fetching successfully');
+      //   result(null, res);
     }
   });
 };
@@ -86,7 +93,10 @@ Asset.getStockState = (result) => {
       result(null, err);
     } else {
       console.log('Asset fetching successfully');
-      result(null, res);
+      const statusValues = res.reduce((values, row) => {
+        return values.concat(Object.values(row));
+      }, []);
+      return result(null, statusValues);
     }
   });
 };
@@ -103,6 +113,8 @@ Asset.getUseableState = (result) => {
         return values.concat(Object.values(row));
       }, []);
       return result(null, useableValues);
+      //   console.log('Asset fetching successfully');
+      //   result(null, res);
     }
   });
 };
@@ -115,7 +127,10 @@ Asset.getTypeAsset = (result) => {
       result(null, err);
     } else {
       console.log('Asset fetching successfully');
-      result(null, res);
+      const typeValues = res.reduce((values, row) => {
+        return values.concat(Object.values(row));
+      }, []);
+      return result(null, typeValues);
     }
   });
 };

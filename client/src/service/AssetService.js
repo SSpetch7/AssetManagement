@@ -40,3 +40,29 @@ export const EachRoomService = {
     return axios.get(`/dropdown/room/${room}`).then((res) => res.data.data);
   },
 };
+export const UpdateAssetService = {
+  updateAsset(assetID, ReqAssetData, callback) {
+    return axios
+      .put(`/asset/update/${assetID}`, ReqAssetData)
+      .then((response) => {
+        const ReqAssetData = response.data.data;
+        callback(null, ReqAssetData);
+      })
+      .catch((err) => {
+        const errMessage = err.response.data.message;
+        callback(errMessage, null);
+      });
+  },
+  newAsset(ReqAssetData, callback) {
+    return axios
+      .post('/asset/create', ReqAssetData)
+      .then((response) => {
+        const ReqAssetData = response.data.data;
+        callback(null, ReqAssetData);
+      })
+      .catch((err) => {
+        const errMessage = err.response.data.message;
+        callback(errMessage, null);
+      });
+  },
+};

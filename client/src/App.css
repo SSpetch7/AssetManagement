@@ -299,18 +299,18 @@
   display: none !important;
 }
 .p-menubar {
-  background-color: #00000000  !important;
+  background-color: #00000000 !important;
   border-color: #00000000 !important;
 }
-.p-menubar:hover{
-  background-color: #00000000  !important;
+.p-menubar:hover {
+  background-color: #00000000 !important;
   border-color: #00000000 !important;
 }
 .p-menu-list {
-  background-color: #00000000  !important;
+  background-color: #00000000 !important;
 }
 .p-menuitem {
-  background-color: #00000000  !important;
+  background-color: #00000000 !important;
   width: 150px !important;
 }
 .p-menu-list:hover {
@@ -319,7 +319,9 @@
 .p-menuitem:hover {
   background-color: var(--gray-100) !important;
 }
-.p-menuitem-text, .p-menuitem-icon, .p-submenu-icon {
+.p-menuitem-text,
+.p-menuitem-icon,
+.p-submenu-icon {
   color: var(--text-primary) !important;
   width: 500px !important;
 }
@@ -332,6 +334,12 @@
 ul.p-submenu-list {
   width: 100% !important;
 }
-.p-submenu-icon{
+.p-submenu-icon {
   text-align: right !important;
+}
+
+/* tag severity disposal */
+.p-tag.p-component.p-tag-disposal {
+  background-color: #888888 !important;
+  color: #ffffff !important;
 }
