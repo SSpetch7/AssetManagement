@@ -20,17 +20,18 @@ import { Calendar } from 'primereact/calendar';
 import { dataTable } from '../../assets/dummy';
 import BorrowButton from '../../components/BorrowButton';
 import AssetFilter from '../../components/AssetFilter';
+import { AssetService, EachRoomService } from '../../service/AssetService';
 
 export default function AllAsset() {
   let emptydataTable = {
-    order: '',
-    asset_id: '',
-    name: '',
+    order: "",
+    asset_id: "",
+    name: "",
     year: null,
-    status: '',
-    useable: '',
-    room_id: '',
-    inventoryStatus: 'INSTOCK',
+    sck_name: '',
+    s_name: '',
+    u_name: '',
+    room_id: "",
   };
 
   const [productStatus, setProductStatus] = useState(null);
@@ -63,25 +64,8 @@ export default function AllAsset() {
     useable: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
-  const rooms = [
-    { name: 'SCL 600' },
-    { name: 'SCL 601' },
-    { name: 'SCL 602' },
-    { name: 'SCL 606' },
-    { name: 'SCL 607' },
-    { name: 'SCL 701' },
-    { name: 'SCL 702' },
-    { name: 'SCL 703' },
-    { name: 'SCL 705' },
-    { name: 'SCL 706' },
-    { name: 'รศ.ชูเกียรติ' },
-    { name: 'รศ.ดร.อุษา' },
-    { name: 'ห้อง SC 2502' },
-    { name: 'ดร.ณฐวัฒน์' },
-    { name: 'สจล' },
-  ];
 
-  const [products, setProducts] = useState(null);
+  const [assets, setAssets] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
@@ -91,6 +75,23 @@ export default function AllAsset() {
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
+  const [dropdownRooms, setDropdownRooms] = useState(null);
+  const [selectedRoom, setSelectedRoom] = useState(null);
+
+  useEffect(() => {
+    if (selectedRoom == null){
+      EachRoomService.getAllRoom().then((data) => setDropdownRooms(data));
+      AssetService.getAllAsset().then((data) => setAssets(data));
+      console.log(dropdownRooms);
+    } else {
+      EachRoomService.getAssetByRoom(selectedRoom).then((data) => setAssets(data));
+      console.log(selectedRoom);
+    }
+  }, [selectedRoom]);
+
+  const handleSelectedRoom = (e) => {
+    setSelectedRoom(e.value)
+  };
 
   const type = [
     { name: 'ครุภัณฑ์สำนักงาน', num: '32' },
@@ -105,10 +106,6 @@ export default function AllAsset() {
 
   const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
   const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
-
-  useEffect(() => {
-    dataTable.getDatas().then((data) => setProducts(data));
-  }, []);
 
   const formatCurrency = (value) => {
     return value.toLocaleString('en-US', {
@@ -140,13 +137,13 @@ export default function AllAsset() {
     setSubmitted(true);
 
     if (product.name.trim()) {
-      let _products = [...products];
+      let _assets = [...assets];
       let _product = { ...product };
 
       if (product.id) {
         const index = findIndexById(product.id);
 
-        _products[index] = _product;
+        _assets[index] = _product;
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
@@ -156,7 +153,7 @@ export default function AllAsset() {
       } else {
         _product.id = createId();
         _product.image = 'product-placeholder.svg';
-        _products.push(_product);
+        _assets.push(_product);
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
@@ -165,7 +162,7 @@ export default function AllAsset() {
         });
       }
 
-      setProducts(_products);
+      setAssets(_assets);
       setProductDialog(false);
       setProduct(emptydataTable);
     }
@@ -173,7 +170,7 @@ export default function AllAsset() {
 
   const statusBodyTemplate = (rowData) => {
     return (
-      <Tag value={rowData.status} severity={getSeverity(rowData.status)} />
+      <Tag value={rowData.s_name} severity={getSeverity(rowData.s_name)} />
     );
   };
   const statusRowFilterTemplate = (options) => {
@@ -210,7 +207,7 @@ export default function AllAsset() {
 
   const useableBodyTemplate = (rowData) => {
     return (
-      <Tag value={rowData.useable} severity={getUseable(rowData.useable)} />
+      <Tag value={rowData.u_name} severity={getUseable(rowData.u_name)} />
     );
   };
   const useableRowFilterTemplate = (options) => {
@@ -254,9 +251,9 @@ export default function AllAsset() {
   };
 
   const deleteProduct = () => {
-    let _products = products.filter((val) => val.id !== product.id);
+    let _assets = assets.filter((val) => val.id !== product.id);
 
-    setProducts(_products);
+    setAssets(_assets);
     setDeleteProductDialog(false);
     setProduct(emptydataTable);
     toast.current.show({
@@ -270,8 +267,8 @@ export default function AllAsset() {
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < products.length; i++) {
-      if (products[i].id === id) {
+    for (let i = 0; i < assets.length; i++) {
+      if (assets[i].id === id) {
         index = i;
         break;
       }
@@ -297,9 +294,9 @@ export default function AllAsset() {
   };
 
   const deleteSelectedProducts = () => {
-    let _products = products.filter((val) => !selectedProducts.includes(val));
+    let _assets = assets.filter((val) => !selectedProducts.includes(val));
 
-    setProducts(_products);
+    setAssets(_assets);
     setDeleteProductsDialog(false);
     setSelectedProducts(null);
     toast.current.show({
@@ -386,13 +383,12 @@ export default function AllAsset() {
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
           <div className="card flex justify-content-center">
-            <Dropdown
-              value={globalFilter}
-              onChange={(e) => setGlobalFilter(e.target.value)}
-              options={rooms}
-              optionLabel="name"
-              placeholder="เลือกห้อง"
-              style={{ width: '400px' }}
+          <Dropdown
+              value={selectedRoom}
+              onChange={(e) => handleSelectedRoom(e)}
+              options={dropdownRooms}
+              placeholder="ทั้งหมด"
+              style={{ width: "400px" }}
             />
           </div>
         </span>
@@ -465,9 +461,7 @@ export default function AllAsset() {
           <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
             <DataTable
               ref={dt}
-              value={products}
-              selection={selectedProducts}
-              onSelectionChange={(e) => setSelectedProducts(e.value)}
+              value={assets}
               dataKey="id"
               paginator
               rows={10}
@@ -486,7 +480,7 @@ export default function AllAsset() {
                 style={{ minWidth: '8rem' }}
               ></Column>
               <Column
-                field="order"
+                field="asset_order"
                 header="ลำดับ"
                 sortable
                 style={{ minWidth: '4rem' }}
@@ -501,7 +495,7 @@ export default function AllAsset() {
                 style={{ minWidth: '13rem', width: '13rem' }}
               ></Column>
               <Column
-                field="name"
+                field="asset_name"
                 header="ชื่อ"
                 sortable
                 filter
@@ -509,16 +503,18 @@ export default function AllAsset() {
                 filterPlaceholder="ค้นหาชื่อ"
                 style={{ minWidth: '18rem' }}
               ></Column>
+
               <Column
-                field="year"
+                field="asset_year"
                 header="ปีงบประมาณ"
                 sortable
                 filter
                 showFilterMatchModes={false}
                 style={{ minWidth: '4rem' }}
               ></Column>
+
               <Column
-                field="status"
+                field="s_name"
                 header="สภาพ"
                 sortable
                 filter
@@ -528,7 +524,7 @@ export default function AllAsset() {
                 style={{ minWidth: '4rem' }}
               ></Column>
               <Column
-                field="useable"
+                field="u_name"
                 header="การใช้งาน"
                 sortable
                 filter

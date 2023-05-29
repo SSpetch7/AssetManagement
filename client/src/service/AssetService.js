@@ -31,3 +31,12 @@ export const NumService = {
     return axios.get('/asset/lst/order').then((res) => res.data.data);
   },
 };
+
+export const EachRoomService = {
+  getAllRoom() {
+    return axios.get('/dropdown/room').then((res) => res.data.data);
+  },
+  getAssetByRoom(room) {
+    return axios.get(`/dropdown/room/${room}`).then((res) => res.data.data);
+  },
+};

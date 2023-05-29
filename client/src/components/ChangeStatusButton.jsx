@@ -3,7 +3,7 @@ import { Button } from 'primereact/button';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dialog } from 'primereact/dialog';
 import { Tag } from 'primereact/tag';
-import { TestPhoto } from 'assets/testPhoto.js';
+import { TestPhoto } from 'assets/testphoto';
 import { SelectButton } from 'primereact/selectbutton';
 
 export default function ProductsDemo() {

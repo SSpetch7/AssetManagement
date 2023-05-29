@@ -15,6 +15,7 @@ import assetRoutes from './routes/assetRoute.js';
 
 import adminRoutes from './routes/adminRoute.js';
 import chartRoutes from './routes/chartRoute.js';
+import dropdownRoutes from './routes/dropdownRoute.js';
 
 // CONFIGURATION
 
@@ -43,6 +44,7 @@ dotenv.config();
 app.use('/admin', adminRoutes);
 app.use('/asset', assetRoutes);
 app.use('/chart', chartRoutes);
+app.use('/dropdown', dropdownRoutes);
 
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, function (req, res) {
