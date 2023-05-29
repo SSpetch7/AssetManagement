@@ -41,8 +41,11 @@ export default function AllAsset() {
     asset_useable: null,
   };
 
-  const exportCSV = (e) => {
-    dt.current.exportCSV();
+  const exportCSV = () => {
+    const currentDate = new Date().toISOString().slice(0, 10);
+    const fileName = `your_custom_filename_${currentDate}.csv`; // Replace "your_custom_filename" with your desired file name prefix
+
+    dt.current.exportCSV({ fileName });
   };
 
   const [productStatus, setProductStatus] = useState(null);
