@@ -295,12 +295,16 @@ export default function AllAsset() {
     switch (status) {
       case 'ใช้งานได้':
         return 'success';
-
-      case 'กำลังซ่อม':
-        return 'info';
-
+        break;
+      case 'รอซ่อม':
+        return 'warning';
+        break;
       case 'สิ้นสภาพ':
         return 'danger';
+        break;
+      case 'แทงจำหน่าย':
+        return 'disposal';
+        break;
     }
   };
 

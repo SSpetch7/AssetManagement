@@ -10,6 +10,7 @@ import { Dialog } from 'primereact/dialog';
 import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
 import { SelectButton } from 'primereact/selectbutton';
+import { ToggleButton } from 'primereact/togglebutton';
 import {
   AssetService,
   AssetOptionService,
@@ -109,7 +110,7 @@ export default function Remove() {
   const [statuses] = useState(['ใช้งานได้', 'รอซ่อม', 'สิ้นสภาพ']);
   const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
   const options = ['ใช้งานได้', 'รอซ่อม', 'สิ้นสภาพ'];
-
+  const [toggleValue, setToggleValue] = useState(false);
   useEffect(() => {
     AssetService.getAllAsset().then((data) => setAssets(data));
   }, []);
@@ -120,9 +121,9 @@ export default function Remove() {
       assetDetail,
       (error, updateAsset) => {
         if (error) {
-          console.log('Error updating to DB admin:', error);
+          console.log('Error Status updating to DB admin:', error);
         } else {
-          console.log('Assset updated to DB successfully:', updateAsset);
+          console.log('Assset Status updated to DB successfully:', updateAsset);
           console.log(assetDetail);
         }
       }
@@ -130,12 +131,6 @@ export default function Remove() {
   }, [assetDetail]);
 
   //   edit asset data
-  const onInputChangeNumber = (e, name) => {
-    const val = e.value;
-    let _asset = { ...asset };
-    _asset[`${name}`] = val;
-    setAsset(_asset);
-  };
 
   const onInputChange = (e, name) => {
     const val = (e.target && e.target.value) || '';
@@ -162,12 +157,12 @@ export default function Remove() {
 
   const openChangeStatusDialog = (rowData) => {
     setChangeStatusDialog(true);
-    console.log(rowData);
     setAsset(rowData);
   };
 
-  const openRemoveDialog = () => {
+  const openRemoveDialog = (rowData) => {
     setRemoveDialog(true);
+    setAsset(rowData);
   };
 
   const hideDialog = () => {
@@ -209,6 +204,43 @@ export default function Remove() {
     setAsset(emptydataTable);
   };
 
+  const saveRemove = () => {
+    let _assets = [...assets];
+    let _asset = { ...asset };
+
+    if (_asset['asset_status'] !== 'แทงจำหน่าย') {
+      _asset['asset_status'] = 'แทงจำหน่าย';
+      _asset['asset_useable'] = 'ไม่ได้ใช้งาน';
+      if (asset.asset_id) {
+        const index = findIndexById(asset.asset_id);
+        console.log(asset.asset_id + ' id');
+        _assets[index] = _asset;
+      }
+
+      setAsset(_asset);
+      setAssets(_assets);
+      console.log('_asset after');
+      console.log(_asset);
+      setAssetDetail(_asset);
+      setRemoveDialog(false);
+      setAsset(emptydataTable);
+      toast.current.show({
+        severity: 'success',
+        summary: 'Successful',
+        detail: 'แทงจำหน่ายครุภัณฑ์สำเร็จ',
+        life: 2000,
+      });
+    } else if (_asset['asset_status'] === 'แทงจำหน่าย') {
+      setAsset(emptydataTable);
+      setRemoveDialog(false);
+      toast.current.show({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'ครุภัณฑ์อยู่ในสภาพแทงจำหน่าย',
+        life: 2000,
+      });
+    }
+  };
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
@@ -264,12 +296,16 @@ export default function Remove() {
     switch (status) {
       case 'ใช้งานได้':
         return 'success';
-
-      case 'กำลังซ่อม':
-        return 'info';
-
+        break;
+      case 'รอซ่อม':
+        return 'warning';
+        break;
       case 'สิ้นสภาพ':
         return 'danger';
+        break;
+      case 'แทงจำหน่าย':
+        return 'disposal';
+        break;
     }
   };
 
@@ -342,22 +378,6 @@ export default function Remove() {
     return index;
   };
 
-  const createId = () => {
-    let id = '';
-    let chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-    for (let i = 0; i < 5; i++) {
-      id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-
-    return id;
-  };
-
-  const exportCSV = () => {
-    dt.current.exportCSV();
-  };
-
   const confirmDeleteSelected = () => {
     setDeleteProductsDialog(true);
   };
@@ -421,7 +441,7 @@ export default function Remove() {
         label="ยืนยัน"
         icon="pi pi-check"
         className="p-Testbutton"
-        onClick={saveChangeStatus}
+        onClick={saveRemove}
       />
     </React.Fragment>
   );
@@ -464,7 +484,7 @@ export default function Remove() {
       <div className="mt-12">
         <div className="pb-10">
           <span className="pl-32 font-bold  text-4xl text-gray-600 items-start">
-            Remove Asset
+            Disposal Asset
           </span>
           <span className="pl-2  text-gray-400">แทงจำหน่ายครุภัณฑ์</span>
         </div>
@@ -559,7 +579,104 @@ export default function Remove() {
           </div>
         </div>
       </div>
+      <div className="mt-12">
+        <div className="pb-10">
+          <span className="pl-32 font-bold  text-4xl text-gray-600 items-start">
+            Disposaled Asset
+          </span>
+          <span className="pl-2  text-gray-400">ครุภัณฑ์ที่แทงจำหน่าย</span>
+        </div>
+        <div className="flex justify-center h-full ">
+          <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
+            <DataTable
+              ref={dt}
+              value={assets}
+              dataKey="id"
+              paginator
+              rows={10}
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+              filters={filters}
+              globalFilter={globalFilter}
+              header={header}
+              className="actionRow"
+              scrollable
+              //   scrollHeight="700px"
+              tableStyle={{ minHeight: '10rem' }}
+            >
+              <Column
+                body={actionBodyTemplate}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{
+                  minWidth: '10rem',
+                  flexWrap: 'nowrap',
+                }}
+              ></Column>
+              <Column
+                field="asset_order"
+                header="ลำดับ"
+                sortable
+                style={{ minWidth: '4rem' }}
+              ></Column>
+              <Column
+                field="asset_id"
+                header="หมายเลขครุภัณฑ์"
+                sortable
+                filter
+                showFilterMatchModes={false}
+                filterPlaceholder="ค้นหาหมายเลขครุภัณฑ์"
+                style={{ minWidth: '13rem', width: '13rem' }}
+              ></Column>
+              <Column
+                field="asset_name"
+                header="ชื่อ"
+                sortable
+                filter
+                showFilterMatchModes={false}
+                filterPlaceholder="ค้นหาชื่อ"
+                style={{ minWidth: '18rem' }}
+              ></Column>
 
+              <Column
+                field="asset_year"
+                header="ปีงบประมาณ"
+                sortable
+                filter
+                showFilterMatchModes={false}
+                style={{ minWidth: '4rem' }}
+              ></Column>
+
+              <Column
+                field="asset_status"
+                header="สภาพ"
+                sortable
+                filter
+                showFilterMatchModes={false}
+                body={statusBodyTemplate}
+                filterElement={statusRowFilterTemplate}
+                style={{ minWidth: '4rem' }}
+              ></Column>
+              <Column
+                field="asset_useable"
+                header="การใช้งาน"
+                sortable
+                filter
+                body={useableBodyTemplate}
+                filterElement={useableRowFilterTemplate}
+                showFilterMatchModes={false}
+                style={{ minWidth: '10rem' }}
+              ></Column>
+              <Column
+                field="room_id"
+                header="ประจำที่"
+                sortable
+                filter
+                showFilterMatchModes={false}
+                style={{ minWidth: '10rem' }}
+              ></Column>
+            </DataTable>
+          </div>
+        </div>
+      </div>
       <div className="m-16">
         <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
       </div>
@@ -574,6 +691,15 @@ export default function Remove() {
         footer={removeDialogFooter}
         onHide={hideDialog}
       >
+        {/* <div className="field-checkbox">
+          <h2>แทงจำหน่าย</h2>
+          <ToggleButton
+            checked={toggleValue}
+            onChange={(e) => setToggleValue(e.value)}
+            onLabel="Yes"
+            offLabel="No"
+          />
+        </div> */}
         <div className="card">
           <div className="grid grid-cols-4 gap-4">
             <div className="field col-start-1 col-end-5">
