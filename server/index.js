@@ -16,6 +16,7 @@ import assetRoutes from './routes/assetRoute.js';
 import adminRoutes from './routes/adminRoute.js';
 import chartRoutes from './routes/chartRoute.js';
 import roomRoutes from './routes/roomRoute.js';
+import dropdownRoutes from './routes/dropdownRoute.js';
 
 // CONFIGURATION
 
@@ -30,7 +31,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
   cors({
     origin: ['http://localhost:3000'],
-    methods: ['POST', 'GET'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   })
 );
@@ -45,6 +46,7 @@ app.use('/admin', adminRoutes);
 app.use('/asset', assetRoutes);
 app.use('/chart', chartRoutes);
 app.use('/room', roomRoutes);
+app.use('/dropdown', dropdownRoutes);
 
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, function (req, res) {

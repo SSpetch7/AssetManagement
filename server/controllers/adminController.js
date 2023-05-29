@@ -9,6 +9,15 @@ const adminController = {
       res.json({ data: admins });
     });
   },
+  getAdminByIdList: (req, res) => {
+    const adminId = req.params.id;
+    adminModel.getAdminById(adminId, (err, admin) => {
+      if (err) {
+        res.send(err);
+      }
+      res.json({ data: admin });
+    });
+  },
   createAdmin: (req, res) => {
     const adminData = req.body;
     adminModel.createAdmin(adminData, (err, result) => {
