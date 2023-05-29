@@ -16,6 +16,8 @@ import assetRoutes from './routes/assetRoute.js';
 import adminRoutes from './routes/adminRoute.js';
 import chartRoutes from './routes/chartRoute.js';
 import Admin from './models/adminModel.js';
+import roomRoutes from './routes/roomRoute.js';
+import dropdownRoutes from './routes/dropdownRoute.js';
 
 // CONFIGURATION
 
@@ -30,7 +32,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(
   cors({
     origin: ['http://localhost:3000'],
-    methods: ['POST', 'GET'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
     credentials: true,
   })
 );
@@ -44,14 +46,15 @@ dotenv.config();
 app.use('/admin', adminRoutes);
 app.use('/asset', assetRoutes);
 app.use('/chart', chartRoutes);
+app.use('/room', roomRoutes);
+app.use('/dropdown', dropdownRoutes);
 
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, function (req, res) {
   console.log('The server has been connect by port : ' + PORT);
 });
 
-
-const  verifyUser = (req, res, next) => {
+const verifyUser = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
     return res.json({ Error: 'You are not authenticated' });
@@ -61,7 +64,7 @@ const  verifyUser = (req, res, next) => {
         return res.json({ Error: 'Token is not correct' });
       } else {
         req.admin_username = decoded.admin_username;
-        adminName
+        adminName;
         next();
       }
     });
@@ -157,7 +160,6 @@ app.post('/reset-password', async (req, res) => {
 app.get('/', verifyUser, (req, res) => {
   return res.json({ Status: 'Success', admin_username: req.admin_username });
 });
-
 
 app.post('/register', (req, res) => {
   const sql =

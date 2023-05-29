@@ -20,18 +20,19 @@ import { Calendar } from 'primereact/calendar';
 import { dataTable } from '../../assets/dummy';
 import BorrowButton from '../../components/BorrowButton';
 import AssetFilter from '../../components/AssetFilter';
-import { AssetService, EachRoomService } from '../../service/AssetService';
+import RemoveButton from '../../components/RemoveButton';
+import ChangeStatusButton from '../../components/ChangeStatusButton';
 
-export default function AllAsset() {
+export default function Remove() {
   let emptydataTable = {
-    order: "",
-    asset_id: "",
-    name: "",
+    order: '',
+    asset_id: '',
+    name: '',
     year: null,
-    sck_name: '',
-    s_name: '',
-    u_name: '',
-    room_id: "",
+    status: '',
+    useable: '',
+    room_id: '',
+    inventoryStatus: 'INSTOCK',
   };
 
   const [productStatus, setProductStatus] = useState(null);
@@ -65,7 +66,7 @@ export default function AllAsset() {
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
-  const [assets, setAssets] = useState(null);
+  const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
@@ -75,37 +76,13 @@ export default function AllAsset() {
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
-  const [dropdownRooms, setDropdownRooms] = useState(null);
-  const [selectedRoom, setSelectedRoom] = useState(null);
-
-  useEffect(() => {
-    if (selectedRoom == null){
-      EachRoomService.getAllRoom().then((data) => setDropdownRooms(data));
-      AssetService.getAllAsset().then((data) => setAssets(data));
-      console.log(dropdownRooms);
-    } else {
-      EachRoomService.getAssetByRoom(selectedRoom).then((data) => setAssets(data));
-      console.log(selectedRoom);
-    }
-  }, [selectedRoom]);
-
-  const handleSelectedRoom = (e) => {
-    setSelectedRoom(e.value)
-  };
-
-  const type = [
-    { name: 'ครุภัณฑ์สำนักงาน', num: '32' },
-    { name: 'ครุภัณฑ์การศึกษา', num: '40' },
-    { name: 'ครุภัณฑ์คอมพิวเตอร์ทั้งหมด', num: '21' },
-    { name: 'ครุภัณฑ์อื่น ๆ ', num: '44' },
-    { name: 'ครุภัณฑ์คอมพิวเตอร์', num: '31' },
-    { name: 'ครุภัณฑ์โน๊ตบุ๊ค', num: '20' },
-    { name: 'ครุภัณฑ์แท็บเล็ต', num: '10' },
-  ];
-  const [typeAsset, setTypeAsset] = useState(type);
 
   const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
-  const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
+  const [useable] = useState(['กำลังใช้', 'ไม่ได้ใช้งาน']);
+
+  useEffect(() => {
+    dataTable.getDatas().then((data) => setProducts(data));
+  }, []);
 
   const formatCurrency = (value) => {
     return value.toLocaleString('en-US', {
@@ -137,13 +114,13 @@ export default function AllAsset() {
     setSubmitted(true);
 
     if (product.name.trim()) {
-      let _assets = [...assets];
+      let _products = [...products];
       let _product = { ...product };
 
       if (product.id) {
         const index = findIndexById(product.id);
 
-        _assets[index] = _product;
+        _products[index] = _product;
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
@@ -153,7 +130,7 @@ export default function AllAsset() {
       } else {
         _product.id = createId();
         _product.image = 'product-placeholder.svg';
-        _assets.push(_product);
+        _products.push(_product);
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
@@ -162,7 +139,7 @@ export default function AllAsset() {
         });
       }
 
-      setAssets(_assets);
+      setProducts(_products);
       setProductDialog(false);
       setProduct(emptydataTable);
     }
@@ -170,7 +147,7 @@ export default function AllAsset() {
 
   const statusBodyTemplate = (rowData) => {
     return (
-      <Tag value={rowData.s_name} severity={getSeverity(rowData.s_name)} />
+      <Tag value={rowData.status} severity={getSeverity(rowData.status)} />
     );
   };
   const statusRowFilterTemplate = (options) => {
@@ -207,7 +184,7 @@ export default function AllAsset() {
 
   const useableBodyTemplate = (rowData) => {
     return (
-      <Tag value={rowData.u_name} severity={getUseable(rowData.u_name)} />
+      <Tag value={rowData.useable} severity={getUseable(rowData.useable)} />
     );
   };
   const useableRowFilterTemplate = (options) => {
@@ -251,9 +228,9 @@ export default function AllAsset() {
   };
 
   const deleteProduct = () => {
-    let _assets = assets.filter((val) => val.id !== product.id);
+    let _products = products.filter((val) => val.id !== product.id);
 
-    setAssets(_assets);
+    setProducts(_products);
     setDeleteProductDialog(false);
     setProduct(emptydataTable);
     toast.current.show({
@@ -267,8 +244,8 @@ export default function AllAsset() {
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < assets.length; i++) {
-      if (assets[i].id === id) {
+    for (let i = 0; i < products.length; i++) {
+      if (products[i].id === id) {
         index = i;
         break;
       }
@@ -289,14 +266,18 @@ export default function AllAsset() {
     return id;
   };
 
+  const exportCSV = () => {
+    dt.current.exportCSV();
+  };
+
   const confirmDeleteSelected = () => {
     setDeleteProductsDialog(true);
   };
 
   const deleteSelectedProducts = () => {
-    let _assets = assets.filter((val) => !selectedProducts.includes(val));
+    let _products = products.filter((val) => !selectedProducts.includes(val));
 
-    setAssets(_assets);
+    setProducts(_products);
     setDeleteProductsDialog(false);
     setSelectedProducts(null);
     toast.current.show({
@@ -332,7 +313,7 @@ export default function AllAsset() {
     setProduct(_product);
   };
 
-  const actionBodyTemplate = (rowData) => {
+  const actionRemove = (rowData) => {
     return (
       <React.Fragment>
         {/* <Button
@@ -351,27 +332,23 @@ export default function AllAsset() {
           severity="danger"
           onClick={() => confirmDeleteProduct(rowData)}
         /> */}
+
+        <RemoveButton />
         {/* <Button
-          outlined
-          icon="pi pi-calendar-times"
-          //   rounded
-          //   style={{ fontSize: '16px' }}
-          className="mr-2 "
-          onClick={() => editProduct(rowData)}
-        /> */}
-        <Button
           icon="pi pi-pencil"
           //   rounded
           outlined
           className="editBnt mr-2"
           onClick={() => editProduct(rowData)}
-        />
-        <Button
-          icon="pi pi-trash"
-          outlined
-          severity="danger"
-          onClick={() => confirmDeleteProduct(rowData)}
-        />
+        /> */}
+      </React.Fragment>
+    );
+  };
+
+  const actionChangeStatus = (rowData) => {
+    return (
+      <React.Fragment>
+        <ChangeStatusButton />
       </React.Fragment>
     );
   };
@@ -382,38 +359,30 @@ export default function AllAsset() {
       <div className="flex">
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
-          <div className="card flex justify-content-center">
-          <Dropdown
-              value={selectedRoom}
-              onChange={(e) => handleSelectedRoom(e)}
-              options={dropdownRooms}
-              placeholder="ทั้งหมด"
-              style={{ width: "400px" }}
-            />
-          </div>
+          <InputText
+            type="search"
+            onInput={(e) => setGlobalFilter(e.target.value)}
+            placeholder="ค้นหา..."
+            style={{ width: '400px' }}
+          />
         </span>
+        <div className="flex gap-2">
+          <AssetFilter />
+        </div>
       </div>
     </div>
   );
-
   const productDialogFooter = (
     <React.Fragment>
+      <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
       <Button
-        label="ยกเลิก"
-        icon="pi pi-times"
-        severity="danger"
-        outlined
-        onClick={hideDialog}
-      />
-      <Button
-        label="ยืนยัน"
+        label="Save"
         icon="pi pi-check"
         className="p-Testbutton"
         onClick={saveProduct}
       />
     </React.Fragment>
   );
-
   const deleteProductDialogFooter = (
     <React.Fragment>
       <Button
@@ -453,15 +422,17 @@ export default function AllAsset() {
       <div className="mt-12">
         <div className="pb-10">
           <span className="pl-32 font-bold  text-4xl text-gray-600 items-start">
-            Asset For Each Room
+            Remove Asset
           </span>
-          <span className="pl-2  text-gray-400">ครุภัณฑ์ตามห้อง</span>
+          <span className="pl-2  text-gray-400">แทงจำหน่ายครุภัณฑ์</span>
         </div>
         <div className="flex justify-center h-full ">
           <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
             <DataTable
               ref={dt}
-              value={assets}
+              value={products}
+              selection={selectedProducts}
+              onSelectionChange={(e) => setSelectedProducts(e.value)}
               dataKey="id"
               paginator
               rows={10}
@@ -475,12 +446,17 @@ export default function AllAsset() {
               tableStyle={{ minHeight: '10rem' }}
             >
               <Column
-                body={actionBodyTemplate}
+                body={actionChangeStatus}
                 // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '8rem' }}
+                style={{ minWidth: '1rem' }}
               ></Column>
               <Column
-                field="asset_order"
+                body={actionRemove}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '1rem' }}
+              ></Column>
+              <Column
+                field="order"
                 header="ลำดับ"
                 sortable
                 style={{ minWidth: '4rem' }}
@@ -495,7 +471,7 @@ export default function AllAsset() {
                 style={{ minWidth: '13rem', width: '13rem' }}
               ></Column>
               <Column
-                field="asset_name"
+                field="name"
                 header="ชื่อ"
                 sortable
                 filter
@@ -505,7 +481,7 @@ export default function AllAsset() {
               ></Column>
 
               <Column
-                field="asset_year"
+                field="year"
                 header="ปีงบประมาณ"
                 sortable
                 filter
@@ -514,7 +490,7 @@ export default function AllAsset() {
               ></Column>
 
               <Column
-                field="s_name"
+                field="status"
                 header="สภาพ"
                 sortable
                 filter
@@ -524,7 +500,7 @@ export default function AllAsset() {
                 style={{ minWidth: '4rem' }}
               ></Column>
               <Column
-                field="u_name"
+                field="useable"
                 header="การใช้งาน"
                 sortable
                 filter
@@ -546,263 +522,9 @@ export default function AllAsset() {
         </div>
       </div>
 
-      <div className="m-16"></div>
-
-      <div className="mt-12">
-        <div className="flex justify-center h-full ">
-          <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
-            <DataTable
-              ref={dt}
-              value={typeAsset}
-              selection={selectedProducts}
-              onSelectionChange={(e) => setSelectedProducts(e.value)}
-              dataKey="id"
-              //   paginator
-              rows={10}
-              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-              filters={filters}
-              globalFilter={globalFilter}
-              className="actionRow typeTable"
-              scrollable
-              //   scrollHeight="700px"
-              tableStyle={{ minHeight: '5rem', height: '8rem' }}
-            >
-              <Column
-                field="name"
-                header="ประเภท"
-                style={{ minWidth: '30rem' }}
-              ></Column>
-
-              <Column
-                field="num"
-                header="จำนวน"
-                style={{ minWidth: '4rem' }}
-              ></Column>
-            </DataTable>
-          </div>
-        </div>
-      </div>
-
       <div className="m-16">
         <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
       </div>
-      <Dialog
-        visible={productDialog}
-        style={{ width: '64rem' }}
-        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header="รายละเอียดครุภัณฑ์"
-        modal
-        className="p-fluid"
-        footer={productDialogFooter}
-        onHide={hideDialog}
-      >
-        <div className="card p-4">
-          <FileUpload
-            name="demo[]"
-            url={'/api/upload'}
-            multiple
-            accept="image/*"
-            maxFileSize={1000000}
-            emptyTemplate={<p className="m-0">อัพโหลดรูปครุภัณฑ์ที่นี่</p>}
-          />
-        </div>
-
-        <div className="card p-4">
-          <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
-          <div className="grid grid-cols-4 gap-4">
-            <div className="field col-start-1">
-              <label htmlFor="name" className="font-bold">
-                ลำดับที่
-              </label>
-              <InputText
-                id="no"
-                value={product.number}
-                onChange={(e) => onInputChange(e, 'number')}
-                required
-                autoFocus
-                className={classNames({
-                  'p-invalid': submitted && !product.number,
-                })}
-              />
-              {submitted && !product.number && (
-                <small className="p-error">No. is required.</small>
-              )}
-            </div>
-
-            <div className="field col-start-2 col-end-5">
-              <label htmlFor="name" className="font-bold">
-                ชื่อรายการ
-              </label>
-              <InputText
-                id="name"
-                value={product.name}
-                onChange={(e) => onInputChange(e, 'name')}
-                required
-                className={classNames({
-                  'p-invalid': submitted && !product.name,
-                })}
-              />
-              {submitted && !product.name && (
-                <small className="p-error">Name is required.</small>
-              )}
-            </div>
-
-            <div className="field">
-              <label htmlFor="id" className="font-bold">
-                หมายเลขครุภัณฑ์
-              </label>
-              <InputText
-                id="id"
-                value={product.id}
-                onChange={(e) => onInputChange(e, 'id')}
-                required
-                className={classNames({
-                  'p-invalid': submitted && !product.id,
-                })}
-              />
-              {submitted && !product.id && (
-                <small className="p-error">ProductID is required.</small>
-              )}
-            </div>
-
-            <div className="formgrid grid">
-              <div className="field col">
-                <label htmlFor="price" className="font-bold">
-                  ราคา
-                </label>
-                <InputNumber
-                  id="price"
-                  value={product.price}
-                  onValueChange={(e) => onInputNumberChange(e, 'price')}
-                  mode="currency"
-                  currency="THB"
-                  locale="en-US"
-                />
-              </div>
-            </div>
-
-            <div className="field col-start-3 col-end-5">
-              <label htmlFor="room" className="font-bold">
-                ประจำที่
-              </label>
-              <InputText
-                id="room"
-                value={product.room}
-                onChange={(e) => onInputChange(e, 'room')}
-                required
-                className={classNames({
-                  'p-invalid': submitted && !product.room,
-                })}
-              />
-              {submitted && !product.room && (
-                <small className="p-error">ProductRoom is required.</small>
-              )}
-            </div>
-
-            <div className="field">
-              <label htmlFor="description" className="font-bold">
-                สถานะ
-              </label>
-              <div className="card flex justify-content-center">
-                <Dropdown
-                  value={productStatus}
-                  onChange={(e) => setProductStatus(e.value)}
-                  options={status}
-                  optionLabel="name"
-                  placeholder="เลือกสถานะ"
-                  className="w-full md:w-14rem"
-                />
-              </div>
-            </div>
-
-            <div className="field">
-              <label htmlFor="description" className="font-bold">
-                สภาพ
-              </label>
-              <div className="card flex justify-content-center">
-                <Dropdown
-                  value={productStatus}
-                  onChange={(e) => setProductStatus(e.value)}
-                  options={status}
-                  optionLabel="name"
-                  placeholder="เลือกสถานะ"
-                  className="w-full md:w-14rem"
-                />
-              </div>
-            </div>
-
-            <div className="field">
-              <label htmlFor="description" className="font-bold">
-                การใช้งาน
-              </label>
-              <div className="card flex justify-content-center">
-                <Dropdown
-                  value={productStatus}
-                  onChange={(e) => setProductStatus(e.value)}
-                  options={status}
-                  optionLabel="name"
-                  placeholder="เลือกสถานะ"
-                  className="w-full md:w-14rem"
-                />
-              </div>
-            </div>
-
-            <div className="field">
-              <label htmlFor="description" className="font-bold">
-                ประเภทครุภัณฑ์
-              </label>
-              <div className="card flex justify-content-center">
-                <Dropdown
-                  value={productStatus}
-                  onChange={(e) => setProductStatus(e.value)}
-                  options={status}
-                  optionLabel="name"
-                  placeholder="เลือกสถานะ"
-                  className="w-full md:w-14rem"
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="card p-4">
-          <div className="field">
-            <label htmlFor="description" className="font-bold">
-              หมายเหตุ
-            </label>
-            <InputTextarea
-              id="description"
-              value={product.description}
-              onChange={(e) => onInputChange(e, 'description')}
-              required
-              rows={3}
-              cols={20}
-            />
-          </div>
-        </div>
-      </Dialog>
-
-      <Dialog
-        visible={deleteProductDialog}
-        style={{ width: '32rem' }}
-        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header="Confirm"
-        modal
-        footer={deleteProductDialogFooter}
-        onHide={hideDeleteProductDialog}
-      >
-        <div className="confirmation-content">
-          <i
-            className="pi pi-exclamation-triangle mr-3"
-            style={{ fontSize: '2rem' }}
-          />
-          {product && (
-            <span>
-              Are you sure you want to delete <b>{product.name}</b>?
-            </span>
-          )}
-        </div>
-      </Dialog>
     </div>
   );
 }

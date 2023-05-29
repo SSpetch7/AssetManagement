@@ -9,7 +9,6 @@ const adminController = {
       res.json({ data: admins });
     });
   },
-  
   getAdminByIdList: (req, res) => {
     const adminId = req.params.id;
     adminModel.getAdminById(adminId, (err, admin) => {

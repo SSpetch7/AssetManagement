@@ -1,73 +1,103 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
-import { Paginator } from 'primereact/paginator';
 import { Toast } from 'primereact/toast';
 import { Button } from 'primereact/button';
-import { FileUpload } from 'primereact/fileupload';
-import { Rating } from 'primereact/rating';
-import { Toolbar } from 'primereact/toolbar';
 import { Dropdown } from 'primereact/dropdown';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { RadioButton } from 'primereact/radiobutton';
-import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
-import { Calendar } from 'primereact/calendar';
-import { dataTable } from '../../assets/dummy';
-import BorrowButton from '../../components/BorrowButton';
-import AssetFilter from '../../components/AssetFilter';
-import RemoveButton from '../../components/RemoveButton';
-import ChangeStatusButton from '../../components/ChangeStatusButton';
+import { SelectButton } from 'primereact/selectbutton';
+import { ToggleButton } from 'primereact/togglebutton';
+import {
+  AssetService,
+  AssetOptionService,
+  UpdateAssetService,
+} from '../../service/AssetService';
 
 export default function Remove() {
   let emptydataTable = {
-    order: '',
+    asset_order: null,
     asset_id: '',
-    name: '',
-    year: null,
-    status: '',
-    useable: '',
-    room_id: '',
-    inventoryStatus: 'INSTOCK',
+    asset_name: '',
+    asset_year: '',
+    gallery_id: null,
+    detail: null,
+    room_id: null,
+    categoryID: null,
+    category: '',
+    subcategoryID: null,
+    subcategory: '',
+    asset_stock: '',
+    asset_status: '',
+    asset_useable: '',
   };
 
-  const [productStatus, setProductStatus] = useState(null);
-  const status = [
-    { name: 'ใช่งานได้', code: 'CU' },
-    { name: 'รอซ่อม', code: 'FX' },
-    { name: 'สิ้นสภาพ', code: 'BK' },
-  ];
+  let emptyDataAssetDetail = {
+    asset_order: null,
+    asset_id: '',
+    asset_name: '',
+    asset_year: '',
+    gallery_id: null,
+    detail: null,
+    room_id: null,
+    cate_id: null,
+    sub_id: null,
+    asset_stock: null,
+    asset_status: null,
+    asset_useable: null,
+  };
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    name: {
+    asset_name: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    order: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    asset_order: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     asset_id: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    year: {
+    asset_year: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    status: { value: null, matchMode: FilterMatchMode.EQUALS },
+    asset_status: { value: null, matchMode: FilterMatchMode.EQUALS },
     room_id: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    useable: { value: null, matchMode: FilterMatchMode.EQUALS },
+    asset_useable: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
-  const [products, setProducts] = useState(null);
-  const [productDialog, setProductDialog] = useState(false);
+  // asset new data
+  const [newAssetDialog, setNewAssetDialog] = useState(false);
+  const [assetLstOrder, setAssetLstOrder] = useState();
+  const [assetCreateNew, setAssetCreateNew] = useState(null);
+
+  //  asset edit data
+  const [asset, setAsset] = useState(emptydataTable);
+  const [assetDetail, setAssetDetail] = useState(emptyDataAssetDetail);
+
+  // asset data
+  const [assets, setAssets] = useState(null);
+  const [galleries, setGalleries] = useState(null);
+  const [assetStatus, setAssetStatus] = useState();
+  const [assetStock, setAssetStock] = useState(null);
+  const [assetUseable, setAssetUseable] = useState(null);
+  const [assetType, setAssetType] = useState(null);
+  const [assetComType, setAssetComType] = useState(null);
+
+  const [editAssetDialog, setEditAssetDialog] = useState(false);
+  const [showAssetDialog, setShowAssetDialog] = useState(false);
+
+  const [RemoveDialog, setRemoveDialog] = useState(false);
+  const [ChangeStatusDialog, setChangeStatusDialog] = useState(false);
+
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [product, setProduct] = useState(emptydataTable);
@@ -77,29 +107,71 @@ export default function Remove() {
   const toast = useRef(null);
   const dt = useRef(null);
 
-  const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
-  const [useable] = useState(['กำลังใช้', 'ไม่ได้ใช้งาน']);
-
+  const [statuses] = useState(['ใช้งานได้', 'รอซ่อม', 'สิ้นสภาพ']);
+  const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
+  const options = ['ใช้งานได้', 'รอซ่อม', 'สิ้นสภาพ'];
+  const [toggleValue, setToggleValue] = useState(false);
   useEffect(() => {
-    dataTable.getDatas().then((data) => setProducts(data));
+    AssetService.getAllAsset().then((data) => setAssets(data));
   }, []);
 
-  const formatCurrency = (value) => {
-    return value.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    });
+  useEffect(() => {
+    UpdateAssetService.updateAsset(
+      assetDetail.asset_id,
+      assetDetail,
+      (error, updateAsset) => {
+        if (error) {
+          console.log('Error Status updating to DB admin:', error);
+        } else {
+          console.log('Assset Status updated to DB successfully:', updateAsset);
+          console.log(assetDetail);
+        }
+      }
+    );
+  }, [assetDetail]);
+
+  //   edit asset data
+
+  const onInputChange = (e, name) => {
+    const val = (e.target && e.target.value) || '';
+    let _asset = { ...asset };
+
+    let _assetDetail = { ...assetDetail };
+    _assetDetail[`${name}`] = val;
+
+    _asset[`${name}`] = val;
+
+    setAsset(_asset);
   };
 
-  const openNew = () => {
-    setProduct(emptydataTable);
-    setSubmitted(false);
-    setProductDialog(true);
+  const handleStatusChange = (e) => {
+    console.log('e.value');
+    console.log(e.value);
+    let _asset = { ...asset };
+    _asset[`asset_status`] = e.value;
+    console.log('_asset');
+    console.log(_asset);
+    setAsset(_asset);
+    // setSelectedStatus(e.value);
+  };
+
+  const openChangeStatusDialog = (rowData) => {
+    setChangeStatusDialog(true);
+    setAsset(rowData);
+  };
+
+  const openRemoveDialog = (rowData) => {
+    setRemoveDialog(true);
+    setAsset(rowData);
   };
 
   const hideDialog = () => {
     setSubmitted(false);
-    setProductDialog(false);
+    setNewAssetDialog(false);
+    setEditAssetDialog(false);
+    setShowAssetDialog(false);
+    setChangeStatusDialog(false);
+    setRemoveDialog(false);
   };
 
   const hideDeleteProductDialog = () => {
@@ -110,44 +182,95 @@ export default function Remove() {
     setDeleteProductsDialog(false);
   };
 
-  const saveProduct = () => {
-    setSubmitted(true);
+  const saveChangeStatus = () => {
+    let _assets = [...assets];
+    let _asset = { ...asset };
+    if (asset.asset_id) {
+      const index = findIndexById(asset.asset_id);
+      console.log(asset.asset_id + ' id');
+      _assets[index] = _asset;
+    }
+    toast.current.show({
+      severity: 'success',
+      summary: 'Successful',
+      detail: 'เปลี่ยนสถานะครุภัณฑ์สำเร็จ',
+      life: 3000,
+    });
+    setAsset(_asset);
+    setAssets(_assets);
+    console.log(_asset);
+    setAssetDetail(_asset);
+    setChangeStatusDialog(false);
+    setAsset(emptydataTable);
+  };
 
-    if (product.name.trim()) {
-      let _products = [...products];
-      let _product = { ...product };
+  const saveRemove = () => {
+    let _assets = [...assets];
+    let _asset = { ...asset };
 
-      if (product.id) {
-        const index = findIndexById(product.id);
-
-        _products[index] = _product;
-        toast.current.show({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Product Updated',
-          life: 3000,
-        });
-      } else {
-        _product.id = createId();
-        _product.image = 'product-placeholder.svg';
-        _products.push(_product);
-        toast.current.show({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Product Created',
-          life: 3000,
-        });
+    if (_asset['asset_status'] !== 'แทงจำหน่าย') {
+      _asset['asset_status'] = 'แทงจำหน่าย';
+      _asset['asset_useable'] = 'ไม่ได้ใช้งาน';
+      if (asset.asset_id) {
+        const index = findIndexById(asset.asset_id);
+        console.log(asset.asset_id + ' id');
+        _assets[index] = _asset;
       }
 
-      setProducts(_products);
-      setProductDialog(false);
-      setProduct(emptydataTable);
+      setAsset(_asset);
+      setAssets(_assets);
+      console.log('_asset after');
+      console.log(_asset);
+      setAssetDetail(_asset);
+      setRemoveDialog(false);
+      setAsset(emptydataTable);
+      toast.current.show({
+        severity: 'success',
+        summary: 'Successful',
+        detail: 'แทงจำหน่ายครุภัณฑ์สำเร็จ',
+        life: 2000,
+      });
+    } else if (_asset['asset_status'] === 'แทงจำหน่าย') {
+      setAsset(emptydataTable);
+      setRemoveDialog(false);
+      toast.current.show({
+        severity: 'error',
+        summary: 'Error',
+        detail: 'ครุภัณฑ์อยู่ในสภาพแทงจำหน่าย',
+        life: 2000,
+      });
     }
+  };
+  const actionBodyTemplate = (rowData) => {
+    return (
+      <React.Fragment>
+        <Button
+          severity="info"
+          style={{ marginRight: '10px' }}
+          className="changeStatusBnt mr-2"
+          size="small"
+          icon="pi text-white pi-sync"
+          onClick={() => openChangeStatusDialog(rowData)}
+        />
+
+        <Button
+          style={{ backgroundColor: 'var(--orange-500)' }}
+          severity="warning"
+          className="mr-2"
+          size="small"
+          icon="pi text-white pi-exclamation-circle"
+          onClick={() => openRemoveDialog(rowData)}
+        />
+      </React.Fragment>
+    );
   };
 
   const statusBodyTemplate = (rowData) => {
     return (
-      <Tag value={rowData.status} severity={getSeverity(rowData.status)} />
+      <Tag
+        value={rowData.asset_status}
+        severity={getSeverity(rowData.asset_status)}
+      />
     );
   };
   const statusRowFilterTemplate = (options) => {
@@ -173,18 +296,25 @@ export default function Remove() {
     switch (status) {
       case 'ใช้งานได้':
         return 'success';
-
-      case 'กำลังซ่อม':
-        return 'info';
-
+        break;
+      case 'รอซ่อม':
+        return 'warning';
+        break;
       case 'สิ้นสภาพ':
         return 'danger';
+        break;
+      case 'แทงจำหน่าย':
+        return 'disposal';
+        break;
     }
   };
 
   const useableBodyTemplate = (rowData) => {
     return (
-      <Tag value={rowData.useable} severity={getUseable(rowData.useable)} />
+      <Tag
+        value={rowData.asset_useable}
+        severity={getUseable(rowData.asset_useable)}
+      />
     );
   };
   const useableRowFilterTemplate = (options) => {
@@ -208,18 +338,12 @@ export default function Remove() {
 
   const getUseable = (status) => {
     switch (status) {
-      case 'กำลังใช้':
+      case 'ใช้งาน':
         return 'success';
 
       case 'ไม่ได้ใช้งาน':
         return 'danger';
     }
-  };
-
-  const editProduct = (product) => {
-    setProduct({ ...product });
-    setProductDialog(true);
-    console.log('edit product for click');
   };
 
   const confirmDeleteProduct = (product) => {
@@ -228,11 +352,11 @@ export default function Remove() {
   };
 
   const deleteProduct = () => {
-    let _products = products.filter((val) => val.id !== product.id);
+    let _products = assets.filter((val) => val.id !== product.id);
 
-    setProducts(_products);
+    setAssets(_products);
     setDeleteProductDialog(false);
-    setProduct(emptydataTable);
+    setAsset(emptydataTable);
     toast.current.show({
       severity: 'success',
       summary: 'Successful',
@@ -244,8 +368,8 @@ export default function Remove() {
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < products.length; i++) {
-      if (products[i].id === id) {
+    for (let i = 0; i < assets.length; i++) {
+      if (assets[i].asset_id === id) {
         index = i;
         break;
       }
@@ -254,30 +378,14 @@ export default function Remove() {
     return index;
   };
 
-  const createId = () => {
-    let id = '';
-    let chars =
-      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-
-    for (let i = 0; i < 5; i++) {
-      id += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-
-    return id;
-  };
-
-  const exportCSV = () => {
-    dt.current.exportCSV();
-  };
-
   const confirmDeleteSelected = () => {
     setDeleteProductsDialog(true);
   };
 
   const deleteSelectedProducts = () => {
-    let _products = products.filter((val) => !selectedProducts.includes(val));
+    let _products = assets.filter((val) => !selectedProducts.includes(val));
 
-    setProducts(_products);
+    setAssets(_products);
     setDeleteProductsDialog(false);
     setSelectedProducts(null);
     toast.current.show({
@@ -288,74 +396,8 @@ export default function Remove() {
     });
   };
 
-  const onCategoryChange = (e) => {
-    let _product = { ...product };
-
-    _product['category'] = e.value;
-    setProduct(_product);
-  };
-
-  const onInputChange = (e, name) => {
-    const val = (e.target && e.target.value) || '';
-    let _product = { ...product };
-
-    _product[`${name}`] = val;
-
-    setProduct(_product);
-  };
-
-  const onInputNumberChange = (e, name) => {
-    const val = e.value || 0;
-    let _product = { ...product };
-
-    _product[`${name}`] = val;
-
-    setProduct(_product);
-  };
-
-  const actionRemove = (rowData) => {
-    return (
-      <React.Fragment>
-        {/* <Button
-          icon="pi pi-pencil"
-          style={{ scale: ' 70%' }}
-          rounded
-          outlined
-          className="mr-2"
-          onClick={() => editProduct(rowData)}
-        />
-        <Button
-          icon="pi pi-trash"
-          style={{ scale: ' 70%' }}
-          rounded
-          outlined
-          severity="danger"
-          onClick={() => confirmDeleteProduct(rowData)}
-        /> */}
-
-        <RemoveButton />
-        {/* <Button
-          icon="pi pi-pencil"
-          //   rounded
-          outlined
-          className="editBnt mr-2"
-          onClick={() => editProduct(rowData)}
-        /> */}
-      </React.Fragment>
-    );
-  };
-
-  const actionChangeStatus = (rowData) => {
-    return (
-      <React.Fragment>
-        <ChangeStatusButton />
-      </React.Fragment>
-    );
-  };
-
   const header = (
     <div className="flex  flex-wrap gap-2 align-items-center justify-between">
-      {/* <h4 className="m-0">จัดการครุภัณฑ์</h4> */}
       <div className="flex">
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
@@ -366,20 +408,40 @@ export default function Remove() {
             style={{ width: '400px' }}
           />
         </span>
-        <div className="flex gap-2">
-          <AssetFilter />
-        </div>
       </div>
     </div>
   );
-  const productDialogFooter = (
+  const changeStatusDialogFooter = (
     <React.Fragment>
-      <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
       <Button
-        label="Save"
+        label="ยกเลิก"
+        icon="pi pi-times"
+        severity="danger"
+        outlined
+        onClick={hideDialog}
+      />
+      <Button
+        label="ยืนยัน"
         icon="pi pi-check"
         className="p-Testbutton"
-        onClick={saveProduct}
+        onClick={saveChangeStatus}
+      />
+    </React.Fragment>
+  );
+  const removeDialogFooter = (
+    <React.Fragment>
+      <Button
+        label="ยกเลิก"
+        icon="pi pi-times"
+        severity="danger"
+        outlined
+        onClick={hideDialog}
+      />
+      <Button
+        label="ยืนยัน"
+        icon="pi pi-check"
+        className="p-Testbutton"
+        onClick={saveRemove}
       />
     </React.Fragment>
   );
@@ -422,7 +484,7 @@ export default function Remove() {
       <div className="mt-12">
         <div className="pb-10">
           <span className="pl-32 font-bold  text-4xl text-gray-600 items-start">
-            Remove Asset
+            Disposal Asset
           </span>
           <span className="pl-2  text-gray-400">แทงจำหน่ายครุภัณฑ์</span>
         </div>
@@ -430,9 +492,7 @@ export default function Remove() {
           <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
             <DataTable
               ref={dt}
-              value={products}
-              selection={selectedProducts}
-              onSelectionChange={(e) => setSelectedProducts(e.value)}
+              value={assets}
               dataKey="id"
               paginator
               rows={10}
@@ -446,17 +506,15 @@ export default function Remove() {
               tableStyle={{ minHeight: '10rem' }}
             >
               <Column
-                body={actionChangeStatus}
+                body={actionBodyTemplate}
                 // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '1rem' }}
+                style={{
+                  minWidth: '10rem',
+                  flexWrap: 'nowrap',
+                }}
               ></Column>
               <Column
-                body={actionRemove}
-                // headerStyle={{ minWidth: '10rem' }}
-                style={{ minWidth: '1rem' }}
-              ></Column>
-              <Column
-                field="order"
+                field="asset_order"
                 header="ลำดับ"
                 sortable
                 style={{ minWidth: '4rem' }}
@@ -471,7 +529,7 @@ export default function Remove() {
                 style={{ minWidth: '13rem', width: '13rem' }}
               ></Column>
               <Column
-                field="name"
+                field="asset_name"
                 header="ชื่อ"
                 sortable
                 filter
@@ -481,7 +539,7 @@ export default function Remove() {
               ></Column>
 
               <Column
-                field="year"
+                field="asset_year"
                 header="ปีงบประมาณ"
                 sortable
                 filter
@@ -490,7 +548,7 @@ export default function Remove() {
               ></Column>
 
               <Column
-                field="status"
+                field="asset_status"
                 header="สภาพ"
                 sortable
                 filter
@@ -500,7 +558,7 @@ export default function Remove() {
                 style={{ minWidth: '4rem' }}
               ></Column>
               <Column
-                field="useable"
+                field="asset_useable"
                 header="การใช้งาน"
                 sortable
                 filter
@@ -521,10 +579,183 @@ export default function Remove() {
           </div>
         </div>
       </div>
+      <div className="mt-12">
+        <div className="pb-10">
+          <span className="pl-32 font-bold  text-4xl text-gray-600 items-start">
+            Disposaled Asset
+          </span>
+          <span className="pl-2  text-gray-400">ครุภัณฑ์ที่แทงจำหน่าย</span>
+        </div>
+        <div className="flex justify-center h-full ">
+          <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
+            <DataTable
+              ref={dt}
+              value={assets}
+              dataKey="id"
+              paginator
+              rows={10}
+              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
+              filters={filters}
+              globalFilter={globalFilter}
+              header={header}
+              className="actionRow"
+              scrollable
+              //   scrollHeight="700px"
+              tableStyle={{ minHeight: '10rem' }}
+            >
+              <Column
+                body={actionBodyTemplate}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{
+                  minWidth: '10rem',
+                  flexWrap: 'nowrap',
+                }}
+              ></Column>
+              <Column
+                field="asset_order"
+                header="ลำดับ"
+                sortable
+                style={{ minWidth: '4rem' }}
+              ></Column>
+              <Column
+                field="asset_id"
+                header="หมายเลขครุภัณฑ์"
+                sortable
+                filter
+                showFilterMatchModes={false}
+                filterPlaceholder="ค้นหาหมายเลขครุภัณฑ์"
+                style={{ minWidth: '13rem', width: '13rem' }}
+              ></Column>
+              <Column
+                field="asset_name"
+                header="ชื่อ"
+                sortable
+                filter
+                showFilterMatchModes={false}
+                filterPlaceholder="ค้นหาชื่อ"
+                style={{ minWidth: '18rem' }}
+              ></Column>
 
+              <Column
+                field="asset_year"
+                header="ปีงบประมาณ"
+                sortable
+                filter
+                showFilterMatchModes={false}
+                style={{ minWidth: '4rem' }}
+              ></Column>
+
+              <Column
+                field="asset_status"
+                header="สภาพ"
+                sortable
+                filter
+                showFilterMatchModes={false}
+                body={statusBodyTemplate}
+                filterElement={statusRowFilterTemplate}
+                style={{ minWidth: '4rem' }}
+              ></Column>
+              <Column
+                field="asset_useable"
+                header="การใช้งาน"
+                sortable
+                filter
+                body={useableBodyTemplate}
+                filterElement={useableRowFilterTemplate}
+                showFilterMatchModes={false}
+                style={{ minWidth: '10rem' }}
+              ></Column>
+              <Column
+                field="room_id"
+                header="ประจำที่"
+                sortable
+                filter
+                showFilterMatchModes={false}
+                style={{ minWidth: '10rem' }}
+              ></Column>
+            </DataTable>
+          </div>
+        </div>
+      </div>
       <div className="m-16">
         <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
       </div>
+
+      <Dialog
+        visible={RemoveDialog}
+        style={{ width: '64rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="แทงจำหน่ายครุภัณฑ์"
+        modal
+        className="p-fluid"
+        footer={removeDialogFooter}
+        onHide={hideDialog}
+      >
+        {/* <div className="field-checkbox">
+          <h2>แทงจำหน่าย</h2>
+          <ToggleButton
+            checked={toggleValue}
+            onChange={(e) => setToggleValue(e.value)}
+            onLabel="Yes"
+            offLabel="No"
+          />
+        </div> */}
+        <div className="card">
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1 col-end-5">
+              <label htmlFor="description" className="font-bold">
+                หมายเหตุ
+              </label>
+              <InputTextarea
+                id="description"
+                value={product.description}
+                onChange={(e) => onInputChange(e, 'description')}
+                required
+                rows={3}
+                cols={20}
+              />
+            </div>
+          </div>
+        </div>
+      </Dialog>
+      <Dialog
+        visible={ChangeStatusDialog}
+        style={{ width: '64rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="เปลี่ยนสถานะครุภัณฑ์"
+        modal
+        className="p-fluid"
+        footer={changeStatusDialogFooter}
+        onHide={hideDialog}
+      >
+        <div className="dialog-changeStatus card">
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1 col-end-5">
+              <div className="flex card justify-content-center grid w-5/6 grid-rows-1 gap-4 pt-4 pb-4">
+                <SelectButton
+                  //   value={asset.s_id}
+                  className="statusOptions"
+                  options={options}
+                  value={asset.asset_status}
+                  onChange={handleStatusChange}
+                />
+                <div className="col-span-3 row-span-1"></div>
+              </div>
+              <label htmlFor="description" className="font-bold">
+                หมายเหตุ
+              </label>
+              <InputTextarea
+                id="description"
+                value={product.description}
+                onChange={(e) => onInputChange(e, 'description')}
+                required
+                rows={3}
+                cols={20}
+              />
+            </div>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 }
