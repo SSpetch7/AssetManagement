@@ -1,159 +1,170 @@
-import React, { Fragment, useState } from 'react';
-import { Tab } from '@headlessui/react';
-import { Listbox, Transition } from '@headlessui/react';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import CheckIcon from '@mui/icons-material/Check';
-import LineChart from '../../assets/chart/lineChart';
-import { UserData, UserData2, SubData } from '../../assets/data/data';
-
-const number1 = [
-  { name: 'จำนวนของแต่ละสถานะครุภัณฑ์' },
-  { name: '1' },
-  { name: '2' },
-  { name: '3' },
-  { name: '4' },
-  { name: '5' },
-  { name: '6' },
-  { name: '7' },
-  { name: '8' },
-  { name: '9' },
-  { name: '10' },
-];
-const number2 = [
-  { name: 'จำนวนครุภัณฑ์ที่เพิ่มเข้ามาใหม่' },
-  { name: '1' },
-  { name: '2' },
-  { name: '3' },
-  { name: '4' },
-  { name: '5' },
-  { name: '6' },
-  { name: '7' },
-  { name: '8' },
-  { name: '9' },
-  { name: '10' },
-];
-const number3 = [
-  { name: '1980' },
-  { name: '1981' },
-  { name: '1982' },
-  { name: '1983' },
-  { name: '1984' },
-  { name: '1985' },
-  { name: '1986' },
-  { name: '1987' },
-  { name: '1988' },
-  { name: '1989' },
-  { name: '1990' },
-  { name: '1991' },
-  { name: '1992' },
-  { name: '1993' },
-  { name: '1994' },
-  { name: '1995' },
-  { name: '1996' },
-  { name: '1997' },
-  { name: '1998' },
-  { name: '1999' },
-  { name: '2000' },
-  { name: '2001' },
-  { name: '2002' },
-  { name: '2003' },
-  { name: '2004' },
-  { name: '2005' },
-  { name: '2006' },
-  { name: '2007' },
-  { name: '2008' },
-  { name: '2009' },
-  { name: '2010' },
-  { name: '2011' },
-  { name: '2012' },
-  { name: '2013' },
-  { name: '2014' },
-  { name: '2015' },
-  { name: '2016' },
-  { name: '2017' },
-  { name: '2018' },
-  { name: '2019' },
-  { name: '2020' },
-  { name: '2021' },
-  { name: '2022' },
-  { name: '2023' },
-];
+import React, { useState, useEffect } from "react";
+import { Tab } from "@headlessui/react";
+import LineChart from "../../assets/chart/lineChart";
+import LineChart2 from "../../assets/chart/lineChart2";
+import PieChart from "../../assets/chart/pieChart";
+import { UserData2, SubData, StatusData } from "../../assets/data/data";
+import CalendarStart from "../../components/CalendarStart";
+import CalendarEnd from "../../components/CalendarEnd";
+import AmountAsset from "../../components/dropdownAsset";
+import Status from "../../components/dropdownStatus";
+import Year from "../../components/dropdownYear";
+import User from "../../components/dropdownUser";
+import { TabView, TabPanel } from "primereact/tabview";
+import { Dropdown } from "primereact/dropdown";
+import { ChartService } from "../../service/ChartService";
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function Summarize() {
-  const [selected1, setSelected1] = useState(number1[0]);
-  const [selected2, setSelected2] = useState(number2[0]);
-  const [selected3, setSelected3] = useState(number3[0]);
-  const [userData, setUserData] = useState({
-    labels: UserData.map((data) => data.asset),
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const Status = [
+    { name: "ทั้งหมด", id: null  },
+    { name: "ใช้งานได้", id: 1  },
+    { name: "รอซ่อม", id: 2  },
+    { name: "สิ้นสภาพ", id: 3  },
+    { name: "แทงจำหน่าย", id: 4  },
+  ];
+  const [selectedStatus, setSelectedStatus] = useState(Status[0].name);
+
+  const Asset = [
+    { name: "จำนวนครุภัณฑ์ทั้งหมด", id: null },
+    { name: "สำนักงาน", id: "1" },
+    { name: "อาคารสำนักงาน", id: "4" },
+    { name: "การศึกษา", id: "2" },
+    { name: "คอมพิวเตอร์ทั้งหมด", id: "3" },
+    { name: "เครื่องคอมพิวเตอร์", id: "1" },
+    { name: "โน๊ตบุ๊ค", id: "2" },
+    { name: "แท็บเล็ต", id: "3" },
+    { name: "อื่นๆ", id: "5" },
+  ];
+  const [selectedAsset, setSelectedAsset] = useState(Asset[0].name);
+
+  const [numberCateAndSubYear, setNumberCateAndSubYear] = useState(null);
+  const [result, setResult] = useState({
+    labels: numberCateAndSubYear.map((data) => data.asset_year),
     datasets: [
       {
-        label: 'จำนวนครุภัณฑ์',
-        data: UserData.map((data) => data.totalAmount),
-        backgroundColor: [
-          'rgba(0,0,0)',
-          'rgba(75,192,192,1)',
-          '#ecf0f1',
-          '#f3ba2f',
-          '#2a71d0',
-          'rgba(225,75,225,1)',
-        ],
-        borderColor: 'black',
+        label: "จำนวนครุภัณฑ์",
+        data: numberCateAndSubYear.map((data) => data.total_asset_in_year),
+        backgroundColor: ["#d02a2a"],
+        borderColor: "black",
         borderWidth: 2,
         tension: 0.4,
       },
     ],
   });
+
+  useEffect(() => {
+    console.log(selectedAsset);
+    if (selectedAsset.name == "จำนวนครุภัณฑ์ทั้งหมด") {
+      ChartService.getAssetYear().then((data) => setNumberCateAndSubYear(data));
+      console.log(selectedAsset.id);
+      console.log(numberCateAndSubYear);
+    } else if (selectedAsset.name == "สำนักงาน") {
+      ChartService.getCateAssetYear(selectedAsset.id).then((data) => setNumberCateAndSubYear(data));
+      console.log(selectedAsset.id);
+      console.log(numberCateAndSubYear);
+    } else if (selectedAsset.name == "การศึกษา") {
+      ChartService.getCateAssetYear(selectedAsset.id).then((data) => setNumberCateAndSubYear(data));
+      console.log(selectedAsset.id);
+      console.log(numberCateAndSubYear);
+    } else if (selectedAsset.name == "คอมพิวเตอร์ทั้งหมด") {
+      ChartService.getCateAssetYear(selectedAsset.id).then((data) => setNumberCateAndSubYear(data));
+      console.log(selectedAsset.id);
+      console.log(numberCateAndSubYear);
+    } else if (selectedAsset.name == "อาคารสำนักงาน") {
+      ChartService.getCateAssetYear(selectedAsset.id).then((data) => setNumberCateAndSubYear(data));
+      console.log(selectedAsset.id);
+      console.log(numberCateAndSubYear);
+    } else if (selectedAsset.name == "อื่นๆ") {
+      ChartService.getCateAssetYear(selectedAsset.id).then((data) => setNumberCateAndSubYear(data));
+      console.log(selectedAsset.id);
+      console.log(numberCateAndSubYear);
+    } else if (selectedAsset.name == "เครื่องคอมพิวเตอร์") {
+      ChartService.getSubAssetYear(selectedAsset.id).then((data) => setNumberCateAndSubYear(data));
+      console.log(selectedAsset.id);
+      console.log(numberCateAndSubYear);
+    } else if (selectedAsset.name == "โน๊ตบุ๊ค") {
+      ChartService.getSubAssetYear(selectedAsset.id).then((data) => setNumberCateAndSubYear(data));
+      console.log(selectedAsset.id);
+      console.log(numberCateAndSubYear);
+    } else if (selectedAsset.name == "แท็บเล็ต") {
+      ChartService.getSubAssetYear(selectedAsset.id).then((data) => setNumberCateAndSubYear(data));
+      console.log(selectedAsset.id);
+      console.log(numberCateAndSubYear);
+    }
+  }, [selectedAsset]);
+
+  const User = [
+    { name: "กิตนันท์ สมัครพงค์" },
+    { name: "พีรกานต์ จักรเพ็ชร" },
+    { name: "นิธิโชติ มณีรัตน์ไพโรจน์" },
+    { name: "..." },
+  ];
+  const [selectedUser, setSelectedUser] = useState(User[0].name);
+  const Year = [
+    { name: "2023" },
+    { name: "2022" },
+    { name: "2021" },
+    { name: "2020" },
+    { name: "2019" },
+    { name: "2018" },
+    { name: "2017" },
+    { name: "2016" },
+    { name: "2015" },
+    { name: "2014" },
+    { name: "2013" },
+    { name: "2012" },
+    { name: "2011" },
+    { name: "2010" },
+    { name: "2009" },
+    { name: "2008" },
+    { name: "2007" },
+    { name: "2006" },
+    { name: "2005" },
+    { name: "2004" },
+    { name: "2003" },
+    { name: "2002" },
+    { name: "2001" },
+    { name: "2000" },
+  ];
+
+  const [selectedYear, setSelectedYear] = useState(Year[0].name);
 
   const [userData2, setUserData2] = useState({
     labels: UserData2.map((data) => data.asset),
     datasets: [
       {
-        label: 'จำนวนครุภัณฑ์',
+        label: "จำนวนการยืมครุภัณฑ์",
         data: UserData2.map((data) => data.totalAmount),
         backgroundColor: [
-          'rgba(0,0,0)',
-          'rgba(75,192,192,1)',
-          '#ecf0f1',
-          '#f3ba2f',
-          '#2a71d0',
-          'rgba(225,75,225,1)',
+          "rgba(0,0,0)",
+          "rgba(75,192,192,1)",
+          "#ecf0f1",
+          "#f3ba2f",
+          "#2a71d0",
+          "rgba(225,75,225,1)",
         ],
-        borderColor: 'black',
+        borderColor: "black",
         borderWidth: 2,
         tension: 0.4,
       },
     ],
   });
 
-  const [subData, setSubData] = useState({
-    labels: SubData.map((data) => data.year),
+  const [statusData, setStatusData] = useState({
+    labels: StatusData.map((data) => data.status),
     datasets: [
       {
-        label: 'จำนวนครุภัณฑ์ในแต่ละปี',
-        data: SubData.map((data) => data.number),
-        backgroundColor: ['#d02a2a'],
-        borderColor: 'black',
-        borderWidth: 2,
-        tension: 0.4,
-      },
-    ],
-  });
-
-  let [categories] = useState({
-    ครุภัณฑ์: [
-      {
-        id: 1,
-        title: userData,
-      },
-    ],
-    บุคลากร: [
-      {
-        id: 1,
-        title: userData2,
+        label: "สถานะครุภัณฑ์",
+        data: StatusData.map((data) => data.count),
+        backgroundColor: ["#f3ba2f", "#2a71d0", "rgba(255,0,255,1)"],
+        borderColor: "white",
+        borderWidth: 5,
       },
     ],
   });
@@ -169,37 +180,98 @@ export default function Summarize() {
       <div className="pl-36 font-bold text-4xl text-kmuttColor-800 items-start">
         ภาพรวมครุภัณฑ์
       </div>
-      <div className="flex pt-10 flex-row justify-center items-center">
-        <div className="bg-white  w-3/12 p-3 h-32 rounded-l-xl  gap-4">
-          <div className="pl-10 pt-2 ">
-            <p className="text-2xl flex items-center">จำนวนอุปกรณ์ทั้งหมด</p>
-            <div className="pt-2">
-              <span className="text-kmuttColor-800 font-bold text-5xl">
-                100
-              </span>
-              <span className="text-gray-400 text-xl pl-4">ชิ้น</span>
+      <div className="flex pt-10 flex-row justify-center items-center pl-32 pr-32">
+        <div className="bg-gray-200 rounded-xl shadow-md w-full h-full">
+          <div className="grid grid-cols-3 grid-rows-1 h-24">
+            <div className="bg-white p-2.5 rounded-l-xl grid grid-rows-5 grid-flow-col gap-4">
+              <div className="row-span-4 col-span-1"></div>
+              <div className="row-span-1 col-span-1"></div>
+              <div className="row-span-2 col-span-11">
+                <div className="h-1"></div>
+                <p className="sm:text-sm md:text-base lg:text-2xl text-gray-600 font-medium">
+                  จำนวนอุปกรณ์ทั้งหมด
+                </p>
+              </div>
+              <div className="row-span-2 col-span-11">
+                <div className="grid grid-rows-1 grid-cols-2 flow justify-between">
+                  <div className="col-span-1">
+                    <div className="grid grid-rows-1 grid-flow-col gap-2">
+                      <p className="col-span-1 text-4xl text-kmuttColor-800 font-bold">
+                        100
+                      </p>
+                      <p className="col-span-2 text-2xl text-gray-400 font-medium pr-4 pt-1.5">
+                        ชิ้น
+                      </p>
+                    </div>
+                  </div>
+                  {/*<div className="col-span-1">
+                    <div className="grid grid-rows-1 grid-flow-col">
+                      <p className="sm:col-span-1 md:col-span-2 lg:col-span-3"></p>
+                      <p className="lg:text-right col-span-1 text-xl text-green-500 font-medium items-right justify-right pt-4">+3</p>
+                    </div>
+                  </div>*/}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="bg-white w-3/12 h-32  p-3 border-2 border-white border-x-gray-200  gap-4">
-          <div className="pl-10 pt-2 ">
-            <p className="text-2xl">จำนวนอุปกรณ์ที่ใช้งาน</p>
-            <div className="pt-2">
-              <span className="text-kmuttColor-800 font-bold text-5xl">
-                100
-              </span>
-              <span className="text-gray-400 text-xl  pl-4">ชิ้น</span>
+            <div className="bg-white p-2.5 border-2 border-white border-x-gray-200 grid grid-rows-5 grid-flow-col gap-4">
+              <div className="row-span-4 col-span-1"></div>
+              <div className="row-span-1 col-span-1"></div>
+              <div className="row-span-2 col-span-11">
+                <div className="h-1"></div>
+                <p className="sm:text-sm md:text-base lg:text-2xl text-gray-600 font-medium">
+                  จำนวนอุปกรณ์ที่ใช้งาน
+                </p>
+              </div>
+              <div className="row-span-2 col-span-11">
+                <div className="grid grid-rows-1 grid-cols-2 flow justify-between">
+                  <div className="col-span-1">
+                    <div className="grid grid-rows-1 grid-flow-col gap-2">
+                      <p className="col-span-1 text-4xl text-kmuttColor-800 font-bold">
+                        49
+                      </p>
+                      <p className="col-span-2 text-2xl text-gray-400 font-medium pr-4 pt-1.5">
+                        ชิ้น
+                      </p>
+                    </div>
+                  </div>
+                  {/*<div className="col-span-1">
+                    <div className="grid grid-rows-1 grid-flow-col">
+                      <p className="sm:col-span-1 md:col-span-2 lg:col-span-3"></p>
+                      <p className="lg:text-right col-span-1 text-xl text-green-500 font-medium items-right justify-right pt-4">+3</p>
+                    </div>
+                  </div>*/}
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-        <div className="bg-white w-3/12 h-32  p-3 rounded-r-xl  gap-4">
-          <div className="pl-10 pt-2">
-            <p className="text-2xl">จำนวนอุปกรณ์ที่ใช้ได้</p>
-            <div className="pt-2">
-              <span className="text-kmuttColor-800 font-bold text-5xl">
-                100
-              </span>
-              <span className="text-gray-400 text-xl  pl-4">ชิ้น</span>
+            <div className="bg-white p-2.5 rounded-r-xl grid grid-rows-5 grid-flow-col gap-4">
+              <div className="row-span-4 col-span-1"></div>
+              <div className="row-span-1 col-span-1"></div>
+              <div className="row-span-2 col-span-11">
+                <div className="h-1"></div>
+                <p className="sm:text-sm md:text-base lg:text-2xl text-gray-600 font-medium">
+                  จำนวนอุปกรณ์ที่ใช้ได้
+                </p>
+              </div>
+              <div className="row-span-2 col-span-11">
+                <div className="grid grid-rows-1 grid-cols-2 flow justify-between">
+                  <div className="col-span-1">
+                    <div className="grid grid-rows-1 grid-flow-col gap-2">
+                      <p className="col-span-1 text-4xl text-kmuttColor-800 font-bold">
+                        87
+                      </p>
+                      <p className="col-span-2 text-2xl text-gray-400 font-medium pr-4 pt-1.5">
+                        ชิ้น
+                      </p>
+                    </div>
+                  </div>
+                  {/*<div className="col-span-1">
+                    <div className="grid grid-rows-1 grid-flow-col">
+                      <p className="sm:col-span-1 md:col-span-2 lg:col-span-3"></p>
+                      <p className="lg:text-right col-span-1 text-xl text-green-500 font-medium items-right justify-right pt-4">-1</p>
+                    </div>
+                  </div>*/}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -211,260 +283,155 @@ export default function Summarize() {
         <div className="contact-between w-full h-full">
           <div className="rounded-lg pb-10 w-full h-full">
             <div className="sm:px-0 shadow-md rounded-lg w-full h-full">
-              <Tab.Group>
-                <Tab.List className="flex space-x-1 rounded-t-lg bg-white p-1">
-                  {Object.keys(categories).map((category) => (
-                    <Tab
-                      key={category}
-                      className={({ selected }) =>
-                        classNames(
-                          'w-full h-full rounded-t-lg py-2.5 text-sm font-medium leading-5 text-black',
-                          'ring-white ring-opacity-60 ring-offset-2 ring-offset-white focus:border-2 focus:border-orange-400 focus:outline-none focus:ring-2 focus:text-white',
-                          selected
-                            ? 'bg-orange-400 text-white'
-                            : 'text-black border-2 border-black hover:bg-orange-300 hover:text-white hover:border-2 hover:border-orange-300'
-                        )
-                      }
-                    >
-                      {category}
-                    </Tab>
-                  ))}
-                </Tab.List>
-                <Tab.Panels className="rounded-xl">
-                  {Object.values(categories).map((posts, idx) => (
-                    <Tab.Panel
-                      key={idx}
-                      className={classNames(
-                        'rounded-b-lg bg-white',
-                        'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
-                      )}
-                    >
-                      <div className="grid grid-cols-3 grid-rows-8 gap-8 h-full pl-8 pr-8 pb-8">
-                        <div className="col-span-2 row-span-8 gap-2 w-full h-full">
-                          <div className="grid grid-cols-1 grid-rows-8 w-full h-full">
-                            <div className="col-span-1 row-span-1">
-                              <Listbox
-                                value={selected2}
-                                onChange={setSelected2}
-                              >
-                                <div className="relative mt-1 p-5">
-                                  <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                                    <span className="block truncate">
-                                      {selected2.name}
-                                    </span>
-                                    <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                                      <ArrowDropDownIcon
-                                        className="h-5 w-5 text-gray-400"
-                                        aria-hidden="true"
-                                      />
-                                    </span>
-                                  </Listbox.Button>
-                                  <Transition
-                                    as={Fragment}
-                                    leave="transition ease-in duration-100"
-                                    leaveFrom="opacity-100"
-                                    leaveTo="opacity-0"
-                                  >
-                                    <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                      {number2.map((person, personIdx) => (
-                                        <Listbox.Option
-                                          key={personIdx}
-                                          className={({ active }) =>
-                                            `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                              active
-                                                ? 'bg-amber-100 text-amber-900'
-                                                : 'text-gray-900'
-                                            }`
-                                          }
-                                          value={person}
-                                        >
-                                          {({ selected2 }) => (
-                                            <>
-                                              <span
-                                                className={`block truncate ${
-                                                  selected2
-                                                    ? 'font-medium'
-                                                    : 'font-normal'
-                                                }`}
-                                              >
-                                                {person.name}
-                                              </span>
-                                              {selected2 ? (
-                                                <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                                  <CheckIcon
-                                                    className="h-5 w-5"
-                                                    aria-hidden="true"
-                                                  />
-                                                </span>
-                                              ) : null}
-                                            </>
-                                          )}
-                                        </Listbox.Option>
-                                      ))}
-                                    </Listbox.Options>
-                                  </Transition>
-                                </div>
-                              </Listbox>
-                            </div>
-                            <div className="col-span-1 row-span-7 flex justify-center items-center w-full h-full">
-                              {posts.map((post) => (
-                                <div className="flex justify-center items-center pr-3 pl-3 w-full h-full">
-                                  <div style={{ width: '100%' }}>
-                                    <LineChart chartData={post.title} />
-                                  </div>
-                                </div>
-                              ))}
+              <TabView
+                activeIndex={activeIndex}
+                onTabChange={(e) => setActiveIndex(e.index)}
+              >
+                <TabPanel header="ครุภัณฑ์">
+                  <div className="pt-4"></div>
+                  <div className="grid grid-cols-3 grid-rows-8 gap-8 h-full pl-8 pr-8 pb-8">
+                    <div className="col-span-2 row-span-8 gap-2 w-full h-full">
+                      <div className="grid grid-cols-1 grid-rows-8 w-full h-full">
+                        <div className="relative p-5 col-span-1 row-span-1 w-full flex justify-center">
+                          <div className="card flex justify-content-center w-full">
+                            <Dropdown
+                              value={selectedAsset}
+                              onChange={(e) => setSelectedAsset(e.value)}
+                              options={Asset}
+                              optionLabel="name"
+                              placeholder={selectedAsset}
+                              className="p-invalid w-full md:w-14rem"
+                            />
+                          </div>
+                        </div>
+                        <div className="pt-8"></div>
+                        <div className="col-span-1 row-span-7 flex justify-center items-center w-full h-full">
+                          <div className="flex justify-center items-center pr-3 pl-3 w-full h-full pb-3">
+                            <div className="w-full flex justify-center items-center">
+                              <LineChart2 chart2Data={result} />
                             </div>
                           </div>
                         </div>
-                        
-                      </div>
-                    </Tab.Panel>
-                  ))}
-                </Tab.Panels>
-              </Tab.Group>
-            </div>
-          </div>
-          <div className="w-full h-full">
-            <div className="w-full h-full">
-              <div className="bg-white rounded-xl shadow-md w-full h-full">
-                <div className="w-full h-full p-5">
-                  <div className="col-span-1 row-span-1 w-full h-full">
-                    <Listbox value={selected1} onChange={setSelected1}>
-                      <div className="relative mt-1 p-5">
-                        <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                          <span className="block truncate">
-                            {selected1.name}
-                          </span>
-                          <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                            <ArrowDropDownIcon
-                              className="h-5 w-5 text-gray-400"
-                              aria-hidden="true"
-                            />
-                          </span>
-                        </Listbox.Button>
-                        <Transition
-                          as={Fragment}
-                          leave="transition ease-in duration-100"
-                          leaveFrom="opacity-100"
-                          leaveTo="opacity-0"
-                        >
-                          <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                            {number1.map((person, personIdx) => (
-                              <Listbox.Option
-                                key={personIdx}
-                                className={({ active }) =>
-                                  `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                    active
-                                      ? 'bg-amber-100 text-amber-900'
-                                      : 'text-gray-900'
-                                  }`
-                                }
-                                value={person}
-                              >
-                                {({ selected1 }) => (
-                                  <>
-                                    <span
-                                      className={`block truncate ${
-                                        selected1
-                                          ? 'font-medium'
-                                          : 'font-normal'
-                                      }`}
-                                    >
-                                      {person.name}
-                                    </span>
-                                    {selected1 ? (
-                                      <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                        <CheckIcon
-                                          className="h-5 w-5"
-                                          aria-hidden="true"
-                                        />
-                                      </span>
-                                    ) : null}
-                                  </>
-                                )}
-                              </Listbox.Option>
-                            ))}
-                          </Listbox.Options>
-                        </Transition>
-                      </div>
-                    </Listbox>
-                  </div>
-                  <div className="col-span-1 row-span-8 flex justify-center items-center w-full h-full">
-                    <div className="flex justify-center items-center pr-5 pl-5 w-full h-full">
-                      <div style={{ width: '100%' }}>
-                        <LineChart chartData={subData} />
                       </div>
                     </div>
-                  </div>
-                  <div className="col-span-1 row-span-1 grid grid-cols-10 grid-rows-1 gap-4 w-full h-full">
-                    <p className="col-span-1 pt-8 pl-1 text-sm text-gray-600 font-medium flex justify-center">
-                      ปีงบประมาณ
-                    </p>
-                    <div className="col-span-9 pb-2 pr-2 pt-5 pb-5">
-                      <Listbox value={selected3} onChange={setSelected3}>
-                        <div className="relative mt-1 pr-4">
-                          <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left shadow-md focus:outline-none focus-visible:border-indigo-500 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-orange-300 sm:text-sm">
-                            <span className="block truncate">
-                              {selected3.name}
-                            </span>
-                            <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
-                              <ArrowDropDownIcon
-                                className="h-5 w-5 text-gray-400"
-                                aria-hidden="true"
-                              />
-                            </span>
-                          </Listbox.Button>
-                          <Transition
-                            as={Fragment}
-                            leave="transition ease-in duration-100"
-                            leaveFrom="opacity-100"
-                            leaveTo="opacity-0"
-                          >
-                            <Listbox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                              {number3.map((person, personIdx) => (
-                                <Listbox.Option
-                                  key={personIdx}
-                                  className={({ active }) =>
-                                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                      active
-                                        ? 'bg-amber-100 text-amber-900'
-                                        : 'text-gray-900'
-                                    }`
-                                  }
-                                  value={person}
-                                >
-                                  {({ selected3 }) => (
-                                    <>
-                                      <span
-                                        className={`block truncate ${
-                                          selected3
-                                            ? 'font-medium'
-                                            : 'font-normal'
-                                        }`}
-                                      >
-                                        {person.name}
-                                      </span>
-                                      {selected3 ? (
-                                        <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-amber-600">
-                                          <CheckIcon
-                                            className="h-5 w-5"
-                                            aria-hidden="true"
-                                          />
-                                        </span>
-                                      ) : null}
-                                    </>
-                                  )}
-                                </Listbox.Option>
-                              ))}
-                            </Listbox.Options>
-                          </Transition>
+                    <div className="col-span-1 row-span-8 w-full h-full">
+                      <div className="row fthight">
+                        <div className="col-sm-8  mt-3">
+                          <div className="pt-5"></div>
+                          <p class="w-full col-span-1 text-2xl text-orange-500 font-medium flex justify-center">
+                            เริ่มต้น
+                          </p>
+                          <div className="row mb-4 w-full">
+                            <div className="col-sm-5 w-full">
+                              <p class="text-sm text-gray-600 font-medium">
+                                เลือกวันที่
+                              </p>
+                              <div className="h-4"></div>
+                              <CalendarStart />
+                            </div>
+                          </div>
+                          <p class="w-full col-span-1 text-2xl text-orange-500 font-medium flex justify-center">
+                            ถึง
+                          </p>
+                          <div className="row mb-4 w-full">
+                            <div className="col-sm-5 w-full">
+                              <p class="text-sm text-gray-600 font-medium">
+                                เลือกวันที่
+                              </p>
+                              <div className="h-4"></div>
+                              <CalendarEnd />
+                            </div>
+                          </div>
+                          <div className="pt-16"></div>
+                          <div className="row mb-4 bg-orange-400 rounded-md p-2">
+                            <label className="col-sm-2 col-form-label"></label>
+                            <div className="col-sm-5">
+                              <button className="w-full btn btn-success flex justify-center text-white">
+                                {" "}
+                                ค้นหา{" "}
+                              </button>
+                            </div>
+                          </div>
                         </div>
-                      </Listbox>
+                      </div>
                     </div>
                   </div>
-                </div>
-              </div>
+                </TabPanel>
+                <TabPanel header="สถานะ">
+                  <div className="grid grid-cols-1 grid-rows-8 gap-8 h-full pl-8 pr-8 pb-8">
+                    <div className="col-span-2 row-span-8 gap-2 w-full h-full">
+                      <div className="grid grid-cols-1 grid-rows-8 w-full h-full">
+                        <div className="relative p-5 col-span-1 row-span-1 w-full flex justify-center">
+                          <div className="card flex justify-content-center w-4/5 h-full">
+                            <Dropdown
+                              value={selectedStatus}
+                              onChange={(e) => setSelectedStatus(e.value)}
+                              options={Status}
+                              optionLabel="name"
+                              placeholder={selectedStatus}
+                              className="p-invalid w-full md:w-14rem"
+                            />
+                          </div>
+                        </div>
+                        <div className="col-span-1 row-span-7 flex justify-center items-center w-full h-full">
+                          <div className="flex justify-center items-center pr-3 pl-3 w-full h-full">
+                            <div className="min-w-1/4 flex justify-center items-center">
+                              <PieChart chartData={statusData} />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="col-span-1 row-span-1 grid grid-cols-10 grid-rows-1 gap-4 w-full h-full">
+                      <div className="col-span-1"></div>
+                      <p className="col-span-1 pt-3 pl-1 text-sm text-gray-600 font-medium flex justify-center">
+                        ปีงบประมาณ
+                      </p>
+                      <div className="relative col-span-7">
+                        <div className="card flex justify-content-center w-full h-11/12">
+                          <Dropdown
+                            value={selectedYear}
+                            onChange={(e) => setSelectedYear(e.value)}
+                            options={Year}
+                            optionLabel="name"
+                            placeholder={selectedYear}
+                            className="p-invalid w-full md:w-14rem"
+                          />
+                        </div>
+                      </div>
+                      <div className="col-span-1"></div>
+                    </div>
+                  </div>
+                </TabPanel>
+                <TabPanel header="บุคลากร">
+                  <div className="grid grid-cols-2 grid-rows-8 gap-8 h-full pl-8 pr-8 pb-8">
+                    <div className="col-span-2 row-span-8 gap-2 w-full h-full">
+                      <div className="grid grid-cols-1 grid-rows-8 w-full h-full">
+                        <div className="relative p-5 col-span-1 row-span-1 w-full flex justify-center">
+                          <div className="card flex justify-content-center w-4/5 h-11/12">
+                            <Dropdown
+                              value={selectedUser}
+                              onChange={(e) => setSelectedUser(e.value)}
+                              options={User}
+                              optionLabel="name"
+                              placeholder={selectedUser}
+                              className="p-invalid w-full md:w-14rem"
+                            />
+                          </div>
+                        </div>
+                        <div className="pt-2"></div>
+                        <div className="col-span-1 row-span-7 flex justify-center items-center w-full h-full">
+                          <div className="flex justify-center items-center pr-3 pl-3 w-full h-full pb-16">
+                            <div className="w-4/5 flex justify-center items-center">
+                              <LineChart chartData={userData2} />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabPanel>
+              </TabView>
             </div>
           </div>
         </div>

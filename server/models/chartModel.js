@@ -52,6 +52,37 @@ Chart.getYearAsset = (result) => {
       result(null, err);
     } else {
       console.log('Asset fetching successfully');
+      console.log(res);
+      result(null, res);
+    }
+  });
+};
+
+const cateAssetYear =
+  'SELECT asset_year, COUNT("asset_year") as total_asset_in_year FROM asset_detail WHERE cate_id=? GROUP BY asset_year ORDER BY asset_year ASC';
+Chart.getCateAssetYear = (id, result) => {
+  db.query(cateAssetYear, [id], (err, res) => {
+    if (err) {
+      console.log('Error while fetching asset ', err);
+      result(null, err);
+    } else {
+      console.log('Asset fetching successfully');
+      console.log(res);
+      result(null, res);
+    }
+  });
+};
+
+const subAssetYear =
+  'SELECT asset_year, COUNT("asset_year") as total_asset_in_year FROM asset_detail WHERE sub_id=? GROUP BY asset_year ORDER BY asset_year ASC';
+Chart.getSubAssetYear = (id, result) => {
+  db.query(subAssetYear, [id], (err, res) => {
+    if (err) {
+      console.log('Error while fetching asset ', err);
+      result(null, err);
+    } else {
+      console.log('Asset fetching successfully');
+      console.log(res);
       result(null, res);
     }
   });

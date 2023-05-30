@@ -34,4 +34,28 @@ const numController = {
     });
   },
 };
-export default { numController };
+
+const yearController = {
+  getCateAssetYearList: (req, res) => {
+    const id = req.params.id;
+    chartModel.getCateAssetYear(id, (err, assets) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.json({ data: assets });
+      }
+    });
+  },
+  getSubAssetYearList: (req, res) => {
+    const id = req.params.id;
+    chartModel.getSubAssetYear(id, (err, assets) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.json({ data: assets });
+      }
+    });
+  },
+};
+
+export default { numController, yearController };

@@ -343,3 +343,50 @@ ul.p-submenu-list {
   background-color: #888888 !important;
   color: #ffffff !important;
 }
+
+.p-unselectable-text {
+  width: 150% !important;
+}
+
+.p-tabview .p-tabview-nav li.p-highlight .p-tabview-nav-link {
+  background: #ffffff !important;
+  border-color: chocolate !important;
+  color: chocolate !important;
+}
+
+.p-tabview .p-tabview-nav li .p-tabview-nav-link:not(.p-disabled):focus {
+  outline: 0 none !important;
+  outline-offset: 0 !important;
+  box-shadow: inset 0 0 0 1px chocolate !important;
+}
+
+.p-unselectable-text:hover {
+  width: 150% !important;
+}
+
+.p-tabview-nav-link {
+  text-align: center !important;
+  width: 100% !important;
+}
+
+.p-tabview-nav-link:hover {
+  border-color: chocolate !important;
+}
+
+.p-tabview-title {
+  text-align: center !important;
+  width: 150% !important;
+  color: black;
+}
+
+.p-tabview-title:hover {
+  text-align: center !important;
+  width: 150% !important;
+  color:chocolate !important;
+}
+
+.p-tabview-panels {
+  width: 100% !important;
+  height: 550px !important;
+}
+

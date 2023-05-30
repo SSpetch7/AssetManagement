@@ -106,13 +106,6 @@ export default function AllAsset() {
     }
   }, [selectedYear]);
 
-  {
-    /*useEffect(() => {
-    ReportService.getAssetByYear(selectedYear).then((data) => setAssets(data));
-    console.log(selectedYear);
-  }, [selectedYear]);*/
-  }
-
   const handleSelectedYear = (e) => {
     setSelectedYear(e.value);
   };
