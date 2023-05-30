@@ -6,6 +6,9 @@ export const AssetService = {
   getAssetByID(id) {
     return axios.get(`/asset/${id}`).then((res) => res.data.data);
   },
+  getDisAsset() {
+    return axios.get('/asset/v1/disposaled').then((res) => res.data.data);
+  },
 };
 
 export const AssetOptionService = {

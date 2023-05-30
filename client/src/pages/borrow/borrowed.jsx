@@ -18,9 +18,7 @@ import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
 import { Calendar } from 'primereact/calendar';
 import { dataTable } from '../../assets/dummy';
-import BorrowButton from '../../components/BorrowButton';
-import AssetFilter from '../../components/AssetFilter';
-
+import { Galleria } from 'primereact/galleria';
 export default function BorrowAsset() {
   let emptydataTable = {
     order: '',
@@ -66,7 +64,11 @@ export default function BorrowAsset() {
 
   const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
-  const [deleteProductDialog, setDeleteProductDialog] = useState(false);
+
+  const [borrowDialog, setBorrowDialog] = useState(false);
+  const [dates, setDates] = useState(null);
+  const [images, setImages] = useState(null);
+
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [product, setProduct] = useState(emptydataTable);
   const [selectedProducts, setSelectedProducts] = useState(null);
@@ -82,26 +84,34 @@ export default function BorrowAsset() {
     dataTable.getDatas().then((data) => setProducts(data));
   }, []);
 
-  const formatCurrency = (value) => {
-    return value.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    });
-  };
+  const responsiveOptions = [
+    {
+      breakpoint: '1024px',
+      numVisible: 5,
+    },
+    {
+      breakpoint: '960px',
+      numVisible: 4,
+    },
+    {
+      breakpoint: '768px',
+      numVisible: 3,
+    },
+    {
+      breakpoint: '560px',
+      numVisible: 1,
+    },
+  ];
 
-  const openNew = () => {
+  const openBorrowDialog = () => {
     setProduct(emptydataTable);
     setSubmitted(false);
-    setProductDialog(true);
+    setBorrowDialog(true);
   };
 
   const hideDialog = () => {
     setSubmitted(false);
-    setProductDialog(false);
-  };
-
-  const hideDeleteProductDialog = () => {
-    setDeleteProductDialog(false);
+    setBorrowDialog(false);
   };
 
   const hideDeleteProductsDialog = () => {
@@ -204,9 +214,9 @@ export default function BorrowAsset() {
     return <Tag value={option} severity={getUseable(option)} />;
   };
 
-  const getUseable = (status) => {
-    switch (status) {
-      case 'กำลังใช้':
+  const getUseable = (useable) => {
+    switch (useable) {
+      case 'ใช้งาน':
         return 'success';
 
       case 'ไม่ได้ใช้งาน':
@@ -218,25 +228,6 @@ export default function BorrowAsset() {
     setProduct({ ...product });
     setProductDialog(true);
     console.log('edit product for click');
-  };
-
-  const confirmDeleteProduct = (product) => {
-    setProduct(product);
-    setDeleteProductDialog(true);
-  };
-
-  const deleteProduct = () => {
-    let _products = products.filter((val) => val.id !== product.id);
-
-    setProducts(_products);
-    setDeleteProductDialog(false);
-    setProduct(emptydataTable);
-    toast.current.show({
-      severity: 'success',
-      summary: 'Successful',
-      detail: 'Product Deleted',
-      life: 3000,
-    });
   };
 
   const findIndexById = (id) => {
@@ -311,41 +302,35 @@ export default function BorrowAsset() {
     setProduct(_product);
   };
 
+  const itemTemplate = (item) => {
+    return (
+      <img
+        src={item.itemImageSrc}
+        alt=""
+        style={{ width: '100%', display: 'block' }}
+      />
+    );
+  };
+  const thumbnailTemplate = (item) => {
+    return (
+      <img
+        src={item.thumbnailImageSrc}
+        alt={item.alt}
+        style={{ display: 'block' }}
+      />
+    );
+  };
+
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        {/* <Button
-          icon="pi pi-pencil"
-          style={{ scale: ' 70%' }}
-          rounded
-          outlined
-          className="mr-2"
-          onClick={() => editProduct(rowData)}
-        />
         <Button
-          icon="pi pi-trash"
-          style={{ scale: ' 70%' }}
-          rounded
           outlined
-          severity="danger"
-          onClick={() => confirmDeleteProduct(rowData)}
-        /> */}
-        {/* <Button
-          outlined
-          icon="pi pi-calendar-times"
-          //   rounded
-          //   style={{ fontSize: '16px' }}
-          className="mr-2 "
-          onClick={() => editProduct(rowData)}
-        /> */}
-        <BorrowButton />
-        {/* <Button
-          icon="pi pi-pencil"
-          //   rounded
-          outlined
-          className="editBnt mr-2"
-          onClick={() => editProduct(rowData)}
-        /> */}
+          className="firstBnt mr-2 "
+          icon="pi pi-arrow-right-arrow-left"
+          severity="warning"
+          onClick={openBorrowDialog}
+        />
       </React.Fragment>
     );
   };
@@ -363,9 +348,6 @@ export default function BorrowAsset() {
             style={{ width: '400px' }}
           />
         </span>
-        <div className="flex gap-2">
-          <AssetFilter />
-        </div>
       </div>
     </div>
   );
@@ -380,22 +362,7 @@ export default function BorrowAsset() {
       />
     </React.Fragment>
   );
-  const deleteProductDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="No"
-        icon="pi pi-times"
-        outlined
-        onClick={hideDeleteProductDialog}
-      />
-      <Button
-        label="Yes"
-        icon="pi pi-check"
-        severity="danger"
-        onClick={deleteProduct}
-      />
-    </React.Fragment>
-  );
+
   const deleteProductsDialogFooter = (
     <React.Fragment>
       <Button
@@ -513,7 +480,235 @@ export default function BorrowAsset() {
           </div>
         </div>
       </div>
+      <Dialog
+        visible={borrowDialog}
+        style={{ width: '64rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="การยืมครุภัณฑ์"
+        modal
+        className="p-fluid"
+        footer={productDialogFooter}
+        onHide={hideDialog}
+      >
+        <div className="flex justify-center">
+          <Galleria
+            value={images}
+            responsiveOptions={responsiveOptions}
+            numVisible={5}
+            circular
+            style={{ maxWidth: '600px' }}
+            item={itemTemplate}
+            thumbnail={thumbnailTemplate}
+          />
+        </div>
+        <div className="card p-4">
+          <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1">
+              <label htmlFor="name" className="font-bold">
+                ลำดับที่
+              </label>
+              <InputText
+                id="no"
+                value={product.number}
+                onChange={(e) => onInputChange(e, 'number')}
+                required
+                autoFocus
+                className={classNames({
+                  'p-invalid': submitted && !product.number,
+                })}
+              />
+              {submitted && !product.number && (
+                <small className="p-error">No. is required.</small>
+              )}
+            </div>
 
+            <div className="field col-start-2 col-end-5">
+              <label htmlFor="name" className="font-bold">
+                ชื่อรายการ
+              </label>
+              <InputText
+                id="name"
+                value={product.name}
+                onChange={(e) => onInputChange(e, 'name')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !product.name,
+                })}
+              />
+              {submitted && !product.name && (
+                <small className="p-error">Name is required.</small>
+              )}
+            </div>
+
+            <div className="field">
+              <label htmlFor="id" className="font-bold">
+                หมายเลขครุภัณฑ์
+              </label>
+              <InputText
+                id="id"
+                value={product.id}
+                onChange={(e) => onInputChange(e, 'id')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !product.id,
+                })}
+              />
+              {submitted && !product.id && (
+                <small className="p-error">ProductID is required.</small>
+              )}
+            </div>
+
+            <div className="formgrid grid">
+              <div className="field col">
+                <label htmlFor="price" className="font-bold">
+                  ราคา
+                </label>
+                <InputNumber
+                  id="price"
+                  value={product.price}
+                  onValueChange={(e) => onInputNumberChange(e, 'price')}
+                  mode="currency"
+                  currency="THB"
+                  locale="en-US"
+                />
+              </div>
+            </div>
+
+            <div className="field col-start-3 col-end-5">
+              <label htmlFor="room" className="font-bold">
+                ประจำที่
+              </label>
+              <InputText
+                id="room"
+                value={product.room}
+                onChange={(e) => onInputChange(e, 'room')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !product.room,
+                })}
+              />
+              {submitted && !product.room && (
+                <small className="p-error">ProductRoom is required.</small>
+              )}
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                สถานะ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={productStatus}
+                  onChange={(e) => setProductStatus(e.value)}
+                  options={status}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                สภาพ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={productStatus}
+                  onChange={(e) => setProductStatus(e.value)}
+                  options={status}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                การใช้งาน
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={productStatus}
+                  onChange={(e) => setProductStatus(e.value)}
+                  options={status}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                ประเภทครุภัณฑ์
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  value={productStatus}
+                  onChange={(e) => setProductStatus(e.value)}
+                  options={status}
+                  optionLabel="name"
+                  placeholder="เลือกสถานะ"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card p-4">
+          <h1 className="text-kmuttColor-800 py-2">ข้อมูลผู้ยืม</h1>
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1 col-end-3">
+              <label htmlFor="project" className="font-bold">
+                ชื่อผู้ยืม
+              </label>
+              <InputText
+                id="borrower"
+                value={product.borrower}
+                onChange={(e) => onInputChange(e, 'borrower')}
+                required
+                className={classNames({
+                  'p-invalid': submitted && !product.borrower,
+                })}
+              />
+              {submitted && !product.project && (
+                <small className="p-error">Name is required.</small>
+              )}
+            </div>
+
+            <div className="field col-start-3 col-end-4">
+              <label htmlFor="borrowdate" className="font-bold">
+                ช่วงเวลาการยืม
+              </label>
+              <Calendar
+                value={dates}
+                onChange={(e) => setDates(e.value)}
+                selectionMode="range"
+                readOnlyInput
+                showIcon
+              />
+            </div>
+
+            <div className="field col-start-1 col-end-5">
+              <label htmlFor="description" className="font-bold">
+                หมายเหตุ
+              </label>
+              <InputTextarea
+                id="description"
+                value={product.description}
+                onChange={(e) => onInputChange(e, 'description')}
+                required
+                rows={3}
+                cols={20}
+              />
+            </div>
+          </div>
+        </div>
+      </Dialog>
       <div className="m-16">
         <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
       </div>

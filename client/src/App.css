@@ -75,7 +75,7 @@
 .p-button.p-button-outlined:not(button):not(a):not(.p-disabled):hover {
   /* color: #ffb39f !important; */
 }
-.p-datatable-tbody .p-button:focus:first-child {
+.p-datatable-tbody .p-button.firstBnt:focus {
   box-shadow: 0 0 0 2px #ffffff, 0 0 0 4px #ff8261, 0 1px 2px 0 rgba(0, 0, 0, 0) !important;
 }
 .p-datatable-tbody .editBnt.p-button:focus {

@@ -5,6 +5,7 @@ const router = express.Router();
 
 router.get('/', controller.assetController.getAllAssetList);
 router.get('/:id', controller.assetController.getAssetByIDList);
+router.get('/v1/disposaled', controller.assetController.getDisposaledAssetList);
 
 router.get('/state/status', controller.optionController.getStatusList);
 router.get('/state/stock', controller.optionController.getStockList);

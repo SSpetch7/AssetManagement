@@ -18,8 +18,6 @@ import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
 import { Calendar } from 'primereact/calendar';
 import { dataTable } from '../../assets/dummy';
-import BorrowButton from '../../components/BorrowButton';
-import AssetFilter from '../../components/AssetFilter';
 import { ReportService } from '../../service/ReportService';
 import { AssetService } from '../../service/AssetService';
 

@@ -27,7 +27,7 @@ export default function Remove() {
     detail: null,
     room_id: null,
     categoryID: null,
-    category: '',
+    category: null,
     subcategoryID: null,
     subcategory: '',
     asset_stock: '',
@@ -85,6 +85,8 @@ export default function Remove() {
 
   // asset data
   const [assets, setAssets] = useState(null);
+  const [disAssets, setDisAssets] = useState(null);
+
   const [galleries, setGalleries] = useState(null);
   const [assetStatus, setAssetStatus] = useState();
   const [assetStock, setAssetStock] = useState(null);
@@ -97,6 +99,8 @@ export default function Remove() {
 
   const [RemoveDialog, setRemoveDialog] = useState(false);
   const [ChangeStatusDialog, setChangeStatusDialog] = useState(false);
+
+  const [ReturnDialog, setReturnDialog] = useState(false);
 
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
@@ -113,6 +117,7 @@ export default function Remove() {
   const [toggleValue, setToggleValue] = useState(false);
   useEffect(() => {
     AssetService.getAllAsset().then((data) => setAssets(data));
+    AssetService.getDisAsset().then((data) => setDisAssets(data));
   }, []);
 
   useEffect(() => {
@@ -165,8 +170,14 @@ export default function Remove() {
     setAsset(rowData);
   };
 
+  const openReturnDialog = (rowData) => {
+    setReturnDialog(true);
+    setAsset(rowData);
+  };
+
   const hideDialog = () => {
     setSubmitted(false);
+    setReturnDialog(false);
     setNewAssetDialog(false);
     setEditAssetDialog(false);
     setShowAssetDialog(false);
@@ -207,21 +218,29 @@ export default function Remove() {
   const saveRemove = () => {
     let _assets = [...assets];
     let _asset = { ...asset };
+    let _disAssets = [...disAssets];
 
     if (_asset['asset_status'] !== 'แทงจำหน่าย') {
       _asset['asset_status'] = 'แทงจำหน่าย';
       _asset['asset_useable'] = 'ไม่ได้ใช้งาน';
+
       if (asset.asset_id) {
         const index = findIndexById(asset.asset_id);
-        console.log(asset.asset_id + ' id');
         _assets[index] = _asset;
+        console.log('_asset2');
+        console.log(_asset);
+        _disAssets.push(_asset);
       }
 
-      setAsset(_asset);
+      _assets = assets.filter((val) => val.asset_id !== asset.asset_id);
+
       setAssets(_assets);
-      console.log('_asset after');
-      console.log(_asset);
+      setAsset(_asset);
+      console.log('_disAssets remove');
+      console.log(_disAssets);
+      setDisAssets(_disAssets);
       setAssetDetail(_asset);
+
       setRemoveDialog(false);
       setAsset(emptydataTable);
       toast.current.show({
@@ -237,6 +256,34 @@ export default function Remove() {
         severity: 'error',
         summary: 'Error',
         detail: 'ครุภัณฑ์อยู่ในสภาพแทงจำหน่าย',
+        life: 2000,
+      });
+    }
+  };
+
+  const saveReturn = () => {
+    let _assets = [...disAssets];
+    let _disAssets = [...disAssets];
+    let _asset = { ...asset };
+
+    if (_asset['asset_status'] === 'แทงจำหน่าย') {
+      _asset['asset_status'] = 'ใช้งานได้';
+      if (asset.asset_id) {
+        const index = findIndexById(asset.asset_id);
+        _assets[index] = _asset;
+      }
+
+      _disAssets = disAssets.filter((val) => val.asset_id !== asset.asset_id);
+
+      setDisAssets(_disAssets);
+      setAsset(_asset);
+      setAssetDetail(_asset);
+      setReturnDialog(false);
+      setAsset(emptydataTable);
+      toast.current.show({
+        severity: 'success',
+        summary: 'Successful',
+        detail: 'คืนสภาพครุภัณฑ์สำเร็จ',
         life: 2000,
       });
     }
@@ -264,7 +311,20 @@ export default function Remove() {
       </React.Fragment>
     );
   };
-
+  const returnBodyTemplate = (rowData) => {
+    return (
+      <React.Fragment>
+        <Button
+          //   style={{ backgroundColor: 'var(--green-500)' }}
+          severity="success"
+          className="mr-2"
+          size="small"
+          icon="pi text-white pi-sync"
+          onClick={() => openReturnDialog(rowData)}
+        />
+      </React.Fragment>
+    );
+  };
   const statusBodyTemplate = (rowData) => {
     return (
       <Tag
@@ -445,6 +505,23 @@ export default function Remove() {
       />
     </React.Fragment>
   );
+  const returnDialogFooter = (
+    <React.Fragment>
+      <Button
+        label="ยกเลิก"
+        icon="pi pi-times"
+        severity="danger"
+        outlined
+        onClick={hideDialog}
+      />
+      <Button
+        label="ยืนยัน"
+        icon="pi pi-check"
+        className="p-Testbutton"
+        onClick={saveReturn}
+      />
+    </React.Fragment>
+  );
   const deleteProductDialogFooter = (
     <React.Fragment>
       <Button
@@ -590,7 +667,7 @@ export default function Remove() {
           <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
             <DataTable
               ref={dt}
-              value={assets}
+              value={disAssets}
               dataKey="id"
               paginator
               rows={10}
@@ -604,7 +681,7 @@ export default function Remove() {
               tableStyle={{ minHeight: '10rem' }}
             >
               <Column
-                body={actionBodyTemplate}
+                body={returnBodyTemplate}
                 // headerStyle={{ minWidth: '10rem' }}
                 style={{
                   minWidth: '10rem',
@@ -691,15 +768,34 @@ export default function Remove() {
         footer={removeDialogFooter}
         onHide={hideDialog}
       >
-        {/* <div className="field-checkbox">
-          <h2>แทงจำหน่าย</h2>
-          <ToggleButton
-            checked={toggleValue}
-            onChange={(e) => setToggleValue(e.value)}
-            onLabel="Yes"
-            offLabel="No"
-          />
-        </div> */}
+        <div className="card">
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1 col-end-5">
+              <label htmlFor="description" className="font-bold">
+                หมายเหตุ
+              </label>
+              <InputTextarea
+                id="description"
+                value={product.description}
+                onChange={(e) => onInputChange(e, 'description')}
+                required
+                rows={3}
+                cols={20}
+              />
+            </div>
+          </div>
+        </div>
+      </Dialog>
+      <Dialog
+        visible={ReturnDialog}
+        style={{ width: '64rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="คืนสภาพใช้งานได้ครุภัณฑ์"
+        modal
+        className="p-fluid"
+        footer={returnDialogFooter}
+        onHide={hideDialog}
+      >
         <div className="card">
           <div className="grid grid-cols-4 gap-4">
             <div className="field col-start-1 col-end-5">

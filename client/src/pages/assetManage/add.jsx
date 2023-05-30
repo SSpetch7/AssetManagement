@@ -16,7 +16,6 @@ import { Dialog } from 'primereact/dialog';
 import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
 import { dataTable } from '../../assets/dummy';
-import BorrowButton from '../../components/BorrowButton';
 
 export default function Addnew() {
   return (

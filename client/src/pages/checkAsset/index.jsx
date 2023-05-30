@@ -16,7 +16,6 @@ import { Dialog } from 'primereact/dialog';
 import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
 import { dataTable } from '../../assets/dummy';
-import BorrowButton from '../../components/BorrowButton';
 
 export default function CheckAsset() {
   let emptydataTable = {
@@ -214,35 +213,10 @@ export default function CheckAsset() {
   const actionBodyTemplate = (rowData) => {
     return (
       <React.Fragment>
-        {/* <Button
-          icon="pi pi-pencil"
-          style={{ scale: ' 70%' }}
-          rounded
-          outlined
-          className="mr-2"
-          onClick={() => editProduct(rowData)}
-        />
-        <Button
-          icon="pi pi-trash"
-          style={{ scale: ' 70%' }}
-          rounded
-          outlined
-          severity="danger"
-          onClick={() => confirmDeleteProduct(rowData)}
-        /> */}
-        {/* <Button
-          outlined
-          icon="pi pi-calendar-times"
-          //   rounded
-          //   style={{ fontSize: '16px' }}
-          className="mr-2 "
-          onClick={() => editProduct(rowData)}
-        /> */}
-        {/* <BorrowButton /> */}
         <Button
           icon="pi pi-check-square"
           outlined
-          className=" mr-2 "
+          className="firstBnt mr-2 "
           //   onClick={() => editProduct(rowData)}
         />
       </React.Fragment>

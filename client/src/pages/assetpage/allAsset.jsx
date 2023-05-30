@@ -16,8 +16,6 @@ import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
 import { Calendar } from 'primereact/calendar';
 import { dataTable } from '../../assets/dummy';
-import BorrowButton from '../../components/BorrowButton';
-import AssetFilter from '../../components/AssetFilter';
 import {
   AssetService,
   AssetOptionService,
@@ -383,7 +381,7 @@ export default function AllAsset() {
           icon="pi pi-search"
           //   rounded
           //   style={{ fontSize: '16px' }}
-          className="mr-2 "
+          className="firstBnt mr-2 "
           onClick={() => showAsset(rowData)}
         />
 

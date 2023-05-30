@@ -38,6 +38,14 @@ const assetController = {
       });
     }
   },
+  getDisposaledAssetList: (req, res) => {
+    assetModel.getDisposaledAsset((err, assets) => {
+      if (err) {
+        res.send(err);
+      }
+      res.json({ data: assets });
+    });
+  },
 };
 const optionController = {
   getStatusList: (req, res) => {
