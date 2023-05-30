@@ -399,6 +399,7 @@ export default function AllAsset() {
               header={header}
               className="actionRow"
               scrollable
+              exportFilename={`รายงานประจำปี ${selectedYear}`}
               //   scrollHeight="700px"
               tableStyle={{ minHeight: '10rem' }}
             >
