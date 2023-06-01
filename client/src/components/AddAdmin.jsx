@@ -21,6 +21,9 @@ export default function AddUser() {
 
   const [resetSent, setResetSent] = useState(false);
 
+  const current = new Date();
+  const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
+
   
 
   const handleInputChange = (e) => {
@@ -178,7 +181,7 @@ export default function AddUser() {
                   <i className="pi pi-calendar" />
                   <InputText
                     disabled
-                    placeholder="01/03/2566"
+                    placeholder={date}
                     className="inputForm text-kmuttColor-800"
                   />
                 </span>

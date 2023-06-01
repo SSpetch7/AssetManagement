@@ -163,15 +163,36 @@ app.get('/', verifyUser, (req, res) => {
 });
 
 app.post('/register', (req, res) => {
-  const sql =
-    'INSERT INTO admin (admin_username, admin_email, admin_password) VALUES(?)';
-  bcrypt.hash(req.body.admin_password.toString(), salt, (err, hash) => {
-    if (err) return res.json({ Error: 'Error for hassing password' });
-    const values = [req.body.admin_username, req.body.admin_email, hash];
-    connection.query(sql, [values], (err, result) => {
+  const email = req.body.admin_email;
+  
+  const emailCheckQuery = 'SELECT admin_email FROM admin WHERE admin_email = ?';
+  connection.query(emailCheckQuery, [email], (err, rows) => {
+    if (err) {
       console.log(err);
-      if (err) return res.json({ Error: 'Inserting data Error in server' });
-      return res.json({ Status: 'Success' });
+      return res.json({ Error: 'Error in server' });
+    }
+    
+    if (rows.length > 0) {
+      return res.json({ Error: 'Email already exists' });
+    }
+  
+    const sql =
+      'INSERT INTO admin (admin_username, admin_email, admin_password) VALUES(?)';
+    bcrypt.hash(req.body.admin_password.toString(), salt, (err, hash) => {
+      if (err) {
+        console.log(err);
+        return res.json({ Error: 'Error hashing password' });
+      }
+      
+      const values = [req.body.admin_username, req.body.admin_email, hash];
+      connection.query(sql, [values], (err, result) => {
+        if (err) {
+          console.log(err);
+          return res.json({ Error: 'Error inserting data in server' });
+        }
+        
+        return res.json({ Status: 'Success' });
+      });
     });
   });
 });

@@ -23,7 +23,7 @@ const [searchParams] = useSearchParams();
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          token: searchParams.get("token"), // Replace with the actual reset token received from the URL parameter
+          token: searchParams.get("token"), 
           newPassword: password,
         }),
       });
