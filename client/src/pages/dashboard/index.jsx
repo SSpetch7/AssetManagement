@@ -219,7 +219,9 @@ export default function Summarize() {
   const fillFullYear = async (data) => {
     const fillObj = [];
     const firstYear = parseInt(data[0].asset_year, 10);
-    const lastYear = parseInt(data[data.length - 1].asset_year, 10);
+
+    const currentYear = new Date().getFullYear();
+    const lastYear = currentYear + 543;
 
     for (let year = firstYear; year <= lastYear; year++) {
       const obj = {
