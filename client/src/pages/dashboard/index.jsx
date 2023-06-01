@@ -13,6 +13,8 @@ import User from "../../components/dropdownUser";
 import { TabView, TabPanel } from "primereact/tabview";
 import { Dropdown } from "primereact/dropdown";
 import { ChartService } from "../../service/ChartService";
+import { Chart } from "primereact/chart";
+import { Height } from "@mui/icons-material";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -21,12 +23,14 @@ function classNames(...classes) {
 export default function Summarize() {
   const [activeIndex, setActiveIndex] = useState(0);
 
+  let emptydatachart = [{ asset_year: null, total_asset_in_year: null }];
+
   const Status = [
-    { name: "ทั้งหมด", id: null  },
-    { name: "ใช้งานได้", id: 1  },
-    { name: "รอซ่อม", id: 2  },
-    { name: "สิ้นสภาพ", id: 3  },
-    { name: "แทงจำหน่าย", id: 4  },
+    { name: "ทั้งหมด", id: null },
+    { name: "ใช้งานได้", id: 1 },
+    { name: "รอซ่อม", id: 2 },
+    { name: "สิ้นสภาพ", id: 3 },
+    { name: "แทงจำหน่าย", id: 4 },
   ];
   const [selectedStatus, setSelectedStatus] = useState(Status[0].name);
 
@@ -41,62 +45,101 @@ export default function Summarize() {
     { name: "แท็บเล็ต", id: "3" },
     { name: "อื่นๆ", id: "5" },
   ];
-  const [selectedAsset, setSelectedAsset] = useState(Asset[0].name);
 
-  const [numberCateAndSubYear, setNumberCateAndSubYear] = useState(null);
-  const [result, setResult] = useState({
-    labels: numberCateAndSubYear.map((data) => data.asset_year),
-    datasets: [
-      {
-        label: "จำนวนครุภัณฑ์",
-        data: numberCateAndSubYear.map((data) => data.total_asset_in_year),
-        backgroundColor: ["#d02a2a"],
-        borderColor: "black",
-        borderWidth: 2,
-        tension: 0.4,
-      },
-    ],
-  });
+  const [selectedAsset, setSelectedAsset] = useState(Asset[0]);
+  const [numberCateAndSubYear, setNumberCateAndSubYear] = useState(emptydatachart);
+  const [chartData, setChartData] = useState({});
+  const [chartOptions, setChartOptions] = useState({});
 
   useEffect(() => {
     console.log(selectedAsset);
-    if (selectedAsset.name == "จำนวนครุภัณฑ์ทั้งหมด") {
-      ChartService.getAssetYear().then((data) => setNumberCateAndSubYear(data));
-      console.log(selectedAsset.id);
-      console.log(numberCateAndSubYear);
-    } else if (selectedAsset.name == "สำนักงาน") {
-      ChartService.getCateAssetYear(selectedAsset.id).then((data) => setNumberCateAndSubYear(data));
-      console.log(selectedAsset.id);
-      console.log(numberCateAndSubYear);
-    } else if (selectedAsset.name == "การศึกษา") {
-      ChartService.getCateAssetYear(selectedAsset.id).then((data) => setNumberCateAndSubYear(data));
-      console.log(selectedAsset.id);
-      console.log(numberCateAndSubYear);
-    } else if (selectedAsset.name == "คอมพิวเตอร์ทั้งหมด") {
-      ChartService.getCateAssetYear(selectedAsset.id).then((data) => setNumberCateAndSubYear(data));
-      console.log(selectedAsset.id);
-      console.log(numberCateAndSubYear);
-    } else if (selectedAsset.name == "อาคารสำนักงาน") {
-      ChartService.getCateAssetYear(selectedAsset.id).then((data) => setNumberCateAndSubYear(data));
-      console.log(selectedAsset.id);
-      console.log(numberCateAndSubYear);
-    } else if (selectedAsset.name == "อื่นๆ") {
-      ChartService.getCateAssetYear(selectedAsset.id).then((data) => setNumberCateAndSubYear(data));
-      console.log(selectedAsset.id);
-      console.log(numberCateAndSubYear);
-    } else if (selectedAsset.name == "เครื่องคอมพิวเตอร์") {
-      ChartService.getSubAssetYear(selectedAsset.id).then((data) => setNumberCateAndSubYear(data));
-      console.log(selectedAsset.id);
-      console.log(numberCateAndSubYear);
-    } else if (selectedAsset.name == "โน๊ตบุ๊ค") {
-      ChartService.getSubAssetYear(selectedAsset.id).then((data) => setNumberCateAndSubYear(data));
-      console.log(selectedAsset.id);
-      console.log(numberCateAndSubYear);
-    } else if (selectedAsset.name == "แท็บเล็ต") {
-      ChartService.getSubAssetYear(selectedAsset.id).then((data) => setNumberCateAndSubYear(data));
-      console.log(selectedAsset.id);
-      console.log(numberCateAndSubYear);
-    }
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue("--text-color");
+    const textColorSecondary = documentStyle.getPropertyValue("--text-color-secondary");
+    const surfaceBorder = documentStyle.getPropertyValue("--surface-border");
+  
+    const fetchData = async () => {
+      let data;
+      if (selectedAsset.name === "จำนวนครุภัณฑ์ทั้งหมด") {
+        data = await ChartService.getAssetYear();
+      } else if (
+        selectedAsset.name === "สำนักงาน" ||
+        selectedAsset.name === "การศึกษา" ||
+        selectedAsset.name === "คอมพิวเตอร์ทั้งหมด" ||
+        selectedAsset.name === "อาคารสำนักงาน" ||
+        selectedAsset.name === "อื่นๆ"
+      ) {
+        data = await ChartService.getCateAssetYear(selectedAsset.id);
+      } else if (
+        selectedAsset.name === "เครื่องคอมพิวเตอร์" ||
+        selectedAsset.name === "โน๊ตบุ๊ค" ||
+        selectedAsset.name === "แท็บเล็ต"
+      ) {
+        data = await ChartService.getSubAssetYear(selectedAsset.id);
+      }
+  
+      return data;
+    };
+  
+    fetchData().then((data) => {
+      setNumberCateAndSubYear(data);
+  
+      const chartData = {
+        labels: data.map((data) => data.asset_year),
+        datasets: [
+          {
+            label: "First Dataset",
+            data: data.map((data) => data.total_asset_in_year),
+            backgroundColor: ["#d02a2a"],
+            borderColor: "black",
+            fill: false,
+            borderWidth: 2,
+            tension: 0.4,
+          },
+        ],
+      };
+  
+      const chartOptions = {
+        maintainAspectRatio: false,
+        aspectRatio: 0.6,
+        plugins: {
+          legend: {
+            labels: {
+              color: textColor,
+            },
+          },
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: textColorSecondary,
+            },
+            grid: {
+              color: surfaceBorder,
+            },
+            title: {
+              display: true,
+              text: "ปี (พ.ศ.)",
+            },
+          },
+          y: {
+            ticks: {
+              color: textColorSecondary,
+            },
+            grid: {
+              color: surfaceBorder,
+            },
+            title: {
+              display: true,
+              text: "จำนวนครุภัณฑ์ทั้งหมด",
+            },
+          },
+        },
+      };
+  
+      setChartData(chartData);
+      setChartOptions(chartOptions);
+    });
   }, [selectedAsset]);
 
   const User = [
@@ -308,7 +351,14 @@ export default function Summarize() {
                         <div className="col-span-1 row-span-7 flex justify-center items-center w-full h-full">
                           <div className="flex justify-center items-center pr-3 pl-3 w-full h-full pb-3">
                             <div className="w-full flex justify-center items-center">
-                              <LineChart2 chart2Data={result} />
+                              <div className="card">
+                                <Chart
+                                  type="line"
+                                  data={chartData}
+                                  options={chartOptions}
+                                  style={{ width: "600px", height: "300px" }}
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>

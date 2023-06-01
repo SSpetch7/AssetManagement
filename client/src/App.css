@@ -390,3 +390,9 @@ ul.p-submenu-list {
   height: 550px !important;
 }
 
+element.style {
+  box-sizing: border-box !important;
+  display: block !important;
+  height: 300px !important;
+  width: 600px !important;
+}

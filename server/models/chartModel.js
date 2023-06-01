@@ -44,7 +44,7 @@ Chart.getNumberAssetCate = (result) => {
 };
 
 const yearAsset =
-  'SELECT asset_year, COUNT("asset_year") as total_asset_in_year FROM asset_detail GROUP BY asset_year ORDER BY asset_year DESC';
+  'SELECT asset_year, COUNT("asset_year") as total_asset_in_year FROM asset_detail GROUP BY asset_year ORDER BY asset_year ASC';
 Chart.getYearAsset = (result) => {
   db.query(yearAsset, (err, res) => {
     if (err) {
@@ -52,7 +52,6 @@ Chart.getYearAsset = (result) => {
       result(null, err);
     } else {
       console.log('Asset fetching successfully');
-      console.log(res);
       result(null, res);
     }
   });
@@ -67,7 +66,6 @@ Chart.getCateAssetYear = (id, result) => {
       result(null, err);
     } else {
       console.log('Asset fetching successfully');
-      console.log(res);
       result(null, res);
     }
   });
@@ -82,7 +80,6 @@ Chart.getSubAssetYear = (id, result) => {
       result(null, err);
     } else {
       console.log('Asset fetching successfully');
-      console.log(res);
       result(null, res);
     }
   });

@@ -23,6 +23,7 @@ const numController = {
         res.send(err);
       }
       res.json({ data: assets });
+      console.log(assets);
     });
   },
   getNumberStatusList: (req, res) => {
@@ -43,6 +44,7 @@ const yearController = {
         res.send(err);
       } else {
         res.json({ data: assets });
+        console.log(assets);
       }
     });
   },
@@ -53,6 +55,7 @@ const yearController = {
         res.send(err);
       } else {
         res.json({ data: assets });
+        console.log(assets);
       }
     });
   },
