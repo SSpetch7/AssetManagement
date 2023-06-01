@@ -9,5 +9,6 @@ router.get('/year/asset', controller.numController.getYearAssetList);
 router.get('/year/cate/:id',controller.yearController.getCateAssetYearList);
 router.get('/year/sub/:id',controller.yearController.getSubAssetYearList);
 router.get('/number/status', controller.numController.getNumberStatusList);
+router.get('/status/year/:id', controller.statusController.getStatusYearList);
 
 export default router;

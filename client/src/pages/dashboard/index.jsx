@@ -27,10 +27,10 @@ export default function Summarize() {
 
   const Status = [
     { name: "ทั้งหมด", id: null },
-    { name: "ใช้งานได้", id: 1 },
-    { name: "รอซ่อม", id: 2 },
-    { name: "สิ้นสภาพ", id: 3 },
-    { name: "แทงจำหน่าย", id: 4 },
+    { name: "ใช้งานได้", id: "1" },
+    { name: "รอซ่อม", id: "2" },
+    { name: "สิ้นสภาพ", id: "3" },
+    { name: "แทงจำหน่าย", id: "4" },
   ];
   const [selectedStatus, setSelectedStatus] = useState(Status[0].name);
 

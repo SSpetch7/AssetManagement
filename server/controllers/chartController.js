@@ -61,4 +61,19 @@ const yearController = {
   },
 };
 
-export default { numController, yearController };
+const statusController = {
+  getStatusYearList: (req, res) => {
+    const id = req.params.id;
+    chartModel.getStatusYear(id, (err, assets) => {
+      if (err) {
+        res.send(err);
+      } else {
+        console.log(assets);
+        console.log("assets5555555555555555555");
+        res.json({ data: assets });
+      }
+    });
+  },
+};
+
+export default { numController, yearController, statusController };

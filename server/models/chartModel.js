@@ -86,14 +86,29 @@ Chart.getSubAssetYear = (id, result) => {
 };
 
 const numberStatus =
-  'SELECT status_name, COUNT("status_name") as total_status FROM asset_detail a JOIN status_state AS s ON a.asset_status = s.status_id GROUP BY status_name ORDER BY status_name';
+  'SELECT status_id, status_name AS status, COUNT("status_name") as total_status FROM asset_detail a JOIN status_state AS s ON a.asset_status = s.status_id GROUP BY status_id, status_name ORDER BY status_id';
 Chart.getNumberStatus = (result) => {
   db.query(numberStatus, (err, res) => {
     if (err) {
-      console.log('Error while fetching asset ', err);
+      console.log('Error while fetching status ', err);
       result(null, err);
     } else {
-      console.log('Asset fetching successfully');
+      console.log('Status fetching successfully');
+      result(null, res);
+    }
+  });
+};
+
+const numberStatusYear =
+  'SELECT asset_year AS status, COUNT("asset_year") as total_status FROM asset_detail a JOIN status_state AS s ON a.asset_status = s.status_id WHERE status_id=? GROUP BY asset_year ORDER BY asset_year ASC';
+Chart.getStatusYear = (id, result) => {
+  db.query(numberStatusYear, [id], (err, res) => {
+    if (err) {
+      console.log('Error while fetching status year ', err);
+      result(null, err);
+    } else {
+      console.log('Status year fetching successfully');
+      console.log(res);
       result(null, res);
     }
   });

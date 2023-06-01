@@ -1,53 +1,311 @@
-import React, { useState } from 'react';
-import { Tab } from '@headlessui/react';
-import LineChart from '../../assets/chart/lineChart';
-import LineChart2 from '../../assets/chart/lineChart2';
-import PieChart from '../../assets/chart/pieChart';
-import { UserData2, SubData, StatusData } from '../../assets/data/data';
-import CalendarStart from '../../components/CalendarStart';
-import CalendarEnd from '../../components/CalendarEnd';
-import AmountAsset from '../../components/dropdownAsset'
-import Status from '../../components/dropdownStatus'
-import Year from '../../components/dropdownYear'
-import User from '../../components/dropdownUser'
+import React, { useState, useEffect } from "react";
+import { Tab } from "@headlessui/react";
+import LineChart from "../../assets/chart/lineChart";
+import LineChart2 from "../../assets/chart/lineChart2";
+import PieChart from "../../assets/chart/pieChart";
+import { UserData2, SubData, StatusData } from "../../assets/data/data";
+import CalendarStart from "../../components/CalendarStart";
+import CalendarEnd from "../../components/CalendarEnd";
+import AmountAsset from "../../components/dropdownAsset";
+import Status from "../../components/dropdownStatus";
+import Year from "../../components/dropdownYear";
+import User from "../../components/dropdownUser";
+import { TabView, TabPanel } from "primereact/tabview";
+import { Dropdown } from "primereact/dropdown";
+import { ChartService } from "../../service/ChartService";
+import { Chart } from "primereact/chart";
+import { Height } from "@mui/icons-material";
 
 function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function Summarize() {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const Asset = [
+    { name: "จำนวนครุภัณฑ์ทั้งหมด", id: null },
+    { name: "สำนักงาน", id: "1" },
+    { name: "อาคารสำนักงาน", id: "4" },
+    { name: "การศึกษา", id: "2" },
+    { name: "คอมพิวเตอร์ทั้งหมด", id: "3" },
+    { name: "เครื่องคอมพิวเตอร์", id: "1" },
+    { name: "โน๊ตบุ๊ค", id: "2" },
+    { name: "แท็บเล็ต", id: "3" },
+    { name: "อื่นๆ", id: "5" },
+  ];
+
+  const [selectedAsset, setSelectedAsset] = useState(Asset[0]);
+  const [numberCateAndSubYear, setNumberCateAndSubYear] = useState(null);
+  const [chartData, setChartData] = useState({});
+  const [chartOptions, setChartOptions] = useState({});
+
+  useEffect(() => {
+    console.log(selectedAsset);
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue("--text-color");
+    const textColorSecondary = documentStyle.getPropertyValue(
+      "--text-color-secondary"
+    );
+    const surfaceBorder = documentStyle.getPropertyValue("--surface-border");
+
+    const fetchData = async () => {
+      let data;
+      if (selectedAsset.name === "จำนวนครุภัณฑ์ทั้งหมด") {
+        data = await ChartService.getAssetYear();
+      } else if (
+        selectedAsset.name === "สำนักงาน" ||
+        selectedAsset.name === "การศึกษา" ||
+        selectedAsset.name === "คอมพิวเตอร์ทั้งหมด" ||
+        selectedAsset.name === "อาคารสำนักงาน" ||
+        selectedAsset.name === "อื่นๆ"
+      ) {
+        data = await ChartService.getCateAssetYear(selectedAsset.id);
+      } else if (
+        selectedAsset.name === "เครื่องคอมพิวเตอร์" ||
+        selectedAsset.name === "โน๊ตบุ๊ค" ||
+        selectedAsset.name === "แท็บเล็ต"
+      ) {
+        data = await ChartService.getSubAssetYear(selectedAsset.id);
+      }
+
+      return data;
+    };
+
+    fetchData().then((data) => {
+      setNumberCateAndSubYear(data);
+
+      const chartData = {
+        labels: data.map((data) => data.asset_year),
+        datasets: [
+          {
+            data: data.map((data) => data.total_asset_in_year),
+            backgroundColor: ["#FFB39F"],
+            borderColor: "#FF8261",
+            fill: false,
+            borderWidth: 2,
+            tension: 0.4,
+          },
+        ],
+      };
+
+      const chartOptions = {
+        maintainAspectRatio: false,
+        aspectRatio: 0.6,
+        plugins: {
+          legend: {
+            display: false,
+            labels: {
+              color: textColor,
+            },
+          },
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: textColorSecondary,
+            },
+            grid: {
+              color: surfaceBorder,
+            },
+            title: {
+              display: true,
+              text: "ปี (พ.ศ.)",
+            },
+          },
+          y: {
+            weight: 2,
+            suggestedMin: 0,
+            suggestedMax: 5,
+            ticks: {
+              beginAtZero: true,
+              callback: function(value) {if (value % 1 === 0) {return value;}},
+              color: textColorSecondary,
+            },
+            grid: {
+              color: surfaceBorder,
+            },
+            title: {
+              display: true,
+              text: "จำนวนครุภัณฑ์ทั้งหมด",
+            },
+          },
+        },
+      };
+
+      setChartData(chartData);
+      setChartOptions(chartOptions);
+    });
+  }, [selectedAsset]);
+
+  const Status = [
+    { name: "สถานะครุภัณฑ์ทั้งหมด", id: null },
+    { name: "ใช้งานได้", id: "1" },
+    { name: "รอซ่อม", id: "2" },
+    { name: "สิ้นสภาพ", id: "3" },
+    { name: "แทงจำหน่าย", id: "4" },
+  ];
+  const [selectedStatus, setSelectedStatus] = useState(Status[0]);
+  const [numberStatusYear, setNumberStatusYear] = useState(null);
+  const [chartData2, setChartData2] = useState({});
+  const [chartOptions2, setChartOptions2] = useState({});
+
+  useEffect(() => {
+    console.log(selectedStatus);
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue("--text-color");
+    const textColorSecondary = documentStyle.getPropertyValue(
+      "--text-color-secondary"
+    );
+    const surfaceBorder = documentStyle.getPropertyValue("--surface-border");
+
+    const fetchData = async () => {
+      let data;
+      let backgroundColors;
+      let borderColors;
+      if (selectedStatus.name === "สถานะครุภัณฑ์ทั้งหมด") {
+        data = await ChartService.getNumberStatus();
+        backgroundColors = [
+          "rgba(0, 255, 0, 0.4)",
+          "rgba(255,130,97,0.4)",
+          "rgba(255, 0, 0, 0.4)",
+          "rgba(0, 0, 0, 0.4)",
+        ];
+        borderColors = [
+          "rgba(0, 255, 0)",
+          "rgba(255,130,97)",
+          "rgba(255, 0, 0)",
+          "rgba(0, 0, 0)",
+        ];
+      } else if (
+        selectedStatus.name === "ใช้งานได้" ||
+        selectedStatus.name === "รอซ่อม" ||
+        selectedStatus.name === "สิ้นสภาพ" ||
+        selectedStatus.name === "แทงจำหน่าย"
+      ) {
+        data = await ChartService.getStatusYear(selectedStatus.id);
+        if (selectedStatus.name === "ใช้งานได้"){
+          backgroundColors = [
+            "rgba(0, 255, 0, 0.4)",
+          ];
+          borderColors = [
+            "rgba(0, 255, 0)",
+          ];
+        } else if (selectedStatus.name === "รอซ่อม"){
+          backgroundColors = [
+            "rgba(255,130,97,0.4)",
+          ];
+          borderColors = [
+            "rgba(255,130,97)",
+          ];
+        } else if (selectedStatus.name === "สิ้นสภาพ"){
+          backgroundColors = [
+            "rgba(255, 0, 0, 0.4)",
+          ];
+          borderColors = [
+            "rgba(255, 0, 0)",
+          ];
+        } else if (selectedStatus.name === "แทงจำหน่าย"){
+          backgroundColors = [
+            "rgba(0, 0, 0, 0.4)",
+          ];
+          borderColors = [
+            "rgba(0, 0, 0)",
+          ];
+        }
+      }
+      return { data, backgroundColors, borderColors };
+    };
+
+    fetchData().then(({ data, backgroundColors, borderColors }) => {
+      setNumberStatusYear(data);
+
+      const chartData2 = {
+        labels: data.map((data) => data.status),
+        datasets: [
+          {
+            label: "Status",
+            data: data.map((data) => data.total_status),
+            backgroundColor: backgroundColors,
+            borderColor : borderColors,
+            borderWidth: 2,
+          },
+        ],
+      };
+
+      const chartOptions2 = {
+        maintainAspectRatio: false,
+        aspectRatio: 0.6,
+        plugins: {
+          legend: {
+            display: false,
+            labels: {
+              color: textColor,
+            },
+          },
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: textColorSecondary,
+            },
+            grid: {
+              color: surfaceBorder,
+            },
+            title: {
+              display: true,
+              text: "ปี (พ.ศ.)",
+            },
+          },
+          y: {
+            suggestedMin: 0,
+            suggestedMax: 10,
+            ticks: {
+              beginAtZero: true,
+              callback: function(value) {if (value % 1 === 0) {return value;}},
+              color: textColorSecondary,
+            },
+            grid: {
+              color: surfaceBorder,
+            },
+            title: {
+              display: true,
+              text: "จำนวนครุภัณฑ์ทั้งหมด",
+            },
+          },
+        },
+      };
+
+      setChartData2(chartData2);
+      setChartOptions2(chartOptions2);
+    });
+  }, [selectedStatus]);
+
+  {/*const User = [
+    { name: "กิตนันท์ สมัครพงค์" },
+    { name: "พีรกานต์ จักรเพ็ชร" },
+    { name: "นิธิโชติ มณีรัตน์ไพโรจน์" },
+    { name: "..." },
+  ];
+  const [selectedUser, setSelectedUser] = useState(User[0].name);
 
   const [userData2, setUserData2] = useState({
     labels: UserData2.map((data) => data.asset),
     datasets: [
       {
-        label: 'จำนวนการยืมครุภัณฑ์',
+        label: "จำนวนการยืมครุภัณฑ์",
         data: UserData2.map((data) => data.totalAmount),
         backgroundColor: [
-          'rgba(0,0,0)',
-          'rgba(75,192,192,1)',
-          '#ecf0f1',
-          '#f3ba2f',
-          '#2a71d0',
-          'rgba(225,75,225,1)'
+          "rgba(0,0,0)",
+          "rgba(75,192,192,1)",
+          "#ecf0f1",
+          "#f3ba2f",
+          "#2a71d0",
+          "rgba(225,75,225,1)",
         ],
-        borderColor: 'black',
+        borderColor: "black",
         borderWidth: 2,
-        tension: 0.4
-      },
-    ],
-  });
-
-  const [subData, setSubData] = useState({
-    labels: SubData.map((data) => data.year),
-    datasets: [
-      {
-        label: 'จำนวนครุภัณฑ์',
-        data: SubData.map((data) => data.number),
-        backgroundColor: ['#d02a2a'],
-        borderColor: 'black',
-        borderWidth: 2,
-        tension: 0.4
+        tension: 0.4,
       },
     ],
   });
@@ -56,109 +314,14 @@ export default function Summarize() {
     labels: StatusData.map((data) => data.status),
     datasets: [
       {
-        label: 'สถานะครุภัณฑ์',
+        label: "สถานะครุภัณฑ์",
         data: StatusData.map((data) => data.count),
-        backgroundColor: [
-          '#f3ba2f',
-          '#2a71d0',
-          'rgba(255,0,255,1)'
-        ],
-        borderColor: 'white',
+        backgroundColor: ["#f3ba2f", "#2a71d0", "rgba(255,0,255,1)"],
+        borderColor: "white",
         borderWidth: 5,
       },
     ],
-  });
-
-  let [categories] = useState({
-    ครุภัณฑ์: [
-      {
-        id: 1,
-        list:
-          <AmountAsset />,
-        chart:
-          <div className="flex justify-center items-center pr-3 pl-3 w-full h-full pb-3">
-            <div className="w-full flex justify-center items-center" >
-              <LineChart2 chart2Data={subData} />
-            </div>
-          </div>,
-        time: <div className="col-span-1 row-span-8 w-full h-full">
-          <div className="row fthight">
-            <div className="col-sm-8  mt-3">
-              <div className="pt-5"></div>
-              <p class="w-full col-span-1 text-2xl text-orange-500 font-medium flex justify-center">เริ่มต้น</p>
-              <div className="row mb-4 w-full">
-                <div className="col-sm-5 w-full">
-                  <p class="text-sm text-gray-600 font-medium">เลือกวันที่</p>
-                  <div className="h-4"></div>
-                  <CalendarStart />
-                </div>
-              </div>
-              <p class="w-full col-span-1 text-2xl text-orange-500 font-medium flex justify-center">ถึง</p>
-              <div className="row mb-4 w-full">
-                <div className="col-sm-5 w-full">
-                  <p class="text-sm text-gray-600 font-medium">เลือกวันที่</p>
-                  <div className="h-4"></div>
-                  <CalendarEnd />
-                </div>
-              </div>
-              <div className="pt-8"></div>
-              <div className="row mb-4 bg-orange-400 rounded-md p-2">
-                <label className="col-sm-2 col-form-label"></label>
-                <div className="col-sm-5">
-                  <button className="w-full btn btn-success flex justify-center text-white"> ค้นหา </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>,
-        budget: <div></div>,
-        col: "grid grid-cols-3 grid-rows-8 gap-8 h-full pl-8 pr-8 pb-8",
-      },
-    ],
-    สถานะ: [
-      {
-        id: 2,
-        list:
-          <Status />,
-        chart:
-          <div className="flex justify-center items-center pr-3 pl-3 w-full h-full">
-            <div className="min-w-1/4 flex justify-center items-center" >
-              <PieChart chartData={statusData} />
-            </div>
-          </div>
-        ,
-        time: null,
-        budget:
-          <div className="col-span-1 row-span-1 grid grid-cols-10 grid-rows-1 gap-4 w-full h-full">
-            <div className="col-span-1"></div>
-            <p className="col-span-1 pt-3 pl-1 text-sm text-gray-600 font-medium flex justify-center">
-              ปีงบประมาณ
-            </p>
-            <div className="relative col-span-7">
-              <Year />
-            </div>
-            <div className="col-span-1"></div>
-          </div>,
-        col: "grid grid-cols-1 grid-rows-8 gap-8 h-full pl-8 pr-8 pb-8",
-      },
-    ],
-    บุคลากร: [
-      {
-        id: 3,
-        list:
-          <User />,
-        chart:
-          <div className="flex justify-center items-center pr-3 pl-3 w-full h-full pb-16">
-            <div className="w-3/5 flex justify-center items-center" >
-              <LineChart chartData={userData2} />
-            </div>
-          </div>,
-        time: null,
-        budget: null,
-        col: "grid grid-cols-2 grid-rows-8 gap-8 h-full pl-8 pr-8 pb-8",
-      },
-    ],
-  });
+  });*/}
 
   return (
     <div className="mt-12">
@@ -171,7 +334,7 @@ export default function Summarize() {
       <div className="pl-36 font-bold text-4xl text-kmuttColor-800 items-start">
         ภาพรวมครุภัณฑ์
       </div>
-      <div className='flex pt-10 flex-row justify-center items-center pl-32 pr-32'>
+      <div className="flex pt-10 flex-row justify-center items-center pl-32 pr-32">
         <div className="bg-gray-200 rounded-xl shadow-md w-full h-full">
           <div className="grid grid-cols-3 grid-rows-1 h-24">
             <div className="bg-white p-2.5 rounded-l-xl grid grid-rows-5 grid-flow-col gap-4">
@@ -195,12 +358,12 @@ export default function Summarize() {
                       </p>
                     </div>
                   </div>
-                  <div className="col-span-1">
+                  {/*<div className="col-span-1">
                     <div className="grid grid-rows-1 grid-flow-col">
                       <p className="sm:col-span-1 md:col-span-2 lg:col-span-3"></p>
                       <p className="lg:text-right col-span-1 text-xl text-green-500 font-medium items-right justify-right pt-4">+3</p>
                     </div>
-                  </div>
+                  </div>*/}
                 </div>
               </div>
             </div>
@@ -225,12 +388,12 @@ export default function Summarize() {
                       </p>
                     </div>
                   </div>
-                  <div className="col-span-1">
+                  {/*<div className="col-span-1">
                     <div className="grid grid-rows-1 grid-flow-col">
                       <p className="sm:col-span-1 md:col-span-2 lg:col-span-3"></p>
                       <p className="lg:text-right col-span-1 text-xl text-green-500 font-medium items-right justify-right pt-4">+3</p>
                     </div>
-                  </div>
+                  </div>*/}
                 </div>
               </div>
             </div>
@@ -255,12 +418,12 @@ export default function Summarize() {
                       </p>
                     </div>
                   </div>
-                  <div className="col-span-1">
+                  {/*<div className="col-span-1">
                     <div className="grid grid-rows-1 grid-flow-col">
                       <p className="sm:col-span-1 md:col-span-2 lg:col-span-3"></p>
                       <p className="lg:text-right col-span-1 text-xl text-green-500 font-medium items-right justify-right pt-4">-1</p>
                     </div>
-                  </div>
+                  </div>*/}
                 </div>
               </div>
             </div>
@@ -270,66 +433,118 @@ export default function Summarize() {
       <div className="pt-10 pb-10 pl-36 font-bold text-4xl  text-kmuttColor-800 items-start">
         แผนภูมิ
       </div>
-      <div className='flex flex-row justify-center items-center pl-32 pr-32 '>
+      <div className="flex flex-row justify-center items-center pl-32 pr-32 ">
         <div className="contact-between w-full h-full">
           <div className="rounded-lg pb-10 w-full h-full">
             <div className="sm:px-0 shadow-md rounded-lg w-full h-full">
-              <Tab.Group>
-                <Tab.List className="flex space-x-1 rounded-t-lg bg-white p-1 ">
-                  {Object.keys(categories).map((category) => (
-                    <Tab
-                      key={category}
-                      className={({ selected }) =>
-                        classNames(
-                          'w-full h-full rounded-t-lg py-2.5 text-sm font-medium leading-5 text-black',
-                          'ring-white ring-opacity-60 ring-offset-2 ring-offset-white focus:border-2 focus:border-orange-400 focus:outline-none focus:ring-2 focus:text-white',
-                          selected
-                            ? 'bg-orange-400 text-white'
-                            : 'text-black border-2 border-black hover:bg-orange-300 hover:text-white hover:border-2 hover:border-orange-300'
-                        )
-                      }
-                    >
-                      {category}
-                    </Tab>
-                  ))}
-                </Tab.List>
-                <Tab.Panels className="rounded-xl">
-                  {Object.values(categories).map((posts, idx) => (
-                    <Tab.Panel
-                      key={idx}
-                      className={classNames(
-                        'rounded-b-lg bg-white',
-                        'ring-white ring-opacity-60 ring-offset-2 ring-offset-blue-400 focus:outline-none focus:ring-2'
-                      )}
-                    >
-                      {posts.map((post) => (
-                        <div className={post.col}>
-                          <div className="col-span-2 row-span-8 gap-2 w-full h-full">
-                            <div className='grid grid-cols-1 grid-rows-8 w-full h-full'>
-                              <div className='relative p-5 col-span-1 row-span-1 w-full flex justify-center'>
-                                {post.list}
-                              </div>
-                              <div className='col-span-1 row-span-7 flex justify-center items-center w-full h-full'>
-                                {post.chart}
+              <TabView
+                activeIndex={activeIndex}
+                onTabChange={(e) => setActiveIndex(e.index)}
+              >
+                <TabPanel header="ครุภัณฑ์">
+                  <div className="grid grid-cols-1 grid-rows-8 gap-8 h-full pl-8 pr-8 pb-8">
+                    <div className="col-span-2 row-span-8 gap-2 w-full h-full">
+                      <div className="grid grid-cols-1 grid-rows-8 w-full h-full">
+                        <div className="relative p-5 col-span-1 row-span-1 w-full flex justify-center">
+                          <div className="card flex justify-content-center w-4/5 h-full">
+                            <Dropdown
+                              value={selectedAsset}
+                              onChange={(e) => setSelectedAsset(e.value)}
+                              options={Asset}
+                              optionLabel="name"
+                              placeholder={selectedAsset}
+                              className="p-invalid w-full md:w-14rem"
+                            />
+                          </div>
+                        </div>
+                        <div className="col-span-1 row-span-7 flex justify-center items-center w-full h-full">
+                          <div className="flex justify-center items-center pr-3 pl-3 w-full h-full pb-3">
+                            <div className="w-full flex justify-center items-center">
+                              <div className="card">
+                                <Chart
+                                  type="line"
+                                  data={chartData}
+                                  options={chartOptions}
+                                  style={{ width: "700px", height: "400px" }}
+                                />
                               </div>
                             </div>
                           </div>
-                          {post.time}
-                          {post.budget}
                         </div>
-                      ))}
-                    </Tab.Panel>
-                  ))}
-                </Tab.Panels>
-              </Tab.Group>
+                      </div>
+                    </div>
+                  </div>
+                </TabPanel>
+                <TabPanel header="สถานะ">
+                  <div className="grid grid-cols-1 grid-rows-8 gap-8 h-full pl-8 pr-8 pb-8">
+                    <div className="col-span-2 row-span-8 gap-2 w-full h-full">
+                      <div className="grid grid-cols-1 grid-rows-8 w-full h-full">
+                        <div className="relative p-5 col-span-1 row-span-1 w-full flex justify-center">
+                          <div className="card flex justify-content-center w-4/5 h-full">
+                            <Dropdown
+                              value={selectedStatus}
+                              onChange={(e) => setSelectedStatus(e.value)}
+                              options={Status}
+                              optionLabel="name"
+                              placeholder={selectedStatus}
+                              className="p-invalid w-full md:w-14rem"
+                            />
+                          </div>
+                        </div>
+                        <div className="col-span-1 row-span-7 flex justify-center items-center w-full h-full">
+                          <div className="flex justify-center items-center pr-3 pl-3 w-full h-full">
+                            <div className="min-w-1/4 flex justify-center items-center">
+                              <div className="card">
+                                <Chart
+                                  type="bar"
+                                  data={chartData2}
+                                  options={chartOptions2}
+                                  style={{ width: "700px", height: "400px" }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabPanel>
+                {/*<TabPanel header="บุคลากร">
+                  <div className="grid grid-cols-2 grid-rows-8 gap-8 h-full pl-8 pr-8 pb-8">
+                    <div className="col-span-2 row-span-8 gap-2 w-full h-full">
+                      <div className="grid grid-cols-1 grid-rows-8 w-full h-full">
+                        <div className="relative p-5 col-span-1 row-span-1 w-full flex justify-center">
+                          <div className="card flex justify-content-center w-4/5 h-11/12">
+                            <Dropdown
+                              value={selectedUser}
+                              onChange={(e) => setSelectedUser(e.value)}
+                              options={User}
+                              optionLabel="name"
+                              placeholder={selectedUser}
+                              className="p-invalid w-full md:w-14rem"
+                            />
+                          </div>
+                        </div>
+                        <div className="pt-2"></div>
+                        <div className="col-span-1 row-span-7 flex justify-center items-center w-full h-full">
+                          <div className="flex justify-center items-center pr-3 pl-3 w-full h-full pb-16">
+                            <div className="w-4/5 flex justify-center items-center">
+                              <LineChart chartData={userData2} />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </TabPanel>*/}
+              </TabView>
             </div>
           </div>
         </div>
       </div>
       <div className="m-16">
-        <p className="text-gray-700 text-center "> 2023 Final Project </p>
+        <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
       </div>
     </div>
   );
 }
-
