@@ -1,4 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
+import { storage } from '../../firebaseconfig';
+
 import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
@@ -22,6 +25,7 @@ import {
   UpdateAssetService,
 } from '../../service/AssetService';
 import { gridColumnGroupsLookupSelector } from '@mui/x-data-grid';
+import { Hidden } from '@mui/material';
 
 export default function AllAsset() {
   let emptydataTable = {
@@ -110,8 +114,16 @@ export default function AllAsset() {
   const toast = useRef(null);
   const dt = useRef(null);
 
+  const [progress, setProgress] = useState(0);
+  const [images, setImages] = useState([]);
+  const [imageURLs, setImageURLs] = useState([]);
+
   const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
   const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
+
+  useEffect(() => {
+    if (images.length < 1) return;
+  });
 
   useEffect(() => {
     AssetService.getAllAsset().then((data) => setAssets(data));
@@ -175,6 +187,35 @@ export default function AllAsset() {
     console.log('e.value');
     console.log(e.value);
     setAsset(_asset);
+  };
+
+  const uploadFiles = (files) => {
+    if (!files || files.length === 0) return;
+
+    files.forEach((file) => {
+      const storageRef = ref(storage, `${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        'state_changed',
+        (snapshot) => {
+          const progress = Math.round(
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          );
+          console.log('Upload progress:', progress);
+        },
+        (error) => {
+          console.log('Upload error:', error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            console.log('uploadTask.snapshot.ref');
+            console.log(uploadTask.snapshot.ref);
+            console.log('File available at:', downloadURL);
+          });
+        }
+      );
+    });
   };
 
   const openNew = () => {
@@ -644,17 +685,15 @@ export default function AllAsset() {
         // footer={productDialogFooter}
         onHide={hideDialog}
       >
-        <div className="card p-4">
-          <FileUpload
-            name="demo[]"
-            url={'/api/upload'}
-            multiple
-            accept="image/*"
-            maxFileSize={1000000}
-            emptyTemplate={<p className="m-0">อัพโหลดรูปครุภัณฑ์ที่นี่</p>}
-          />
+        <div>
+          <h2>Upload Images</h2>
+          <div className="server-message"></div>
         </div>
-
+        <div className="input-div">
+          <p>
+            Drag & Drop images here to <span className="borwse">Browse</span>
+          </p>
+        </div>
         <div className="card p-4">
           <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
           <div className="grid grid-cols-4 gap-4">
@@ -784,60 +823,6 @@ export default function AllAsset() {
         </div>
 
         <div className="card p-4">
-          {/* <h1 className="text-kmuttColor-800 py-2">ข้อมูลโครงการ</h1>
-          <div className="grid grid-cols-4 gap-4">
-            <div className="field col-start-1 col-end-5">
-              <label htmlFor="project" className="font-bold">
-                ชื่อโครงการ
-              </label>
-              <InputText
-                id="project"
-                value={product.project}
-                onChange={(e) => onInputChange(e, 'ยพน่ำแะ')}
-                required
-                className={classNames({
-                  'p-invalid': submitted && !product.project,
-                })}
-              />
-              {submitted && !product.project && (
-                <small className="p-error">ProjectName is required.</small>
-              )}
-            </div>
-
-            <div className="field col-start-1 col-end-5">
-              <label htmlFor="id" className="font-bold">
-                ชื่อแผนงาน
-              </label>
-              <InputText
-                id="plan"
-                value={product.plan}
-                onChange={(e) => onInputChange(e, 'plan')}
-                required
-                className={classNames({
-                  'p-invalid': submitted && !product.plan,
-                })}
-              />
-              {submitted && !product.plan && (
-                <small className="p-error">PlanName is required.</small>
-              )}
-            </div>
-
-            <div className="field">
-              <label htmlFor="description" className="font-bold">
-                ประเภทแผนงาน
-              </label>
-              <div className="card flex justify-content-center">
-                <Dropdown
-                  value={assetStatus}
-                  onChange={(e) => setAssetStatus(e.value)}
-                  options={assetStatus}
-                  optionLabel="name"
-                  placeholder="เลือกสถานะ"
-                  className="w-full md:w-14rem"
-                />
-              </div>
-            </div>
-          </div> */}
           <div className="field">
             <label htmlFor="description" className="font-bold">
               หมายเหตุ
@@ -866,14 +851,59 @@ export default function AllAsset() {
         onHide={hideDialog}
       >
         <div className="card p-4">
-          <FileUpload
-            name="demo[]"
-            url={'/api/upload'}
-            multiple
-            accept="image/*"
-            maxFileSize={1000000}
-            emptyTemplate={<p className="m-0">อัพโหลดรูปครุภัณฑ์ที่นี่</p>}
-          />
+          <div class="md:flex">
+            <div class="w-full">
+              <div class="p-3">
+                <div class="mb-2">
+                  <div class="relative h-40 rounded-lg border-dashed border-2 border-gray-200 bg-white flex justify-center items-center hover:cursor-pointer">
+                    <div class="absolute">
+                      <div class="flex flex-col items-center ">
+                        <i class="fa fa-cloud-upload fa-3x text-gray-200"></i>
+                        <span class="block text-gray-400 font-normal">
+                          ลากรูปภาพมาที่นี่
+                        </span>
+                        <span class="block text-gray-400 font-normal">
+                          หรือ
+                        </span>
+
+                        <span class="block text-blue-400 font-normal">
+                          เลือกรูปภาพ
+                        </span>
+                      </div>
+                    </div>
+                    <input
+                      type="file"
+                      class="h-full w-full opacity-0"
+                      multiple="multiple"
+                      accept="image/png, image/jpeg, image/jpg"
+                    />
+                  </div>
+                  <div class="flex justify-between items-center text-gray-400">
+                    <span>เฉพาะ *png *jpeg *jpg</span>
+                  </div>
+                </div>
+
+                <div class="mt-3 text-center pb-3">
+                  <button class="w-full h-12 text-lg w-32 bg-blue-600 rounded text-white hover:bg-blue-700">
+                    Create
+                  </button>
+                </div>
+                <div>show image</div>
+                <form id="queued-form">
+                  <div class="header">
+                    <h3>Queued In Frontend</h3>
+                  </div>
+                  <div class="queued-div"></div>
+                </form>
+              </div>
+            </div>
+          </div>
+          {/* <form onSubmit={formHandler}>
+            <input type="file" className="input" />
+            <button type="submit">Upload</button>
+          </form>{' '}
+          <hr />
+          <h2>Uploading done {progress}%</h2> */}
         </div>
 
         <div className="card p-4">
