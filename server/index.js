@@ -66,7 +66,6 @@ const verifyUser = (req, res, next) => {
         return res.json({ Error: 'Token is not correct' });
       } else {
         req.admin_username = decoded.admin_username;
-        adminName;
         next();
       }
     });

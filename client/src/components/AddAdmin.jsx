@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { Image } from 'primereact/image';
@@ -14,14 +14,14 @@ export default function AddUser() {
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [visible, setVisible] = useState(false);
 
-  //   useEffect(() => {
-  //     AdminService.createAdmin(newAdmin);
-  //   }, []);
-
   function validateEmail(email) {
     const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
     return emailRegex.test(email);
   }
+
+  const [resetSent, setResetSent] = useState(false);
+
+  
 
   const handleInputChange = (e) => {
     const inputValue = e.target.value;
@@ -48,6 +48,7 @@ export default function AddUser() {
   const saveAdmin = () => {
     setSubmitted(true);
     AdminService.createAdmin(newAdmin);
+    setResetSent(true);
     setVisible(false);
   };
 
@@ -65,7 +66,9 @@ export default function AddUser() {
         className="p-Testbutton"
         icon="pi pi-check"
         // text
-        onClick={saveAdmin}
+        onClick={(e) => { 
+          saveAdmin()
+       }}
       />
     </div>
   );
@@ -80,6 +83,9 @@ export default function AddUser() {
   };
 
   return (
+    <>
+    {!resetSent ? (
+    <>
     <div className="card flex justify-content-center">
       <Button
         className="p-Addbutton"
@@ -142,7 +148,9 @@ export default function AddUser() {
                     placeholder="Email"
                     id="email"
                     value={newAdmin.admin_email}
-                    onChange={(e) => onInputChange(e, 'admin_email')}
+                    onChange={(e) => {onInputChange(e, 'admin_email')
+                  
+                  }}
                     className={classNames({
                       'p-invalid': submitted && !newAdmin.admin_email,
                     })}
@@ -180,5 +188,10 @@ export default function AddUser() {
         </div>
       </Dialog>
     </div>
+    </>
+    ) : (
+      <h1>Password reset email sent. Please check your email.</h1>
+    )}
+    </>
   );
 }
