@@ -37,19 +37,6 @@ Admin.getAdminById = (adminEmail, result) => {
   });
 };
 
-const sqlAdminByName =
-  "SELECT admin_id, admin_email, admin_username, admin_addDate, role WHERE admin_username = ?";
-Admin.getAdminByName = (adminName, result) => {
-  db.query(sqlAdminByName, [adminName], (err, res) => {
-    if (err) {
-      console.log("Error while fetching asset ", err);
-      result(null, err);
-    } else {
-      console.log("asset_detail fetching successfully");
-      result(null, res);
-    }
-  });
-};
 
 const generateRandomPassword = () => {
   const length = 10; // Length of the random password

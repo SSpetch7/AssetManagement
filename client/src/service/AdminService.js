@@ -4,6 +4,16 @@ export const AdminService = {
     return axios.get('/admin').then((res) => res.data.data);
   },
   createAdmin(adminData) {
-    return axios.post('/admin/create', adminData).then((res) => res.data);
+    return axios.post('/admin/create', adminData).then(() => {
+    fetch("http://localhost:5000/forgot-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ admin_email: adminData.admin_email}),
+      }).then(() => true);
+     
+      
+  });
   },
 };

@@ -61,7 +61,7 @@ const  verifyUser = (req, res, next) => {
         return res.json({ Error: 'Token is not correct' });
       } else {
         req.admin_username = decoded.admin_username;
-        adminName
+
         next();
       }
     });
@@ -90,6 +90,7 @@ app.post('/forgot-password', async (req, res) => {
     }
 
     if (results.length === 0) {
+      
       return res.status(404).json({ message: 'User not found' });
     }
 
