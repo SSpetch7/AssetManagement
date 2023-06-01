@@ -60,69 +60,6 @@ export default function Summarize() {
     { name: 'นิธิโชติ มณีรัตน์ไพโรจน์' },
     { name: '...' },
   ];
-  const [selectedUser, setSelectedUser] = useState(User[0].name);
-  const Year = [
-    { name: '2023' },
-    { name: '2022' },
-    { name: '2021' },
-    { name: '2020' },
-    { name: '2019' },
-    { name: '2018' },
-    { name: '2017' },
-    { name: '2016' },
-    { name: '2015' },
-    { name: '2014' },
-    { name: '2013' },
-    { name: '2012' },
-    { name: '2011' },
-    { name: '2010' },
-    { name: '2009' },
-    { name: '2008' },
-    { name: '2007' },
-    { name: '2006' },
-    { name: '2005' },
-    { name: '2004' },
-    { name: '2003' },
-    { name: '2002' },
-    { name: '2001' },
-    { name: '2000' },
-  ];
-
-  const [selectedYear, setSelectedYear] = useState(Year[0].name);
-
-  const [userData2, setUserData2] = useState({
-    labels: UserData2.map((data) => data.asset),
-    datasets: [
-      {
-        label: 'จำนวนการยืมครุภัณฑ์',
-        data: UserData2.map((data) => data.totalAmount),
-        backgroundColor: [
-          'rgba(0,0,0)',
-          'rgba(75,192,192,1)',
-          '#ecf0f1',
-          '#f3ba2f',
-          '#2a71d0',
-          'rgba(225,75,225,1)',
-        ],
-        borderColor: 'black',
-        borderWidth: 2,
-        tension: 0.4,
-      },
-    ],
-  });
-
-  const [statusData, setStatusData] = useState({
-    labels: StatusData.map((data) => data.status),
-    datasets: [
-      {
-        label: 'สถานะครุภัณฑ์',
-        data: StatusData.map((data) => data.count),
-        backgroundColor: ['#f3ba2f', '#2a71d0', 'rgba(255,0,255,1)'],
-        borderColor: 'white',
-        borderWidth: 5,
-      },
-    ],
-  });
 
   useEffect(() => {
     console.log(selectedAsset);

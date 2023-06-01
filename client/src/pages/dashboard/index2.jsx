@@ -22,6 +22,7 @@ function classNames(...classes) {
 
 export default function Summarize() {
   const [activeIndex, setActiveIndex] = useState(0);
+  const [fullYear, setFullYear] = useState();
 
   const Asset = [
     { name: "จำนวนครุภัณฑ์ทั้งหมด", id: null },
@@ -69,7 +70,7 @@ export default function Summarize() {
         data = await ChartService.getSubAssetYear(selectedAsset.id);
       }
 
-      return data;
+      return await fillFullYear(data);
     };
 
     fetchData().then((data) => {
@@ -161,6 +162,7 @@ export default function Summarize() {
 
     const fetchData = async () => {
       let data;
+      let texts;
       let backgroundColors;
       let borderColors;
       if (selectedStatus.name === "สถานะครุภัณฑ์ทั้งหมด") {
@@ -177,6 +179,7 @@ export default function Summarize() {
           "rgba(255, 0, 0)",
           "rgba(0, 0, 0)",
         ];
+        texts = "สถานะครุภัณฑ์";
       } else if (
         selectedStatus.name === "ใช้งานได้" ||
         selectedStatus.name === "รอซ่อม" ||
@@ -184,6 +187,7 @@ export default function Summarize() {
         selectedStatus.name === "แทงจำหน่าย"
       ) {
         data = await ChartService.getStatusYear(selectedStatus.id);
+        texts = "ปี (พ.ศ.)";
         if (selectedStatus.name === "ใช้งานได้"){
           backgroundColors = [
             "rgba(0, 255, 0, 0.4)",
@@ -214,10 +218,20 @@ export default function Summarize() {
           ];
         }
       }
-      return { data, backgroundColors, borderColors };
+      if (selectedStatus.name === "สถานะครุภัณฑ์ทั้งหมด") {
+        return { data, backgroundColors, borderColors, texts };
+      } else if (
+        selectedStatus.name === "ใช้งานได้" ||
+        selectedStatus.name === "รอซ่อม" ||
+        selectedStatus.name === "สิ้นสภาพ" ||
+        selectedStatus.name === "แทงจำหน่าย"
+      ) {
+        await fillFullStatusYear(data);
+        return {data, backgroundColors, borderColors, texts };
+      }
     };
 
-    fetchData().then(({ data, backgroundColors, borderColors }) => {
+    fetchData().then(({ data, backgroundColors, borderColors, texts }) => {
       setNumberStatusYear(data);
 
       const chartData2 = {
@@ -254,7 +268,7 @@ export default function Summarize() {
             },
             title: {
               display: true,
-              text: "ปี (พ.ศ.)",
+              text: texts,
             },
           },
           y: {
@@ -281,47 +295,65 @@ export default function Summarize() {
     });
   }, [selectedStatus]);
 
-  {/*const User = [
-    { name: "กิตนันท์ สมัครพงค์" },
-    { name: "พีรกานต์ จักรเพ็ชร" },
-    { name: "นิธิโชติ มณีรัตน์ไพโรจน์" },
-    { name: "..." },
-  ];
-  const [selectedUser, setSelectedUser] = useState(User[0].name);
+  const fillFullYear = async (data) => {
+    const fillObj = [];
+    const firstYear = parseInt(data[0].asset_year, 10);
 
-  const [userData2, setUserData2] = useState({
-    labels: UserData2.map((data) => data.asset),
-    datasets: [
-      {
-        label: "จำนวนการยืมครุภัณฑ์",
-        data: UserData2.map((data) => data.totalAmount),
-        backgroundColor: [
-          "rgba(0,0,0)",
-          "rgba(75,192,192,1)",
-          "#ecf0f1",
-          "#f3ba2f",
-          "#2a71d0",
-          "rgba(225,75,225,1)",
-        ],
-        borderColor: "black",
-        borderWidth: 2,
-        tension: 0.4,
-      },
-    ],
-  });
+    const currentYear = new Date().getFullYear();
+    const lastYear = currentYear + 543;
 
-  const [statusData, setStatusData] = useState({
-    labels: StatusData.map((data) => data.status),
-    datasets: [
-      {
-        label: "สถานะครุภัณฑ์",
-        data: StatusData.map((data) => data.count),
-        backgroundColor: ["#f3ba2f", "#2a71d0", "rgba(255,0,255,1)"],
-        borderColor: "white",
-        borderWidth: 5,
-      },
-    ],
-  });*/}
+    for (let year = firstYear; year <= lastYear; year++) {
+      const obj = {
+        asset_year: year.toString(),
+        total_asset_in_year: 0,
+      };
+      fillObj.push(obj);
+    }
+    const mergeObj = fillObj.map((item) => {
+      const matching = data.find(
+        (item2) => item2.asset_year === item.asset_year
+      );
+      if (matching !== undefined) {
+        return {
+          asset_year: item.asset_year,
+          total_asset_in_year: matching.total_asset_in_year,
+        };
+      } else {
+        return item;
+      }
+    });
+    return mergeObj;
+  };
+
+  const fillFullStatusYear = async (data) => {
+    const fillObj = [];
+    const firstYear = parseInt(data[0].status, 10);
+
+    const currentYear = new Date().getFullYear();
+    const lastYear = currentYear + 543;
+
+    for (let year = firstYear; year <= lastYear; year++) {
+      const obj = {
+        status: year.toString(),
+        total_status: 0,
+      };
+      fillObj.push(obj);
+    }
+    const mergeObj = fillObj.map((item) => {
+      const matching = data.find(
+        (item2) => item2.status === item.status
+      );
+      if (matching !== undefined) {
+        return {
+          status: item.status,
+          total_status: matching.total_status,
+        };
+      } else {
+        return item;
+      }
+    });
+    return mergeObj;
+  };
 
   return (
     <div className="mt-12">
