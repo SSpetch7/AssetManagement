@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { Image } from 'primereact/image';
@@ -13,6 +13,10 @@ export default function AddUser() {
   const [submitted, setSubmitted] = useState(false);
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [visible, setVisible] = useState(false);
+
+  //   useEffect(() => {
+  //     AdminService.createAdmin(newAdmin);
+  //   }, []);
 
   function validateEmail(email) {
     const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;

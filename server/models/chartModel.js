@@ -16,7 +16,7 @@ var Chart = (asset) => {
 };
 
 const numberAsset =
-  'SELECT cate_name, COUNT("cate_name") as total_asset FROM asset_detail a LEFT JOIN category c ON a.cate_id = c.cate_id GROUP BY cate_name ORDER BY cate_name';
+  'SELECT cate_name, COUNT("cate_name") as total_asset FROM asset_detail a LEFT JOIN category c ON a.cate_id = c.cate_id WHERE cate_name IS NOT NULL GROUP BY cate_name ORDER BY cate_name';
 Chart.getNumberAsset = (result) => {
   db.query(numberAsset, (err, res) => {
     if (err) {

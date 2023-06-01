@@ -55,7 +55,6 @@ export default function Admin() {
 
   useEffect(() => {
     AdminService.getAllAdamin().then((data) => setAdmins(data));
-    console.log(admins + ' test');
   }, []);
   
   const changeDate = (rowData) => {

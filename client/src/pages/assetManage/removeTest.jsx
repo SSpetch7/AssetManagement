@@ -20,26 +20,27 @@ import { Calendar } from 'primereact/calendar';
 import { dataTable } from '../../assets/dummy';
 import BorrowButton from '../../components/BorrowButton';
 import AssetFilter from '../../components/AssetFilter';
-import { AssetService } from '../../service/AssetService';
-import { EachRoomService } from '../../service/EachRoomService';
+import RemoveButton from '../../components/RemoveButton';
+import ChangeStatusButton from '../../components/ChangeStatusButton';
 
-export default function AllAsset() {
+export default function Remove() {
   let emptydataTable = {
-    asset_order: null,
+    order: '',
     asset_id: '',
-    asset_name: '',
-    asset_year: '',
-    gallery_id: null,
-    detail: null,
-    room_id: null,
-    categoryID: null,
-    category: '',
-    subcategoryID: null,
-    subcategory: '',
-    asset_stock: null,
-    asset_status: null,
-    asset_useable: null,
+    name: '',
+    year: null,
+    status: '',
+    useable: '',
+    room_id: '',
+    inventoryStatus: 'INSTOCK',
   };
+
+  const [productStatus, setProductStatus] = useState(null);
+  const status = [
+    { name: 'ใช่งานได้', code: 'CU' },
+    { name: 'รอซ่อม', code: 'FX' },
+    { name: 'สิ้นสภาพ', code: 'BK' },
+  ];
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
@@ -65,7 +66,7 @@ export default function AllAsset() {
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
-  const [assets, setAssets] = useState(null);
+  const [products, setProducts] = useState(null);
   const [productDialog, setProductDialog] = useState(false);
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
@@ -75,41 +76,26 @@ export default function AllAsset() {
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
-  const [dropdownRooms, setDropdownRooms] = useState(null);
-  const [dropdownAllRooms, setDropdownAllRooms] = useState(null);
-  const [selectedRoom, setSelectedRoom] = useState(null);
-
-  useEffect(() => {
-    if (selectedRoom == null || selectedRoom == 'ทั้งหมด') {
-      EachRoomService.getAllRoom().then((data) => setDropdownRooms(data));
-      AssetService.getAllAsset().then((data) => setAssets(data));
-    } else {
-      EachRoomService.getAssetByRoom(selectedRoom).then((data) =>
-        setAssets(data)
-      );
-      console.log(selectedRoom);
-    }
-  }, [selectedRoom]);
-
-  const handleSelectedRoom = (e) => {
-    console.log('e.value');
-    console.log(e.value);
-    setSelectedRoom(e.value);
-  };
-
-  const type = [
-    { name: 'ครุภัณฑ์สำนักงาน', num: '32' },
-    { name: 'ครุภัณฑ์การศึกษา', num: '40' },
-    { name: 'ครุภัณฑ์คอมพิวเตอร์ทั้งหมด', num: '21' },
-    { name: 'ครุภัณฑ์อื่น ๆ ', num: '44' },
-    { name: 'ครุภัณฑ์คอมพิวเตอร์', num: '31' },
-    { name: 'ครุภัณฑ์โน๊ตบุ๊ค', num: '20' },
-    { name: 'ครุภัณฑ์แท็บเล็ต', num: '10' },
-  ];
-  const [typeAsset, setTypeAsset] = useState(type);
 
   const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
-  const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
+  const [useable] = useState(['กำลังใช้', 'ไม่ได้ใช้งาน']);
+
+  useEffect(() => {
+    dataTable.getDatas().then((data) => setProducts(data));
+  }, []);
+
+  const formatCurrency = (value) => {
+    return value.toLocaleString('en-US', {
+      style: 'currency',
+      currency: 'USD',
+    });
+  };
+
+  const openNew = () => {
+    setProduct(emptydataTable);
+    setSubmitted(false);
+    setProductDialog(true);
+  };
 
   const hideDialog = () => {
     setSubmitted(false);
@@ -124,20 +110,44 @@ export default function AllAsset() {
     setDeleteProductsDialog(false);
   };
 
-  const addAllOptionsDropdown = () => {
-    let _rooms = [...dropdownRooms];
-    _rooms = _rooms.filter((value) => value !== null);
-    _rooms.unshift('ทั้งหมด');
-    setDropdownAllRooms(_rooms);
-    // return _rooms;
+  const saveProduct = () => {
+    setSubmitted(true);
+
+    if (product.name.trim()) {
+      let _products = [...products];
+      let _product = { ...product };
+
+      if (product.id) {
+        const index = findIndexById(product.id);
+
+        _products[index] = _product;
+        toast.current.show({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Product Updated',
+          life: 3000,
+        });
+      } else {
+        _product.id = createId();
+        _product.image = 'product-placeholder.svg';
+        _products.push(_product);
+        toast.current.show({
+          severity: 'success',
+          summary: 'Successful',
+          detail: 'Product Created',
+          life: 3000,
+        });
+      }
+
+      setProducts(_products);
+      setProductDialog(false);
+      setProduct(emptydataTable);
+    }
   };
 
   const statusBodyTemplate = (rowData) => {
     return (
-      <Tag
-        value={rowData.asset_status}
-        severity={getSeverity(rowData.asset_status)}
-      />
+      <Tag value={rowData.status} severity={getSeverity(rowData.status)} />
     );
   };
   const statusRowFilterTemplate = (options) => {
@@ -163,25 +173,18 @@ export default function AllAsset() {
     switch (status) {
       case 'ใช้งานได้':
         return 'success';
-        break;
-      case 'รอซ่อม':
-        return 'warning';
-        break;
+
+      case 'กำลังซ่อม':
+        return 'info';
+
       case 'สิ้นสภาพ':
         return 'danger';
-        break;
-      case 'แทงจำหน่าย':
-        return 'disposal';
-        break;
     }
   };
 
   const useableBodyTemplate = (rowData) => {
     return (
-      <Tag
-        value={rowData.asset_useable}
-        severity={getUseable(rowData.asset_useable)}
-      />
+      <Tag value={rowData.useable} severity={getUseable(rowData.useable)} />
     );
   };
   const useableRowFilterTemplate = (options) => {
@@ -203,9 +206,9 @@ export default function AllAsset() {
     return <Tag value={option} severity={getUseable(option)} />;
   };
 
-  const getUseable = (useable) => {
-    switch (useable) {
-      case 'ใช้งาน':
+  const getUseable = (status) => {
+    switch (status) {
+      case 'กำลังใช้':
         return 'success';
 
       case 'ไม่ได้ใช้งาน':
@@ -225,9 +228,9 @@ export default function AllAsset() {
   };
 
   const deleteProduct = () => {
-    let _assets = assets.filter((val) => val.id !== product.id);
+    let _products = products.filter((val) => val.id !== product.id);
 
-    setAssets(_assets);
+    setProducts(_products);
     setDeleteProductDialog(false);
     setProduct(emptydataTable);
     toast.current.show({
@@ -241,8 +244,8 @@ export default function AllAsset() {
   const findIndexById = (id) => {
     let index = -1;
 
-    for (let i = 0; i < assets.length; i++) {
-      if (assets[i].id === id) {
+    for (let i = 0; i < products.length; i++) {
+      if (products[i].id === id) {
         index = i;
         break;
       }
@@ -251,14 +254,30 @@ export default function AllAsset() {
     return index;
   };
 
+  const createId = () => {
+    let id = '';
+    let chars =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for (let i = 0; i < 5; i++) {
+      id += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+
+    return id;
+  };
+
+  const exportCSV = () => {
+    dt.current.exportCSV();
+  };
+
   const confirmDeleteSelected = () => {
     setDeleteProductsDialog(true);
   };
 
   const deleteSelectedProducts = () => {
-    let _assets = assets.filter((val) => !selectedProducts.includes(val));
+    let _products = products.filter((val) => !selectedProducts.includes(val));
 
-    setAssets(_assets);
+    setProducts(_products);
     setDeleteProductsDialog(false);
     setSelectedProducts(null);
     toast.current.show({
@@ -269,27 +288,101 @@ export default function AllAsset() {
     });
   };
 
+  const onCategoryChange = (e) => {
+    let _product = { ...product };
+
+    _product['category'] = e.value;
+    setProduct(_product);
+  };
+
+  const onInputChange = (e, name) => {
+    const val = (e.target && e.target.value) || '';
+    let _product = { ...product };
+
+    _product[`${name}`] = val;
+
+    setProduct(_product);
+  };
+
+  const onInputNumberChange = (e, name) => {
+    const val = e.value || 0;
+    let _product = { ...product };
+
+    _product[`${name}`] = val;
+
+    setProduct(_product);
+  };
+
+  const actionRemove = (rowData) => {
+    return (
+      <React.Fragment>
+        {/* <Button
+          icon="pi pi-pencil"
+          style={{ scale: ' 70%' }}
+          rounded
+          outlined
+          className="mr-2"
+          onClick={() => editProduct(rowData)}
+        />
+        <Button
+          icon="pi pi-trash"
+          style={{ scale: ' 70%' }}
+          rounded
+          outlined
+          severity="danger"
+          onClick={() => confirmDeleteProduct(rowData)}
+        /> */}
+
+        <RemoveButton />
+        {/* <Button
+          icon="pi pi-pencil"
+          //   rounded
+          outlined
+          className="editBnt mr-2"
+          onClick={() => editProduct(rowData)}
+        /> */}
+      </React.Fragment>
+    );
+  };
+
+  const actionChangeStatus = (rowData) => {
+    return (
+      <React.Fragment>
+        <ChangeStatusButton />
+      </React.Fragment>
+    );
+  };
+
   const header = (
     <div className="flex  flex-wrap gap-2 align-items-center justify-between">
       {/* <h4 className="m-0">จัดการครุภัณฑ์</h4> */}
       <div className="flex">
         <span className="p-input-icon-left">
           <i className="pi pi-search" />
-          <div className="card flex justify-content-center">
-            <Dropdown
-              value={selectedRoom}
-              onClick={addAllOptionsDropdown}
-              onChange={(e) => handleSelectedRoom(e)}
-              options={dropdownAllRooms}
-              placeholder="ทั้งหมด"
-              style={{ width: '400px' }}
-            />
-          </div>
+          <InputText
+            type="search"
+            onInput={(e) => setGlobalFilter(e.target.value)}
+            placeholder="ค้นหา..."
+            style={{ width: '400px' }}
+          />
         </span>
+        <div className="flex gap-2">
+          <AssetFilter />
+        </div>
       </div>
     </div>
   );
-
+  const productDialogFooter = (
+    <React.Fragment>
+      <Button label="Cancel" icon="pi pi-times" outlined onClick={hideDialog} />
+      <Button
+        label="Save"
+        icon="pi pi-check"
+        className="p-Testbutton"
+        onClick={saveProduct}
+      />
+    </React.Fragment>
+  );
   const deleteProductDialogFooter = (
     <React.Fragment>
       <Button
@@ -329,15 +422,17 @@ export default function AllAsset() {
       <div className="mt-12">
         <div className="pb-10">
           <span className="pl-32 font-bold  text-4xl text-gray-600 items-start">
-            Asset For Each Room
+            Remove Asset
           </span>
-          <span className="pl-2  text-gray-400">ครุภัณฑ์ตามห้อง</span>
+          <span className="pl-2  text-gray-400">แทงจำหน่ายครุภัณฑ์</span>
         </div>
         <div className="flex justify-center h-full ">
           <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
             <DataTable
               ref={dt}
-              value={assets}
+              value={products}
+              selection={selectedProducts}
+              onSelectionChange={(e) => setSelectedProducts(e.value)}
               dataKey="id"
               paginator
               rows={10}
@@ -351,7 +446,17 @@ export default function AllAsset() {
               tableStyle={{ minHeight: '10rem' }}
             >
               <Column
-                field="asset_order"
+                body={actionChangeStatus}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '1rem' }}
+              ></Column>
+              <Column
+                body={actionRemove}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '1rem' }}
+              ></Column>
+              <Column
+                field="order"
                 header="ลำดับ"
                 sortable
                 style={{ minWidth: '4rem' }}
@@ -366,7 +471,7 @@ export default function AllAsset() {
                 style={{ minWidth: '13rem', width: '13rem' }}
               ></Column>
               <Column
-                field="asset_name"
+                field="name"
                 header="ชื่อ"
                 sortable
                 filter
@@ -376,7 +481,7 @@ export default function AllAsset() {
               ></Column>
 
               <Column
-                field="asset_year"
+                field="year"
                 header="ปีงบประมาณ"
                 sortable
                 filter
@@ -385,7 +490,7 @@ export default function AllAsset() {
               ></Column>
 
               <Column
-                field="asset_status"
+                field="status"
                 header="สภาพ"
                 sortable
                 filter
@@ -395,7 +500,7 @@ export default function AllAsset() {
                 style={{ minWidth: '4rem' }}
               ></Column>
               <Column
-                field="asset_useable"
+                field="useable"
                 header="การใช้งาน"
                 sortable
                 filter
@@ -411,46 +516,6 @@ export default function AllAsset() {
                 filter
                 showFilterMatchModes={false}
                 style={{ minWidth: '10rem' }}
-              ></Column>
-            </DataTable>
-          </div>
-        </div>
-      </div>
-
-      <div className="m-16"></div>
-
-      <div className="mt-12">
-        <div className="pb-10">
-          <span className="pl-32 font-bold  text-4xl text-gray-600 items-start">
-            สรุปครุภัณฑ์ตามห้อง
-          </span>
-        </div>
-        <div className="flex justify-center h-full ">
-          <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
-            <DataTable
-              ref={dt}
-              value={typeAsset}
-              dataKey="id"
-              //   paginator
-              rows={10}
-              currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-              filters={filters}
-              globalFilter={globalFilter}
-              className="actionRow typeTable"
-              scrollable
-              //   scrollHeight="700px"
-              tableStyle={{ minHeight: '5rem', height: '8rem' }}
-            >
-              <Column
-                field="name"
-                header="ประเภท"
-                style={{ minWidth: '30rem' }}
-              ></Column>
-
-              <Column
-                field="num"
-                header="จำนวน"
-                style={{ minWidth: '4rem' }}
               ></Column>
             </DataTable>
           </div>

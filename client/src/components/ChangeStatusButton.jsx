@@ -3,7 +3,7 @@ import { Button } from 'primereact/button';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dialog } from 'primereact/dialog';
 import { Tag } from 'primereact/tag';
-import { TestPhoto } from 'assets/testPhoto.js';
+import { TestPhoto } from 'assets/testphoto';
 import { SelectButton } from 'primereact/selectbutton';
 
 export default function ProductsDemo() {
@@ -38,38 +38,6 @@ export default function ProductsDemo() {
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
-
-  const [images, setImages] = useState(null);
-
-  const responsiveOptions = [
-    {
-      breakpoint: '1024px',
-      numVisible: 5,
-    },
-    {
-      breakpoint: '960px',
-      numVisible: 4,
-    },
-    {
-      breakpoint: '768px',
-      numVisible: 3,
-    },
-    {
-      breakpoint: '560px',
-      numVisible: 1,
-    },
-  ];
-
-  useEffect(() => {
-    TestPhoto.getImages().then((data) => setImages(data));
-  }, []);
-
-  const formatCurrency = (value) => {
-    return value.toLocaleString('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    });
-  };
 
   const openNew = () => {
     setProduct(emptyProduct);

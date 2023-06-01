@@ -9,14 +9,9 @@ import { Tooltip } from '@mui/material';
 import { useStateContext } from '../contexts/ContextProvider';
 // icon
 import HomeIcon from '@mui/icons-material/Home';
-import DevicesOtherIcon from '@mui/icons-material/DevicesOther';
 import InsertChartIcon from '@mui/icons-material/InsertChart';
-import HistoryIcon from '@mui/icons-material/History';
-import AccountBoxIcon from '@mui/icons-material/AccountBox';
 import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
-import MenuIcon from '@mui/icons-material/Menu';
 import PublishedWithChangesIcon from '@mui/icons-material/PublishedWithChanges';
-import PlagiarismIcon from '@mui/icons-material/Plagiarism';
 import DescriptionIcon from '@mui/icons-material/Description';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
