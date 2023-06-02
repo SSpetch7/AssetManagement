@@ -3,6 +3,11 @@ export const AdminService = {
   getAllAdamin() {
     return axios.get('/admin').then((res) => res.data.data);
   },
+
+  getAdminByID(id) {
+    return axios.get(`/admin/${id}`).then((res) => res.data.data);
+  },
+  
   createAdmin(adminData) {
     return axios.post('/admin/create', adminData).then(() => {
     fetch("http://localhost:5000/forgot-password", {

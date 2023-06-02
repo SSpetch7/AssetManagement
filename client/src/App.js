@@ -4,6 +4,7 @@ import {
   Routes,
   Route,
   Outlet,
+  Navigate,
 } from 'react-router-dom';
 import { Logo } from './assets/logo.png';
 import { Tooltip } from '@mui/material';
@@ -40,6 +41,7 @@ import ResetPassword from 'pages/resetpassword';
 const Layout = ({ children }) => {
   const { activeMenu } = useStateContext();
   axios.defaults.baseURL = 'http://localhost:5000';
+  
 
   return (
     <div>
