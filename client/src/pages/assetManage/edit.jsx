@@ -36,9 +36,9 @@ export default function AllAsset() {
     gallery_id: null,
     detail: null,
     room_id: null,
-    categoryID: null,
     category: '',
-    subcategoryID: null,
+    cate_id: null,
+    sub_id: null,
     subcategory: '',
     asset_stock: null,
     asset_status: null,
@@ -123,7 +123,14 @@ export default function AllAsset() {
 
   useEffect(() => {
     if (images.length < 1) return;
-  });
+    const newImageURLs = [];
+    images.forEach((image) => newImageURLs.push(URL.createObjectURL(image)));
+    setImageURLs(newImageURLs);
+  }, [images]);
+
+  function onImageChange(e) {
+    setImages([...e.target.files]);
+  }
 
   useEffect(() => {
     AssetService.getAllAsset().then((data) => setAssets(data));
@@ -150,11 +157,11 @@ export default function AllAsset() {
         }
       }
     );
-    UpdateAssetService.newAsset(assetCreateNew, (error, updateAsset) => {
+    UpdateAssetService.newAsset(assetCreateNew, (error, newAsset) => {
       if (error) {
         console.log('Error new create to DB admin:', error);
       } else {
-        console.log('Assset new create to DB successfully:', updateAsset);
+        console.log('Assset new create to DB successfully:', newAsset);
       }
     });
   }, [assetDetail, assetCreateNew]);
@@ -189,13 +196,13 @@ export default function AllAsset() {
     setAsset(_asset);
   };
 
-  const uploadFiles = (files) => {
+  const uploadFiles = (files, assetID) => {
     if (!files || files.length === 0) return;
-
+    let count = 1;
     files.forEach((file) => {
-      const storageRef = ref(storage, `${file.name}`);
+      const storageRef = ref(storage, `${assetID}_image${count}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
-
+      count++;
       uploadTask.on(
         'state_changed',
         (snapshot) => {
@@ -216,6 +223,7 @@ export default function AllAsset() {
         }
       );
     });
+    count = 0;
   };
 
   const openNew = () => {
@@ -228,6 +236,8 @@ export default function AllAsset() {
 
   const hideDialog = () => {
     setSubmitted(false);
+    setImageURLs([]);
+    setImages([]);
     setNewAssetDialog(false);
     setEditAssetDialog(false);
     setShowAssetDialog(false);
@@ -242,9 +252,9 @@ export default function AllAsset() {
   };
 
   const saveNewAsset = () => {
+    uploadFiles(images, asset.asset_id);
     let type = 'NEWASSET';
     setSubmitted(true);
-
     if (asset.asset_name.trim()) {
       let _assets = [...assets];
       let _asset = { ...asset };
@@ -257,10 +267,11 @@ export default function AllAsset() {
         detail: 'เพิ่มครุภัณฑ์ใหม่สำเร็จ',
         life: 3000,
       });
-      console.log('push');
       setAssets(_assets);
-      console.log(_assets);
+      console.log('push');
+      console.log(_asset);
       setAsset(_asset);
+      setAssetCreateNew(_asset);
       setNewAssetDialog(false);
       setAsset(emptydataTable);
     }
@@ -299,6 +310,8 @@ export default function AllAsset() {
 
       setAsset(emptydataTable);
     }
+    setImages([]);
+    setImageURLs([]);
     console.log('null ???');
     console.log(asset);
   };
@@ -853,18 +866,12 @@ export default function AllAsset() {
         <div className="card p-4">
           <div class="md:flex">
             <div class="w-full">
-              <div class="p-3">
-                <div class="mb-2">
-                  <div class="relative h-40 rounded-lg border-dashed border-2 border-gray-200 bg-white flex justify-center items-center hover:cursor-pointer">
+              <div class="flex items-center  p-3">
+                <div class="mb-2 pr-10">
+                  <div class="relative h-10 w-32 rounded-lg border-dashed border-2 border-gray-200 bg-white flex justify-center items-center hover:cursor-pointer">
                     <div class="absolute">
                       <div class="flex flex-col items-center ">
                         <i class="fa fa-cloud-upload fa-3x text-gray-200"></i>
-                        <span class="block text-gray-400 font-normal">
-                          ลากรูปภาพมาที่นี่
-                        </span>
-                        <span class="block text-gray-400 font-normal">
-                          หรือ
-                        </span>
 
                         <span class="block text-blue-400 font-normal">
                           เลือกรูปภาพ
@@ -876,25 +883,41 @@ export default function AllAsset() {
                       class="h-full w-full opacity-0"
                       multiple="multiple"
                       accept="image/png, image/jpeg, image/jpg"
+                      onChange={onImageChange}
                     />
                   </div>
-                  <div class="flex justify-between items-center text-gray-400">
+                  <div class="flex  justify-between items-center text-gray-400">
                     <span>เฉพาะ *png *jpeg *jpg</span>
                   </div>
                 </div>
-
-                <div class="mt-3 text-center pb-3">
-                  <button class="w-full h-12 text-lg w-32 bg-blue-600 rounded text-white hover:bg-blue-700">
-                    Create
-                  </button>
-                </div>
-                <div>show image</div>
-                <form id="queued-form">
-                  <div class="header">
-                    <h3>Queued In Frontend</h3>
+                <div class="">
+                  <div class="flex pl-1 justify-between items-center text-gray-400">
+                    <span>รูปภาพที่เลือก</span>
                   </div>
-                  <div class="queued-div"></div>
-                </form>
+                </div>
+              </div>
+              <div class="flex justify-start w-full">
+                {imageURLs.map((imageSrc, index) => (
+                  <div
+                    key={index}
+                    style={{
+                      width: '120px',
+                      height: '120px',
+                      overflow: 'hidden',
+                      padding: '4px',
+                    }}
+                  >
+                    <img
+                      src={imageSrc}
+                      alt={`Image ${index + 1}`}
+                      style={{
+                        objectFit: 'cover',
+                        width: '100%',
+                        height: '100%',
+                      }}
+                    />
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -1049,9 +1072,9 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={asset.category}
-                  placeholder={asset.category}
-                  onChange={(e) => handleOptionChange(e, 'category')}
+                  value={asset.cate_id}
+                  placeholder={asset.cate_id}
+                  onChange={(e) => handleOptionChange(e, 'cate_id')}
                   options={assetType}
                   //   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -1064,11 +1087,10 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={asset.subcategory}
-                  placeholder={asset.subcategory}
-                  onChange={(e) => handleOptionChange(e, 'subcategory')}
+                  value={asset.sub_id}
+                  placeholder={asset.sub_id}
+                  onChange={(e) => handleOptionChange(e, 'sub_id')}
                   options={assetComType}
-                  optionLabel="subcategory"
                   className="w-full md:w-14rem"
                 />
               </div>
@@ -1104,15 +1126,46 @@ export default function AllAsset() {
         footer={upDateAssetDialogFooter}
         onHide={hideDialog}
       >
-        <div className="card p-4">
-          <FileUpload
-            name="demo[]"
-            url={'/api/upload'}
-            multiple
-            accept="image/*"
-            maxFileSize={1000000}
-            emptyTemplate={<p className="m-0">อัพโหลดรูปครุภัณฑ์ที่นี่</p>}
-          />
+        <div class="md:flex">
+          <div class="w-full">
+            <div class="p-3">
+              <div class="mb-2">
+                <div class="relative h-40 rounded-lg border-dashed border-2 border-gray-200 bg-white flex justify-center items-center hover:cursor-pointer">
+                  <div class="absolute">
+                    <div class="flex flex-col items-center ">
+                      <i class="fa fa-cloud-upload fa-3x text-gray-200"></i>
+
+                      <span class="block text-blue-400 font-normal">
+                        เลือกรูปภาพ
+                      </span>
+                    </div>
+                  </div>
+                  <input
+                    type="file"
+                    class="h-full w-full opacity-0"
+                    multiple="multiple"
+                    accept="image/png, image/jpeg, image/jpg"
+                  />
+                </div>
+                <div class="flex justify-between items-center text-gray-400">
+                  <span>เฉพาะ *png *jpeg *jpg</span>
+                </div>
+              </div>
+
+              <div class="mt-3 text-center pb-3">
+                <button class="w-full h-12 text-lg w-32 bg-blue-600 rounded text-white hover:bg-blue-700">
+                  Create
+                </button>
+              </div>
+              <div>show image</div>
+              <form id="queued-form">
+                <div class="header">
+                  <h3>Queued In Frontend</h3>
+                </div>
+                <div class="queued-div"></div>
+              </form>
+            </div>
+          </div>
         </div>
 
         <div className="card p-4">

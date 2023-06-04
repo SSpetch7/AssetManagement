@@ -137,7 +137,10 @@ Asset.getTypeCom = (result) => {
       result(null, err);
     } else {
       console.log('Asset fetching successfully');
-      result(null, res);
+      const subValues = res.reduce((values, row) => {
+        return values.concat(Object.values(row));
+      }, []);
+      return result(null, subValues);
     }
   });
 };
