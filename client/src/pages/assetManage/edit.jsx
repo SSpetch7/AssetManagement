@@ -157,6 +157,9 @@ export default function AllAsset() {
         }
       }
     );
+  }, [assetDetail]);
+
+  useEffect(() => {
     UpdateAssetService.newAsset(assetCreateNew, (error, newAsset) => {
       if (error) {
         console.log('Error new create to DB admin:', error);
@@ -164,8 +167,7 @@ export default function AllAsset() {
         console.log('Assset new create to DB successfully:', newAsset);
       }
     });
-  }, [assetDetail, assetCreateNew]);
-
+  }, [assetCreateNew]);
   //   edit asset data
   const onInputChangeNumber = (e, name) => {
     const val = e.value;
@@ -191,6 +193,38 @@ export default function AllAsset() {
   const handleOptionChange = (e, name) => {
     let _asset = { ...asset };
     _asset[`${name}`] = e.value;
+    if (name === 'category') {
+      switch (e.value) {
+        case 'สำนักงาน':
+          _asset[`cate_id`] = 1;
+          break;
+        case 'การศึกษา':
+          _asset[`cate_id`] = 2;
+          break;
+        case 'คอมพิวเตอร์':
+          _asset[`cate_id`] = 3;
+          break;
+        case 'อาคารสำนักงาน':
+          _asset[`cate_id`] = 4;
+          break;
+        case 'อื่น ๆ ':
+          _asset[`cate_id`] = 5;
+          break;
+      }
+    }
+    if (name === 'subcategory') {
+      switch (e.value) {
+        case 'เครื่องคอมพิวเตอร์':
+          _asset[`sub_id`] = 1;
+          break;
+        case 'โน๊ตบุ๊ค':
+          _asset[`sub_id`] = 2;
+          break;
+        case 'แท็บเล็ต':
+          _asset[`sub_id`] = 3;
+          break;
+      }
+    }
     console.log('e.value');
     console.log(e.value);
     setAsset(_asset);
@@ -258,6 +292,7 @@ export default function AllAsset() {
     if (asset.asset_name.trim()) {
       let _assets = [...assets];
       let _asset = { ...asset };
+
       console.log('_asset');
       console.log(_asset);
       _assets.push(_asset);
@@ -275,6 +310,8 @@ export default function AllAsset() {
       setNewAssetDialog(false);
       setAsset(emptydataTable);
     }
+    console.log('assetCreateNew');
+    console.log(assetCreateNew);
   };
 
   const saveUpDateAsset = () => {
@@ -1072,9 +1109,9 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={asset.cate_id}
-                  placeholder={asset.cate_id}
-                  onChange={(e) => handleOptionChange(e, 'cate_id')}
+                  value={asset.category}
+                  placeholder={asset.category}
+                  onChange={(e) => handleOptionChange(e, 'category')}
                   options={assetType}
                   //   optionLabel="name"
                   className="w-full md:w-14rem"
@@ -1087,9 +1124,9 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
-                  value={asset.sub_id}
-                  placeholder={asset.sub_id}
-                  onChange={(e) => handleOptionChange(e, 'sub_id')}
+                  value={asset.subcategory}
+                  placeholder={asset.subcategory}
+                  onChange={(e) => handleOptionChange(e, 'subcategory')}
                   options={assetComType}
                   className="w-full md:w-14rem"
                 />
@@ -1325,7 +1362,6 @@ export default function AllAsset() {
                   placeholder={asset.subcategory}
                   onChange={(e) => handleOptionChange(e, 'subcategory')}
                   options={assetComType}
-                  optionLabel="subcategory"
                   className="w-full md:w-14rem"
                 />
               </div>
