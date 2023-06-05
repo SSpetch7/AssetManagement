@@ -129,7 +129,7 @@ export default function AddUser() {
 
           <div className="content-evenly mt-4 ">
             <div className="flex justify-evenly py-4 ">
-              <div className="flex mb-2 lg:col-6 lg:mb-0 field col-start-1">
+              <div className="mb-2 lg:col-6 lg:mb-0 field col-start-1">
                 <div className="p-input-icon-left">
                   <i className="pi pi-user" />
                   <InputText
@@ -144,19 +144,19 @@ export default function AddUser() {
                   )}
                 </div>
               </div>
+              
+             
               <div className="mb-2 lg:col-6 lg:mb-0">
                 <span className="p-input-icon-left">
                   <i className="pi pi-envelope" />
                   <InputText
+                    className="inputForm"
                     placeholder="Email"
                     id="email"
                     value={newAdmin.admin_email}
                     onChange={(e) => {onInputChange(e, 'admin_email')
                   
                   }}
-                    className={classNames({
-                      'p-invalid': submitted && !newAdmin.admin_email,
-                    })}
                   />
                   {submitted && !newAdmin.admin_email && (
                     <small className="p-error">Email is required.</small>

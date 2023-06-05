@@ -40,10 +40,10 @@ const Home = () => {
         {overviewAsset.map((item) => (
           <div
             key={item.device}
-            className=" bg-kmuttColor-bg-menu h-56 rounded-xl labtop:w-10/12 w-9/12 border border-gray-300 px-8 pt-6 m-3 "
+            className=" bg-kmuttColor-bg-menu min-h-56 rounded-xl labtop:w-10/12 w-9/12 border border-gray-300 px-8 pt-6 pb-5 m-3 "
           >
             <div>
-              <div className="flex justify-start item-start pb-4">
+              <div className="flex justify-start item-start pb-4 ">
                 <p className="font-bold text-3xl  text-gray-400">
                   {item.device}
                 </p>
