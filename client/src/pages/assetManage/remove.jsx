@@ -404,7 +404,7 @@ export default function Remove() {
       .get('http://localhost:5000')
       .then((res) => {
         if (res.data.Status === 'Success') {
-          navigate('/AssetManage/edit');
+          navigate('/AssetManage/remove');
         } else {
           navigate('/home');
         }
