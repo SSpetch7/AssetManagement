@@ -23,6 +23,7 @@ const numController = {
         res.send(err);
       }
       res.json({ data: assets });
+      console.log(assets);
     });
   },
   getNumberStatusList: (req, res) => {
@@ -34,4 +35,45 @@ const numController = {
     });
   },
 };
-export default { numController };
+
+const yearController = {
+  getCateAssetYearList: (req, res) => {
+    const id = req.params.id;
+    chartModel.getCateAssetYear(id, (err, assets) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.json({ data: assets });
+        console.log(assets);
+      }
+    });
+  },
+  getSubAssetYearList: (req, res) => {
+    const id = req.params.id;
+    chartModel.getSubAssetYear(id, (err, assets) => {
+      if (err) {
+        res.send(err);
+      } else {
+        res.json({ data: assets });
+        console.log(assets);
+      }
+    });
+  },
+};
+
+const statusController = {
+  getStatusYearList: (req, res) => {
+    const id = req.params.id;
+    chartModel.getStatusYear(id, (err, assets) => {
+      if (err) {
+        res.send(err);
+      } else {
+        console.log(assets);
+        console.log("assets5555555555555555555");
+        res.json({ data: assets });
+      }
+    });
+  },
+};
+
+export default { numController, yearController, statusController };

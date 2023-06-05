@@ -1,24 +1,126 @@
-import React, { useState } from 'react';
-import { overviewAsset, mostActivity, roomAtAsset } from '../../assets/dummy';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import LineChart from '../../assets/chart/lineChart';
-import { UserData } from '../../assets/data/data';
+import React, { useState, useEffect } from "react";
+import { overviewAsset, mostActivity, roomAtAsset } from "../../assets/dummy";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import LineChart from "../../assets/chart/lineChart";
+import { UserData } from "../../assets/data/data";
+import { ChartService } from "../../service/ChartService";
+import { Chart } from "primereact/chart";
 
 const Home = () => {
+  const [numberAsset, setNumberAsset] = useState(null);
+  const [chartData, setChartData] = useState({});
+  const [chartOptions, setChartOptions] = useState({});
+
+  useEffect(() => {
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue("--text-color");
+    const textColorSecondary = documentStyle.getPropertyValue(
+      "--text-color-secondary"
+    );
+    const surfaceBorder = documentStyle.getPropertyValue("--surface-border");
+
+    const fetchData = async () => {
+      let data;
+      data = await ChartService.getNumberAsset();
+      return data;
+    };
+
+    fetchData().then((data) => {
+      setNumberAsset(data);
+
+      const chartData = {
+        labels: data.map((data) => data.cate_name),
+        datasets: [
+          {
+            label: "Status",
+            data: data.map((data) => data.total_asset),
+            backgroundColor: [
+              "rgba(255,0,255,0.4)",
+              "rgba(0,0,255,0.4)",
+              "rgba(0,255,0,0.4)",
+              "rgba(255,130,97,0.4)",
+              "rgba(150,0,0,0.4)",
+              "rgba(150,150,150,0.4)",
+            ],
+            borderColor: [
+
+              "rgba(255,0,255)",
+              "rgba(0,0,255)",
+              "rgba(0,255,0)",
+              "rgba(255,130,97)",
+              "rgba(150,0,0)",
+              "rgba(150,150,150)",
+            ],
+            borderWidth: 2,
+          },
+        ],
+      };
+
+      const chartOptions = {
+        maintainAspectRatio: false,
+        aspectRatio: 0.6,
+        plugins: {
+          legend: {
+            display: false,
+            labels: {
+              color: textColor,
+            },
+          },
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: textColorSecondary,
+            },
+            grid: {
+              color: surfaceBorder,
+            },
+            title: {
+              display: true,
+            },
+          },
+          y: {
+            suggestedMin: 0,
+            suggestedMax: 10,
+            ticks: {
+              beginAtZero: true,
+              callback: function (value) {
+                if (value % 1 === 0) {
+                  return value;
+                }
+              },
+              color: textColorSecondary,
+            },
+            grid: {
+              color: surfaceBorder,
+            },
+            title: {
+              display: true,
+              text: "จำนวนครุภัณฑ์ทั้งหมด",
+            },
+          },
+        },
+      };
+
+      setChartData(chartData);
+      setChartOptions(chartOptions);
+    });
+  }, []);
+
   const [userData, setUserData] = useState({
     labels: UserData.map((data) => data.asset),
     datasets: [
       {
         data: UserData.map((data) => data.totalAmount),
         backgroundColor: [
-          'rgba(0,0,0)',
-          'rgba(75,192,192,1)',
-          '#ecf0f1',
-          '#f3ba2f',
-          '#2a71d0',
-          'rgba(225,75,225,1)',
+          "rgba(0,0,0)",
+          "rgba(75,192,192,1)",
+          "#ecf0f1",
+          "#f3ba2f",
+          "#2a71d0",
+          "rgba(225,75,225,1)",
         ],
-        borderColor: 'black',
+        borderColor: "black",
         borderWidth: 2,
         tension: 0.4,
       },
@@ -84,8 +186,13 @@ const Home = () => {
       </div>
       <div className="">
         <div className="flex justify-center p-10">
-          <div style={{ width: '60%' }}>
-            <LineChart chartData={userData} />
+          <div className="card">
+            <Chart
+              type="bar"
+              data={chartData}
+              options={chartOptions}
+              style={{ width: "1000px", height: "500px" }}
+            />
           </div>
         </div>
       </div>
