@@ -76,6 +76,7 @@ export default function AllAsset() {
   const [dropdownRooms, setDropdownRooms] = useState(null);
   const [dropdownAllRooms, setDropdownAllRooms] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
+  const [allType, setAllType] = useState(null);
 
   useEffect(() => {
     if (selectedRoom == null || selectedRoom == 'ทั้งหมด') {
@@ -89,22 +90,23 @@ export default function AllAsset() {
     }
   }, [selectedRoom]);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      let data;
+        data = await EachRoomService.getNumberTypeAll();
+        console.log(data)
+      return data;
+    };
+    fetchData().then((data) => {
+      setAllType(data);
+    });
+  }, []);
+
   const handleSelectedRoom = (e) => {
     console.log('e.value');
     console.log(e.value);
     setSelectedRoom(e.value);
   };
-
-  const type = [
-    { name: 'ครุภัณฑ์สำนักงาน', num: '32' },
-    { name: 'ครุภัณฑ์การศึกษา', num: '40' },
-    { name: 'ครุภัณฑ์คอมพิวเตอร์ทั้งหมด', num: '21' },
-    { name: 'ครุภัณฑ์อื่น ๆ ', num: '44' },
-    { name: 'ครุภัณฑ์คอมพิวเตอร์', num: '31' },
-    { name: 'ครุภัณฑ์โน๊ตบุ๊ค', num: '20' },
-    { name: 'ครุภัณฑ์แท็บเล็ต', num: '10' },
-  ];
-  const [typeAsset, setTypeAsset] = useState(type);
 
   const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
   const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
@@ -424,29 +426,25 @@ export default function AllAsset() {
           </span>
         </div>
         <div className="flex justify-center h-full ">
-          <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
+          <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 pb-8 m-3 ">
             <DataTable
               ref={dt}
-              value={typeAsset}
+              value={allType}
               dataKey="id"
-              //   paginator
               rows={10}
               currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
-              filters={filters}
-              globalFilter={globalFilter}
               className="actionRow typeTable"
               scrollable
-              //   scrollHeight="700px"
-              tableStyle={{ minHeight: '5rem', height: '8rem' }}
+              tableStyle={{ minHeight: '5rem', height: '10rem' }}
             >
               <Column
-                field="name"
+                field="category_name"
                 header="ประเภท"
                 style={{ minWidth: '30rem' }}
               ></Column>
 
               <Column
-                field="num"
+                field="total_asset"
                 header="จำนวน"
                 style={{ minWidth: '4rem' }}
               ></Column>
