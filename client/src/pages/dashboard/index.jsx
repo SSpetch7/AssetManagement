@@ -12,9 +12,9 @@ import Year from '../../components/dropdownYear';
 import User from '../../components/dropdownUser';
 import { TabView, TabPanel } from 'primereact/tabview';
 import { Dropdown } from 'primereact/dropdown';
-import { ChartService } from '../../service/ChartService';
 import { Chart } from 'primereact/chart';
 import { Height } from '@mui/icons-material';
+import { ChartService } from '../../service/ChartService';
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(' ');
@@ -22,17 +22,7 @@ function classNames(...classes) {
 
 export default function Summarize() {
   const [activeIndex, setActiveIndex] = useState(0);
-
-  let emptydatachart = [{ asset_year: null, total_asset_in_year: null }];
-
-  const Status = [
-    { name: "ทั้งหมด", id: null },
-    { name: "ใช้งานได้", id: "1" },
-    { name: "รอซ่อม", id: "2" },
-    { name: "สิ้นสภาพ", id: "3" },
-    { name: "แทงจำหน่าย", id: "4" },
-  ];
-  const [selectedStatus, setSelectedStatus] = useState(Status[0].name);
+  const [fullYear, setFullYear] = useState();
 
   const Asset = [
     { name: 'จำนวนครุภัณฑ์ทั้งหมด', id: null },
@@ -47,19 +37,9 @@ export default function Summarize() {
   ];
 
   const [selectedAsset, setSelectedAsset] = useState(Asset[0]);
-  const [numberCateAndSubYear, setNumberCateAndSubYear] =
-    useState(emptydatachart);
+  const [numberCateAndSubYear, setNumberCateAndSubYear] = useState(null);
   const [chartData, setChartData] = useState({});
   const [chartOptions, setChartOptions] = useState({});
-
-  const [fullYear, setFullYear] = useState();
-
-  const User = [
-    { name: 'กิตนันท์ สมัครพงค์' },
-    { name: 'พีรกานต์ จักรเพ็ชร' },
-    { name: 'นิธิโชติ มณีรัตน์ไพโรจน์' },
-    { name: '...' },
-  ];
 
   useEffect(() => {
     console.log(selectedAsset);
@@ -89,6 +69,7 @@ export default function Summarize() {
       ) {
         data = await ChartService.getSubAssetYear(selectedAsset.id);
       }
+
       return await fillFullYear(data);
     };
 
@@ -99,10 +80,9 @@ export default function Summarize() {
         labels: data.map((data) => data.asset_year),
         datasets: [
           {
-            label: 'First Dataset',
             data: data.map((data) => data.total_asset_in_year),
-            backgroundColor: ['#d02a2a'],
-            borderColor: 'black',
+            backgroundColor: ['#FFB39F'],
+            borderColor: '#FF8261',
             fill: false,
             borderWidth: 2,
             tension: 0.4,
@@ -115,6 +95,7 @@ export default function Summarize() {
         aspectRatio: 0.6,
         plugins: {
           legend: {
+            display: false,
             labels: {
               color: textColor,
             },
@@ -134,7 +115,16 @@ export default function Summarize() {
             },
           },
           y: {
+            weight: 2,
+            suggestedMin: 0,
+            suggestedMax: 5,
             ticks: {
+              beginAtZero: true,
+              callback: function (value) {
+                if (value % 1 === 0) {
+                  return value;
+                }
+              },
               color: textColorSecondary,
             },
             grid: {
@@ -152,6 +142,158 @@ export default function Summarize() {
       setChartOptions(chartOptions);
     });
   }, [selectedAsset]);
+
+  const Status = [
+    { name: 'สถานะครุภัณฑ์ทั้งหมด', id: null },
+    { name: 'ใช้งานได้', id: '1' },
+    { name: 'รอซ่อม', id: '2' },
+    { name: 'สิ้นสภาพ', id: '3' },
+    { name: 'แทงจำหน่าย', id: '4' },
+  ];
+  const [selectedStatus, setSelectedStatus] = useState(Status[0]);
+  const [numberStatusYear, setNumberStatusYear] = useState(null);
+  const [chartData2, setChartData2] = useState({});
+  const [chartOptions2, setChartOptions2] = useState({});
+
+  const [assetAll, setAssetAll] = useState('');
+  const [assetUseable, setAssetUseable] = useState('');
+
+  useEffect(() => {
+    ChartService.getNumberAllAsset().then((data) => setAssetAll(data));
+    ChartService.getNumberUseAble().then((data) => setAssetUseable(data));
+  });
+
+  useEffect(() => {
+    console.log(selectedStatus);
+    const documentStyle = getComputedStyle(document.documentElement);
+    const textColor = documentStyle.getPropertyValue('--text-color');
+    const textColorSecondary = documentStyle.getPropertyValue(
+      '--text-color-secondary'
+    );
+    const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+
+    const fetchData = async () => {
+      let data;
+      let texts;
+      let backgroundColors;
+      let borderColors;
+      if (selectedStatus.name === 'สถานะครุภัณฑ์ทั้งหมด') {
+        data = await ChartService.getNumberStatus();
+        backgroundColors = [
+          'rgba(0, 255, 0, 0.4)',
+          'rgba(255,130,97,0.4)',
+          'rgba(255, 0, 0, 0.4)',
+          'rgba(0, 0, 0, 0.4)',
+        ];
+        borderColors = [
+          'rgba(0, 255, 0)',
+          'rgba(255,130,97)',
+          'rgba(255, 0, 0)',
+          'rgba(0, 0, 0)',
+        ];
+        texts = 'สถานะครุภัณฑ์';
+      } else if (
+        selectedStatus.name === 'ใช้งานได้' ||
+        selectedStatus.name === 'รอซ่อม' ||
+        selectedStatus.name === 'สิ้นสภาพ' ||
+        selectedStatus.name === 'แทงจำหน่าย'
+      ) {
+        data = await ChartService.getStatusYear(selectedStatus.id);
+        texts = 'ปี (พ.ศ.)';
+        if (selectedStatus.name === 'ใช้งานได้') {
+          backgroundColors = ['rgba(0, 255, 0, 0.4)'];
+          borderColors = ['rgba(0, 255, 0)'];
+        } else if (selectedStatus.name === 'รอซ่อม') {
+          backgroundColors = ['rgba(255,130,97,0.4)'];
+          borderColors = ['rgba(255,130,97)'];
+        } else if (selectedStatus.name === 'สิ้นสภาพ') {
+          backgroundColors = ['rgba(255, 0, 0, 0.4)'];
+          borderColors = ['rgba(255, 0, 0)'];
+        } else if (selectedStatus.name === 'แทงจำหน่าย') {
+          backgroundColors = ['rgba(0, 0, 0, 0.4)'];
+          borderColors = ['rgba(0, 0, 0)'];
+        }
+      }
+      if (selectedStatus.name === 'สถานะครุภัณฑ์ทั้งหมด') {
+        return { data, backgroundColors, borderColors, texts };
+      } else if (
+        selectedStatus.name === 'ใช้งานได้' ||
+        selectedStatus.name === 'รอซ่อม' ||
+        selectedStatus.name === 'สิ้นสภาพ' ||
+        selectedStatus.name === 'แทงจำหน่าย'
+      ) {
+        await fillFullStatusYear(data);
+        return { data, backgroundColors, borderColors, texts };
+      }
+    };
+
+    fetchData().then(({ data, backgroundColors, borderColors, texts }) => {
+      setNumberStatusYear(data);
+
+      const chartData2 = {
+        labels: data.map((data) => data.status),
+        datasets: [
+          {
+            label: 'Status',
+            data: data.map((data) => data.total_status),
+            backgroundColor: backgroundColors,
+            borderColor: borderColors,
+            borderWidth: 2,
+          },
+        ],
+      };
+
+      const chartOptions2 = {
+        maintainAspectRatio: false,
+        aspectRatio: 0.6,
+        plugins: {
+          legend: {
+            display: false,
+            labels: {
+              color: textColor,
+            },
+          },
+        },
+        scales: {
+          x: {
+            ticks: {
+              color: textColorSecondary,
+            },
+            grid: {
+              color: surfaceBorder,
+            },
+            title: {
+              display: true,
+              text: texts,
+            },
+          },
+          y: {
+            suggestedMin: 0,
+            suggestedMax: 10,
+            ticks: {
+              beginAtZero: true,
+              callback: function (value) {
+                if (value % 1 === 0) {
+                  return value;
+                }
+              },
+              color: textColorSecondary,
+            },
+            grid: {
+              color: surfaceBorder,
+            },
+            title: {
+              display: true,
+              text: 'จำนวนครุภัณฑ์ทั้งหมด',
+            },
+          },
+        },
+      };
+
+      setChartData2(chartData2);
+      setChartOptions2(chartOptions2);
+    });
+  }, [selectedStatus]);
 
   const fillFullYear = async (data) => {
     const fillObj = [];
@@ -183,6 +325,34 @@ export default function Summarize() {
     return mergeObj;
   };
 
+  const fillFullStatusYear = async (data) => {
+    const fillObj = [];
+    const firstYear = parseInt(data[0].status, 10);
+
+    const currentYear = new Date().getFullYear();
+    const lastYear = currentYear + 543;
+
+    for (let year = firstYear; year <= lastYear; year++) {
+      const obj = {
+        status: year.toString(),
+        total_status: 0,
+      };
+      fillObj.push(obj);
+    }
+    const mergeObj = fillObj.map((item) => {
+      const matching = data.find((item2) => item2.status === item.status);
+      if (matching !== undefined) {
+        return {
+          status: item.status,
+          total_status: matching.total_status,
+        };
+      } else {
+        return item;
+      }
+    });
+    return mergeObj;
+  };
+
   return (
     <div className="mt-12">
       <div className=" pb-10">
@@ -203,7 +373,7 @@ export default function Summarize() {
               <div className="row-span-2 col-span-11">
                 <div className="h-1"></div>
                 <p className="sm:text-sm md:text-base lg:text-2xl text-gray-600 font-medium">
-                  จำนวนอุปกรณ์ทั้งหมด
+                  จำนวนอุปกรณ์ทั้งหมดที่ใช้งานได้
                 </p>
               </div>
               <div className="row-span-2 col-span-11">
@@ -211,7 +381,7 @@ export default function Summarize() {
                   <div className="col-span-1">
                     <div className="grid grid-rows-1 grid-flow-col gap-2">
                       <p className="col-span-1 text-4xl text-kmuttColor-800 font-bold">
-                        100
+                        {assetAll}
                       </p>
                       <p className="col-span-2 text-2xl text-gray-400 font-medium pr-4 pt-1.5">
                         ชิ้น
@@ -233,7 +403,7 @@ export default function Summarize() {
               <div className="row-span-2 col-span-11">
                 <div className="h-1"></div>
                 <p className="sm:text-sm md:text-base lg:text-2xl text-gray-600 font-medium">
-                  จำนวนอุปกรณ์ที่ใช้งาน
+                  จำนวนอุปกรณ์ที่กำลังใช้งาน
                 </p>
               </div>
               <div className="row-span-2 col-span-11">
@@ -241,7 +411,7 @@ export default function Summarize() {
                   <div className="col-span-1">
                     <div className="grid grid-rows-1 grid-flow-col gap-2">
                       <p className="col-span-1 text-4xl text-kmuttColor-800 font-bold">
-                        49
+                        {assetUseable[0]}
                       </p>
                       <p className="col-span-2 text-2xl text-gray-400 font-medium pr-4 pt-1.5">
                         ชิ้น
@@ -263,7 +433,7 @@ export default function Summarize() {
               <div className="row-span-2 col-span-11">
                 <div className="h-1"></div>
                 <p className="sm:text-sm md:text-base lg:text-2xl text-gray-600 font-medium">
-                  จำนวนอุปกรณ์ที่ใช้ได้
+                  จำนวนอุปกรณ์ที่ไม่ใช้ได้งาน
                 </p>
               </div>
               <div className="row-span-2 col-span-11">
@@ -271,7 +441,7 @@ export default function Summarize() {
                   <div className="col-span-1">
                     <div className="grid grid-rows-1 grid-flow-col gap-2">
                       <p className="col-span-1 text-4xl text-kmuttColor-800 font-bold">
-                        87
+                        {assetUseable[1]}
                       </p>
                       <p className="col-span-2 text-2xl text-gray-400 font-medium pr-4 pt-1.5">
                         ชิ้น
@@ -302,12 +472,11 @@ export default function Summarize() {
                 onTabChange={(e) => setActiveIndex(e.index)}
               >
                 <TabPanel header="ครุภัณฑ์">
-                  <div className="pt-4"></div>
-                  <div className="grid grid-cols-3 grid-rows-8 gap-8 h-full pl-8 pr-8 pb-8">
+                  <div className="grid grid-cols-1 grid-rows-8 gap-8 h-full pl-8 pr-8 pb-8">
                     <div className="col-span-2 row-span-8 gap-2 w-full h-full">
                       <div className="grid grid-cols-1 grid-rows-8 w-full h-full">
                         <div className="relative p-5 col-span-1 row-span-1 w-full flex justify-center">
-                          <div className="card flex justify-content-center w-full">
+                          <div className="card flex justify-content-center w-4/5 h-full">
                             <Dropdown
                               value={selectedAsset}
                               onChange={(e) => setSelectedAsset(e.value)}
@@ -318,7 +487,6 @@ export default function Summarize() {
                             />
                           </div>
                         </div>
-                        <div className="pt-8"></div>
                         <div className="col-span-1 row-span-7 flex justify-center items-center w-full h-full">
                           <div className="flex justify-center items-center pr-3 pl-3 w-full h-full pb-3">
                             <div className="w-full flex justify-center items-center">
@@ -327,50 +495,9 @@ export default function Summarize() {
                                   type="line"
                                   data={chartData}
                                   options={chartOptions}
-                                  style={{ width: '600px', height: '300px' }}
+                                  style={{ width: '700px', height: '400px' }}
                                 />
                               </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="col-span-1 row-span-8 w-full h-full">
-                      <div className="row fthight">
-                        <div className="col-sm-8  mt-3">
-                          <div className="pt-5"></div>
-                          <p class="w-full col-span-1 text-2xl text-orange-500 font-medium flex justify-center">
-                            เริ่มต้น
-                          </p>
-                          <div className="row mb-4 w-full">
-                            <div className="col-sm-5 w-full">
-                              <p class="text-sm text-gray-600 font-medium">
-                                เลือกวันที่
-                              </p>
-                              <div className="h-4"></div>
-                              <CalendarStart />
-                            </div>
-                          </div>
-                          <p class="w-full col-span-1 text-2xl text-orange-500 font-medium flex justify-center">
-                            ถึง
-                          </p>
-                          <div className="row mb-4 w-full">
-                            <div className="col-sm-5 w-full">
-                              <p class="text-sm text-gray-600 font-medium">
-                                เลือกวันที่
-                              </p>
-                              <div className="h-4"></div>
-                              <CalendarEnd />
-                            </div>
-                          </div>
-                          <div className="pt-16"></div>
-                          <div className="row mb-4 bg-orange-400 rounded-md p-2">
-                            <label className="col-sm-2 col-form-label"></label>
-                            <div className="col-sm-5">
-                              <button className="w-full btn btn-success flex justify-center text-white">
-                                {' '}
-                                ค้นหา{' '}
-                              </button>
                             </div>
                           </div>
                         </div>
@@ -397,34 +524,22 @@ export default function Summarize() {
                         <div className="col-span-1 row-span-7 flex justify-center items-center w-full h-full">
                           <div className="flex justify-center items-center pr-3 pl-3 w-full h-full">
                             <div className="min-w-1/4 flex justify-center items-center">
-                              <PieChart chartData={statusData} />
+                              <div className="card">
+                                <Chart
+                                  type="bar"
+                                  data={chartData2}
+                                  options={chartOptions2}
+                                  style={{ width: '700px', height: '400px' }}
+                                />
+                              </div>
                             </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                    <div className="col-span-1 row-span-1 grid grid-cols-10 grid-rows-1 gap-4 w-full h-full">
-                      <div className="col-span-1"></div>
-                      <p className="col-span-1 pt-3 pl-1 text-sm text-gray-600 font-medium flex justify-center">
-                        ปีงบประมาณ
-                      </p>
-                      <div className="relative col-span-7">
-                        <div className="card flex justify-content-center w-full h-11/12">
-                          <Dropdown
-                            value={selectedYear}
-                            onChange={(e) => setSelectedYear(e.value)}
-                            options={Year}
-                            optionLabel="name"
-                            placeholder={selectedYear}
-                            className="p-invalid w-full md:w-14rem"
-                          />
-                        </div>
-                      </div>
-                      <div className="col-span-1"></div>
-                    </div>
                   </div>
                 </TabPanel>
-                <TabPanel header="บุคลากร">
+                {/*<TabPanel header="บุคลากร">
                   <div className="grid grid-cols-2 grid-rows-8 gap-8 h-full pl-8 pr-8 pb-8">
                     <div className="col-span-2 row-span-8 gap-2 w-full h-full">
                       <div className="grid grid-cols-1 grid-rows-8 w-full h-full">
@@ -451,7 +566,7 @@ export default function Summarize() {
                       </div>
                     </div>
                   </div>
-                </TabPanel>
+                </TabPanel>*/}
               </TabView>
             </div>
           </div>

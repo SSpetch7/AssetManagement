@@ -3,6 +3,14 @@ export const ChartService = {
   getNumberAsset() {
     return axios.get('/chart/number/asset').then((res) => res.data.data);
   },
+  getNumberAllAsset() {
+    return axios.get('/chart/number/allasset').then((res) => res.data.data);
+  },
+  getNumberUseAble() {
+    return axios
+      .get('/chart/number/asset/useable')
+      .then((res) => res.data.data);
+  },
   getAssetYear() {
     return axios.get('/chart/year/asset').then((res) => res.data.data);
   },

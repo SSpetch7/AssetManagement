@@ -7,7 +7,7 @@ export { default as Edit } from './assetManage/edit';
 export { default as CheckAsset } from './checkAsset/index';
 export { default as Rearch } from './search/index';
 export { default as Report } from './report/index';
-export { default as Dashboard } from './dashboard/index2';
+export { default as Dashboard } from './dashboard';
 export { default as Borrowed } from './borrow/borrowed';
 export { default as BorrowHistory } from './borrow/history';
 export { default as Borrower } from './borrow/borrower';

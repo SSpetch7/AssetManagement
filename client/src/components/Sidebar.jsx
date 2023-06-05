@@ -23,14 +23,11 @@ const Sidebar = () => {
       setActiveMenu(false);
     }
   };
-  
 
   const activeLink =
     'flex items-center  gap-5 pl-4 pt-3 pb-2.5 rounded-lg  text-white  text-md m-2';
   const normalLink =
     'flex items-center  gap-5 pl-4  pt-3 pb-2.5 rounded-lg text-md text-gray-500  hover:bg-light-gray m-2';
-
-  
 
   return (
     <div className="w-64  labtop:w-50 ml-3 h-screen md:overflow-hidden  overflow-auto md:hover:overflow-auto pb-10">
@@ -58,7 +55,6 @@ const Sidebar = () => {
               </Tooltip>
             </div>
           </div>
-       
 
           <div className="mt-10">
             <NavLink
@@ -81,7 +77,7 @@ const Sidebar = () => {
                 <SubMenu data={menu} />
               </div>
             ))}
-            <NavLink
+            {/* <NavLink
               to="/checkAsset"
               onClick={handleCloseSidebar}
               style={({ isActive }) => ({
@@ -92,7 +88,7 @@ const Sidebar = () => {
               <PublishedWithChangesIcon />
               <span className="text-xl font-bold ">ตรวจเช็คครุภัณฑ์</span>
             </NavLink>
-      
+       */}
             <NavLink
               to="/report"
               onClick={handleCloseSidebar}
@@ -115,14 +111,14 @@ const Sidebar = () => {
               <InsertChartIcon />
               <span className="text-xl font-bold ">กราฟสรุปผล</span>
             </NavLink>
-            {borrowMenu?.map((menu) => (
+            {/* {borrowMenu?.map((menu) => (
               <div
                 key={menu.name}
                 className="link flex flex-col pl-4 m-2 pb-2 pt-2   gap-1 text-gray-500"
               >
                 <SubMenu data={menu} />
               </div>
-            ))}
+            ))} */}
             <NavLink
               to="/admin"
               onClick={handleCloseSidebar}
@@ -134,11 +130,10 @@ const Sidebar = () => {
               <AdminPanelSettingsIcon />
               <span className="text-xl font-bold ">ผู้ดูแล</span>
             </NavLink>
-        
-          </div> 
-        </> 
-      )} 
-    </div> 
+          </div>
+        </>
+      )}
+    </div>
   );
 };
 

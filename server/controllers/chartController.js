@@ -1,6 +1,23 @@
 import chartModel from '../models/chartModel.js';
 
 const numController = {
+  getNumberAllAssetList: (req, res) => {
+    chartModel.getNumberAllAsset((err, assets) => {
+      if (err) {
+        res.send(err);
+      }
+      res.json({ data: assets });
+    });
+  },
+  getNumberUseableAssetList: (req, res) => {
+    chartModel.getNumberAllUseable((err, assets) => {
+      if (err) {
+        res.send(err);
+      }
+      res.json({ data: assets });
+    });
+  },
+
   getNumberAssetList: (req, res) => {
     chartModel.getNumberAsset((err, assets) => {
       if (err) {
@@ -69,7 +86,7 @@ const statusController = {
         res.send(err);
       } else {
         console.log(assets);
-        console.log("assets5555555555555555555");
+        console.log('assets5555555555555555555');
         res.json({ data: assets });
       }
     });
