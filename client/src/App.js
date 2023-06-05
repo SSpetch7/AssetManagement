@@ -37,6 +37,7 @@ import 'primereact/resources/themes/tailwind-light/theme.css';
 import 'primeicons/primeicons.css';
 import ForgotPassword from 'pages/forgotpassword';
 import ResetPassword from 'pages/resetpassword';
+import PrivateRoute from 'pages/api/PrivateRoute';
 
 const Layout = ({ children }) => {
   const { activeMenu } = useStateContext();
@@ -201,6 +202,7 @@ const App = () => {
               </Layout>
             }
           />
+          
         </Routes>
       </Router>
     </div>

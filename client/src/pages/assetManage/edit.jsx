@@ -18,6 +18,8 @@ import { Calendar } from 'primereact/calendar';
 import { dataTable } from '../../assets/dummy';
 import BorrowButton from '../../components/BorrowButton';
 import AssetFilter from '../../components/AssetFilter';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import {
   AssetService,
   AssetOptionService,
@@ -414,6 +416,20 @@ export default function AllAsset() {
       life: 3000,
     });
   };
+
+  const navigate = useNavigate()
+  useEffect(() => {
+    axios
+      .get('http://localhost:5000')
+      .then((res) => {
+        if (res.data.Status === 'Success') {
+          navigate('/AssetManage/edit');
+        } else {
+          navigate('/home');
+        }
+      })
+      .then((err) => console.log(err))
+  }, []);
 
   const actionBodyTemplate = (rowData) => {
     return (

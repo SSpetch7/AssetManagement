@@ -142,15 +142,8 @@ const Navbar = () => {
             icon={<MenuIcon />}
           />
           <div className="flex pr-4">
-            <Link to="/login" className="pt-2 w-16">
-              <Button
-                className="p-button-info"
-                text
-                style={{ color: 'var(--surface-900-text)' }}
-                onClick={() => setLoginOn((loginOn) => !loginOn)}
-              >
-                <i className="pi pi-user" style={{ fontSize: '1.5rem' }}></i>
-              </Button>
+            <Link to="/login" className="pt-2 w-24">
+              <button class="rounded-full border-2 p-2 px-5 bg-green-500 text-white text-lg" onClick={() => setLoginOn((loginOn) => !loginOn)}>เข้าสู่ระบบ</button>
             </Link>
           </div>
         </div>

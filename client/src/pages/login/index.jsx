@@ -24,6 +24,20 @@ export default function Login() {
         })
         .then(err  => console.log(err));
       }
+
+  useEffect(() => {
+    axios
+      .get('http://localhost:5000')
+      .then((res) => {
+        if (res.data.Status === 'Success') {
+          navigate('/home');
+        } else {
+          navigate('/login');
+        }
+      })
+      .then((err) => console.log(err))
+  }, []);
+
       const {
         activeMenu,
         setActiveMenu,

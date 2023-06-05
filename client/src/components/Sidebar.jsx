@@ -4,6 +4,7 @@ import Logo from '../assets/logo.png';
 import CloseIcon from '@mui/icons-material/Close';
 import { menus } from '../assets/menus';
 import { borrowMenu } from '../assets/menus';
+import { userMenus } from '../assets/menus';
 import SubMenu from './sidebar/Submenu';
 import { Tooltip } from '@mui/material';
 import { useStateContext } from '../contexts/ContextProvider';
@@ -42,7 +43,7 @@ const Sidebar = () => {
           setAuth(false);
         }
       })
-      .then((err) => console.log(err));
+      .then((err) => console.log(err))
   }, []);
 
   const activeLink =
@@ -202,7 +203,7 @@ const Sidebar = () => {
               <span className="text-xl font-bold ">หน้าแรก</span>
             </NavLink>
 
-            {menus?.map((menu) => (
+            {userMenus?.map((menu) => (
               <div
                 key={menu.name}
                 className="link flex flex-col pl-4 m-2 pb-2 pt-2   gap-1 text-gray-500"

@@ -43,3 +43,15 @@ export const borrowMenu = [
     ],
   },
 ];
+
+export const userMenus = [
+  {
+    name: 'asset',
+    nameTh: 'ครุภัณฑ์',
+    icon: DevicesIcon,
+    menus: [
+      { name: 'allAsset', nameTh: 'ครุภัณฑ์ทั้งหมด' },
+      { name: 'eachRoom', nameTh: 'ครุภัณฑ์ตามห้อง' },
+    ],
+  },
+];

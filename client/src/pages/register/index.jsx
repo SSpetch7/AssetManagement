@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import loginImg from "assets/loginlogo.png";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios"
@@ -23,6 +23,19 @@ export default function Register() {
         })
         .then(err  => console.log(err));
       }
+
+      useEffect(() => {
+        axios
+          .get('http://localhost:5000')
+          .then((res) => {
+            if (res.data.Status === 'Success') {
+              navigate('/home');
+            } else {
+              navigate('/register');
+            }
+          })
+          .then((err) => console.log(err))
+      }, []);
 
   return (
     <div className="grid grid-cols-1 grid-rows-3 h-screen w-full bg-gray-100">
