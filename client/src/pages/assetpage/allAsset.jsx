@@ -786,7 +786,7 @@ export default function AllAsset() {
             <InputTextarea
               id="description"
               disabled
-              value={product.detail}
+              value={asset.detail}
               required
               rows={3}
               cols={20}

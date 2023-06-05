@@ -776,8 +776,8 @@ export default function Remove() {
               </label>
               <InputTextarea
                 id="description"
-                value={product.description}
-                onChange={(e) => onInputChange(e, 'description')}
+                value={asset.detail}
+                onChange={(e) => onInputChange(e, 'detail')}
                 required
                 rows={3}
                 cols={20}
@@ -804,8 +804,8 @@ export default function Remove() {
               </label>
               <InputTextarea
                 id="description"
-                value={product.description}
-                onChange={(e) => onInputChange(e, 'description')}
+                value={asset.detail}
+                onChange={(e) => onInputChange(e, 'detail')}
                 required
                 rows={3}
                 cols={20}
@@ -842,8 +842,8 @@ export default function Remove() {
               </label>
               <InputTextarea
                 id="description"
-                value={product.description}
-                onChange={(e) => onInputChange(e, 'description')}
+                value={asset.detail}
+                onChange={(e) => onInputChange(e, 'detail')}
                 required
                 rows={3}
                 cols={20}

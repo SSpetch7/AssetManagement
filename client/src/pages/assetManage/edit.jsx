@@ -102,6 +102,8 @@ export default function AllAsset() {
   const [assetType, setAssetType] = useState(null);
   const [assetComType, setAssetComType] = useState(null);
 
+  const [subDisable, setSubDisable] = useState(true);
+
   const [editAssetDialog, setEditAssetDialog] = useState(false);
   const [showAssetDialog, setShowAssetDialog] = useState(false);
 
@@ -197,18 +199,23 @@ export default function AllAsset() {
       switch (e.value) {
         case 'สำนักงาน':
           _asset[`cate_id`] = 1;
+          setSubDisable(true);
           break;
         case 'การศึกษา':
           _asset[`cate_id`] = 2;
+          setSubDisable(true);
           break;
         case 'คอมพิวเตอร์':
           _asset[`cate_id`] = 3;
+          setSubDisable(false);
           break;
         case 'อาคารสำนักงาน':
           _asset[`cate_id`] = 4;
+          setSubDisable(true);
           break;
         case 'อื่น ๆ ':
           _asset[`cate_id`] = 5;
+          setSubDisable(true);
           break;
       }
     }
@@ -265,6 +272,7 @@ export default function AllAsset() {
     console.log(assetLstOrder + '');
     setAsset(emptydataTable);
     setSubmitted(false);
+    setSubDisable(true);
     setNewAssetDialog(true);
   };
 
@@ -307,9 +315,12 @@ export default function AllAsset() {
       console.log(_asset);
       setAsset(_asset);
       setAssetCreateNew(_asset);
+      setAssetCreateNew('');
       setNewAssetDialog(false);
       setAsset(emptydataTable);
     }
+    setImages([]);
+    setImageURLs([]);
     console.log('assetCreateNew');
     console.log(assetCreateNew);
   };
@@ -437,6 +448,7 @@ export default function AllAsset() {
   const editAsset = (rowData) => {
     setAsset({ ...rowData });
     console.log(asset.asset_stock);
+    setSubDisable(true);
     setEditAssetDialog(true);
   };
 
@@ -735,7 +747,7 @@ export default function AllAsset() {
         // footer={productDialogFooter}
         onHide={hideDialog}
       >
-        <div>
+        {/* <div>
           <h2>Upload Images</h2>
           <div className="server-message"></div>
         </div>
@@ -743,7 +755,8 @@ export default function AllAsset() {
           <p>
             Drag & Drop images here to <span className="borwse">Browse</span>
           </p>
-        </div>
+        </div> */}
+
         <div className="card p-4">
           <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
           <div className="grid grid-cols-4 gap-4">
@@ -880,7 +893,8 @@ export default function AllAsset() {
             <InputTextarea
               id="description"
               disabled
-              value={product.detail}
+              //   placeholder={asset.detail}
+              value={asset.detail}
               required
               rows={3}
               cols={20}
@@ -900,6 +914,7 @@ export default function AllAsset() {
         footer={newAssetDialogFooter}
         onHide={hideDialog}
       >
+        {/*  
         <div className="card p-4">
           <div class="md:flex">
             <div class="w-full">
@@ -958,14 +973,14 @@ export default function AllAsset() {
               </div>
             </div>
           </div>
-          {/* <form onSubmit={formHandler}>
+           <form onSubmit={formHandler}>
             <input type="file" className="input" />
             <button type="submit">Upload</button>
           </form>{' '}
           <hr />
-          <h2>Uploading done {progress}%</h2> */}
+          <h2>Uploading done {progress}%</h2> 
         </div>
-
+*/}
         <div className="card p-4">
           <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
           <div className="grid grid-cols-4 gap-4">
@@ -1124,6 +1139,7 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
+                  disabled={subDisable}
                   value={asset.subcategory}
                   placeholder={asset.subcategory}
                   onChange={(e) => handleOptionChange(e, 'subcategory')}
@@ -1142,8 +1158,8 @@ export default function AllAsset() {
             </label>
             <InputTextarea
               id="description"
-              value={product.description}
-              onChange={(e) => onInputChange(e, 'description')}
+              value={asset.detail}
+              onChange={(e) => onInputChange(e, 'detail')}
               required
               rows={3}
               cols={20}
@@ -1163,7 +1179,7 @@ export default function AllAsset() {
         footer={upDateAssetDialogFooter}
         onHide={hideDialog}
       >
-        <div class="md:flex">
+        {/* <div class="md:flex">
           <div class="w-full">
             <div class="p-3">
               <div class="mb-2">
@@ -1203,7 +1219,7 @@ export default function AllAsset() {
               </form>
             </div>
           </div>
-        </div>
+        </div> */}
 
         <div className="card p-4">
           <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
@@ -1358,6 +1374,7 @@ export default function AllAsset() {
               </label>
               <div className="card flex justify-content-center">
                 <Dropdown
+                  disabled={subDisable}
                   value={asset.subcategory}
                   placeholder={asset.subcategory}
                   onChange={(e) => handleOptionChange(e, 'subcategory')}
@@ -1376,8 +1393,8 @@ export default function AllAsset() {
             </label>
             <InputTextarea
               id="description"
-              value={product.description}
-              onChange={(e) => onInputChange(e, 'description')}
+              value={asset.detail}
+              onChange={(e) => onInputChange(e, 'detail')}
               required
               rows={3}
               cols={20}
