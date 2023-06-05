@@ -24,7 +24,7 @@ export const overviewAsset = [
       },
       {
         icon: <BuildCircleIcon sx={{ fontSize: 35 }} />,
-        title: 'จำนวนที่ยืมได้',
+        title: 'จำนวนที่รอซ่อม',
         iconColor: '#FFA048',
         number: 12,
       },
@@ -47,7 +47,7 @@ export const overviewAsset = [
       },
       {
         icon: <BuildCircleIcon sx={{ fontSize: 35 }} />,
-        title: 'จำนวนที่ยืมได้',
+        title: 'จำนวนที่รอซ่อม',
         iconColor: '#FFA048',
         number: 12,
       },
