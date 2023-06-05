@@ -120,7 +120,7 @@ export default function AllAsset() {
   const [images, setImages] = useState([]);
   const [imageURLs, setImageURLs] = useState([]);
 
-  const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
+  const [statuses] = useState(['ใช้งานได้', 'รอซ่อม', 'สิ้นสภาพ']);
   const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
 
   useEffect(() => {
