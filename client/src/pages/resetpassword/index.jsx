@@ -1,11 +1,13 @@
 import React, { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import pwdlogo from "assets/pwdlogo.png";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [resetStatus, setResetStatus] = useState("");
+  const navigate = useNavigate();
+
 
 const [searchParams] = useSearchParams();
 
@@ -23,13 +25,15 @@ const [searchParams] = useSearchParams();
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          token: searchParams.get("token"), // Replace with the actual reset token received from the URL parameter
+          token: searchParams.get("token"), 
           newPassword: password,
         }),
       });
 
       if (response.ok) {
         setResetStatus("Password reset successful");
+        navigate('/login');
+        
       } else {
         setResetStatus("Failed to reset password");
       }

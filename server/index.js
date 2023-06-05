@@ -66,12 +66,13 @@ const verifyUser = (req, res, next) => {
         return res.json({ Error: 'Token is not correct' });
       } else {
         req.admin_username = decoded.admin_username;
-        adminName;
+        req.role = decoded.role;
         next();
       }
     });
   }
 };
+
 
 const transporter = nodemailer.createTransport({
   service: 'Gmail', // Replace with your email service provider's SMTP host
@@ -160,19 +161,40 @@ app.post('/reset-password', async (req, res) => {
 });
 
 app.get('/', verifyUser, (req, res) => {
-  return res.json({ Status: 'Success', admin_username: req.admin_username });
+  return res.json({ Status: 'Success', admin_username: req.admin_username, role : req.role });
 });
 
 app.post('/register', (req, res) => {
-  const sql =
-    'INSERT INTO admin (admin_username, admin_email, admin_password) VALUES(?)';
-  bcrypt.hash(req.body.admin_password.toString(), salt, (err, hash) => {
-    if (err) return res.json({ Error: 'Error for hassing password' });
-    const values = [req.body.admin_username, req.body.admin_email, hash];
-    connection.query(sql, [values], (err, result) => {
+  const email = req.body.admin_email;
+  
+  const emailCheckQuery = 'SELECT admin_email FROM admin WHERE admin_email = ?';
+  connection.query(emailCheckQuery, [email], (err, rows) => {
+    if (err) {
       console.log(err);
-      if (err) return res.json({ Error: 'Inserting data Error in server' });
-      return res.json({ Status: 'Success' });
+      return res.json({ Error: 'Error in server' });
+    }
+    
+    if (rows.length > 0) {
+      return res.json({ Error: 'Email already exists' });
+    }
+  
+    const sql =
+      'INSERT INTO admin (admin_username, admin_email, admin_password) VALUES(?)';
+    bcrypt.hash(req.body.admin_password.toString(), salt, (err, hash) => {
+      if (err) {
+        console.log(err);
+        return res.json({ Error: 'Error hashing password' });
+      }
+      
+      const values = [req.body.admin_username, req.body.admin_email, hash];
+      connection.query(sql, [values], (err, result) => {
+        if (err) {
+          console.log(err);
+          return res.json({ Error: 'Error inserting data in server' });
+        }
+        
+        return res.json({ Status: 'Success' });
+      });
     });
   });
 });
@@ -189,7 +211,8 @@ app.post('/login', (req, res) => {
           if (err) return res.json({ Error: 'Password compare error' });
           if (response) {
             const admin_username = data[0].admin_username;
-            const token = jwt.sign({ admin_username }, 'jwt-secret-key', {
+            const role = data[0].role;
+            const token = jwt.sign({ admin_username, role }, 'jwt-secret-key', {
               expiresIn: '30d',
             });
             res.cookie('token', token);

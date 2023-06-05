@@ -11,6 +11,8 @@ import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
 import { SelectButton } from 'primereact/selectbutton';
 import { ToggleButton } from 'primereact/togglebutton';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import {
   AssetService,
   AssetOptionService,
@@ -455,6 +457,20 @@ export default function Remove() {
       life: 3000,
     });
   };
+
+  const navigate = useNavigate()
+  useEffect(() => {
+    axios
+      .get('http://localhost:5000')
+      .then((res) => {
+        if (res.data.Status === 'Success') {
+          navigate('/AssetManage/remove');
+        } else {
+          navigate('/home');
+        }
+      })
+      .then((err) => console.log(err))
+  }, []);
 
   const header = (
     <div className="flex  flex-wrap gap-2 align-items-center justify-between">

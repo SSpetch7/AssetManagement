@@ -18,6 +18,8 @@ import Userinfo from 'components/UserInfo';
 import { Image } from 'primereact/image';
 import ChangeDataAdmin from 'components/ChangeDataAdmin';
 import { AdminService } from '../../service/AdminService';
+import { Link, useNavigate } from "react-router-dom";
+import axios from 'axios';
 
 export default function Admin() {
   let emptyAdminTable = {
@@ -255,6 +257,38 @@ export default function Admin() {
     }
   };
 
+  const [auth, setAuth] = useState(false);
+  const [role, setRole] = useState('');
+
+  axios.defaults.withCredentials = true;
+  useEffect(() => {
+    axios
+      .get('http://localhost:5000')
+      .then((res) => {
+        if (res.data.Status === 'Success') {
+          setAuth(true);
+          setRole(res.data.role);
+        } else {
+          setAuth(false);
+        }
+      })
+      .then((err) => console.log(err))
+  }, []);
+
+  const navigate = useNavigate()
+  useEffect(() => {
+    axios
+      .get('http://localhost:5000')
+      .then((res) => {
+        if (res.data.Status === 'Success') {
+          navigate('/admin');
+        } else {
+          navigate('/home');
+        }
+      })
+      .then((err) => console.log(err))
+  }, []);
+
 
   const header = (
     <div className="flex  flex-wrap gap-2 align-items-center justify-between">
@@ -270,9 +304,11 @@ export default function Admin() {
           />
         </span>
       </div>
+      { role === 'Head_Admin' && (
       <div className="flex gap-2">
         <AddAdmin />
       </div>
+      )} 
     </div>
   );
 

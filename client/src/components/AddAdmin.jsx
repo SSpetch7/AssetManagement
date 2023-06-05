@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import { Image } from 'primereact/image';
@@ -14,14 +14,17 @@ export default function AddUser() {
   const [isValidEmail, setIsValidEmail] = useState(true);
   const [visible, setVisible] = useState(false);
 
-  //   useEffect(() => {
-  //     AdminService.createAdmin(newAdmin);
-  //   }, []);
-
   function validateEmail(email) {
     const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/;
     return emailRegex.test(email);
   }
+
+  const [resetSent, setResetSent] = useState(false);
+
+  const current = new Date();
+  const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
+
+  
 
   const handleInputChange = (e) => {
     const inputValue = e.target.value;
@@ -48,6 +51,7 @@ export default function AddUser() {
   const saveAdmin = () => {
     setSubmitted(true);
     AdminService.createAdmin(newAdmin);
+    setResetSent(true);
     setVisible(false);
   };
 
@@ -65,7 +69,9 @@ export default function AddUser() {
         className="p-Testbutton"
         icon="pi pi-check"
         // text
-        onClick={saveAdmin}
+        onClick={(e) => { 
+          saveAdmin()
+       }}
       />
     </div>
   );
@@ -80,6 +86,9 @@ export default function AddUser() {
   };
 
   return (
+    <>
+    {!resetSent ? (
+    <>
     <div className="card flex justify-content-center">
       <Button
         className="p-Addbutton"
@@ -120,7 +129,7 @@ export default function AddUser() {
 
           <div className="content-evenly mt-4 ">
             <div className="flex justify-evenly py-4 ">
-              <div className="flex mb-2 lg:col-6 lg:mb-0 field col-start-1">
+              <div className="mb-2 lg:col-6 lg:mb-0 field col-start-1">
                 <div className="p-input-icon-left">
                   <i className="pi pi-user" />
                   <InputText
@@ -135,17 +144,19 @@ export default function AddUser() {
                   )}
                 </div>
               </div>
+              
+             
               <div className="mb-2 lg:col-6 lg:mb-0">
                 <span className="p-input-icon-left">
                   <i className="pi pi-envelope" />
                   <InputText
+                    className="inputForm"
                     placeholder="Email"
                     id="email"
                     value={newAdmin.admin_email}
-                    onChange={(e) => onInputChange(e, 'admin_email')}
-                    className={classNames({
-                      'p-invalid': submitted && !newAdmin.admin_email,
-                    })}
+                    onChange={(e) => {onInputChange(e, 'admin_email')
+                  
+                  }}
                   />
                   {submitted && !newAdmin.admin_email && (
                     <small className="p-error">Email is required.</small>
@@ -170,7 +181,7 @@ export default function AddUser() {
                   <i className="pi pi-calendar" />
                   <InputText
                     disabled
-                    placeholder="01/03/2566"
+                    placeholder={date}
                     className="inputForm text-kmuttColor-800"
                   />
                 </span>
@@ -180,5 +191,10 @@ export default function AddUser() {
         </div>
       </Dialog>
     </div>
+    </>
+    ) : (
+      <h1>Password reset email sent. Please check your email.</h1>
+    )}
+    </>
   );
 }
