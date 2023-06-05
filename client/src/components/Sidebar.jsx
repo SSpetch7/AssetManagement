@@ -138,14 +138,6 @@ const Sidebar = () => {
                   <InsertChartIcon />
                   <span className="text-xl font-bold ">กราฟสรุปผล</span>
                 </NavLink>
-                {/* {borrowMenu?.map((menu) => (
-              <div
-                key={menu.name}
-                className="link flex flex-col pl-4 m-2 pb-2 pt-2   gap-1 text-gray-500"
-              >
-                <SubMenu data={menu} />
-              </div>
-            ))} */}
                 <NavLink
                   to="/admin"
                   onClick={handleCloseSidebar}
@@ -240,14 +232,14 @@ const Sidebar = () => {
                   <InsertChartIcon />
                   <span className="text-xl font-bold ">กราฟสรุปผล</span>
                 </NavLink>
-                {borrowMenu?.map((menu) => (
+                {/* {borrowMenu?.map((menu) => (
                   <div
                     key={menu.name}
                     className="link flex flex-col pl-4 m-2 pb-2 pt-2   gap-1 text-gray-500"
                   >
                     <SubMenu data={menu} />
                   </div>
-                ))}
+                ))} */}
               </div>
             </>
           )}

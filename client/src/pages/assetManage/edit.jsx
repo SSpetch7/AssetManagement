@@ -19,8 +19,6 @@ import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
 import { Calendar } from 'primereact/calendar';
 import { dataTable } from '../../assets/dummy';
-import BorrowButton from '../../components/BorrowButton';
-import AssetFilter from '../../components/AssetFilter';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
