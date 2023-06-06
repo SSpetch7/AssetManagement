@@ -95,17 +95,6 @@ export default function AllAsset() {
 
   useEffect(() => {
     AssetService.getAllAsset().then((data) => setAssets(data));
-    NumService.getLstOrderAsset().then((data) => setAssetLstOrder(data));
-    // AssetService.getAssetByID().then((data) => setAssetID(data));
-
-    AssetOptionService.getStatusAsset().then((data) => setAssetStatus(data));
-    AssetOptionService.getStockAsset().then((data) => setAssetStock(data));
-    AssetOptionService.getUseableAsset().then((data) => setAssetUseable(data));
-    AssetOptionService.getTypeAsset().then((data) => setAssetType(data));
-    AssetOptionService.getTypeCom().then((data) => setAssetComType(data));
-    console.log(assetLstOrder + ' test oder1');
-    console.log(assets);
-    console.log(assetStatus);
   }, []);
 
   //   edit asset data
@@ -591,7 +580,7 @@ export default function AllAsset() {
         // footer={productDialogFooter}
         onHide={hideDialog}
       >
-        <div className="card p-4">
+        {/* <div className="card p-4">
           <FileUpload
             name="demo[]"
             url={'/api/upload'}
@@ -600,7 +589,7 @@ export default function AllAsset() {
             maxFileSize={1000000}
             emptyTemplate={<p className="m-0">อัพโหลดรูปครุภัณฑ์ที่นี่</p>}
           />
-        </div>
+        </div> */}
 
         <div className="card p-4">
           <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
@@ -661,7 +650,6 @@ export default function AllAsset() {
                 <Dropdown
                   placeholder={asset.asset_stock}
                   disabled
-                  options={assetStock}
                   optionLabel="name"
                   className="w-full md:w-14rem"
                 />
