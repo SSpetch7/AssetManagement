@@ -161,7 +161,7 @@ export default function Summarize() {
   useEffect(() => {
     ChartService.getNumberAllAsset().then((data) => setAssetAll(data));
     ChartService.getNumberUseAble().then((data) => setAssetUseable(data));
-  });
+  }, []);
 
   useEffect(() => {
     console.log(selectedStatus);
