@@ -530,6 +530,7 @@ export default function AllAsset() {
         }
       })
       .then((err) => console.log(err));
+    console.log('http://localhost:5000' + ' one');
   }, []);
 
   const actionBodyTemplate = (rowData) => {

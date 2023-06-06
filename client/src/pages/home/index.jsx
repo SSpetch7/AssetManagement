@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import { overviewAsset, mostActivity, roomAtAsset } from "../../assets/dummy";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import LineChart from "../../assets/chart/lineChart";
-import { UserData } from "../../assets/data/data";
-import { ChartService } from "../../service/ChartService";
-import { Chart } from "primereact/chart";
+import React, { useState, useEffect } from 'react';
+import { overviewAsset, mostActivity, roomAtAsset } from '../../assets/dummy';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import LineChart from '../../assets/chart/lineChart';
+import { UserData } from '../../assets/data/data';
+import { ChartService } from '../../service/ChartService';
+import { Chart } from 'primereact/chart';
 
 const Home = () => {
   const [numberAsset, setNumberAsset] = useState(null);
@@ -13,15 +13,16 @@ const Home = () => {
 
   useEffect(() => {
     const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue("--text-color");
+    const textColor = documentStyle.getPropertyValue('--text-color');
     const textColorSecondary = documentStyle.getPropertyValue(
-      "--text-color-secondary"
+      '--text-color-secondary'
     );
-    const surfaceBorder = documentStyle.getPropertyValue("--surface-border");
+    const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
 
     const fetchData = async () => {
       let data;
       data = await ChartService.getNumberAsset();
+      console.log('fetch data one');
       return data;
     };
 
@@ -32,24 +33,23 @@ const Home = () => {
         labels: data.map((data) => data.cate_name),
         datasets: [
           {
-            label: "Status",
+            label: 'Status',
             data: data.map((data) => data.total_asset),
             backgroundColor: [
-              "rgba(255,0,255,0.4)",
-              "rgba(0,0,255,0.4)",
-              "rgba(0,255,0,0.4)",
-              "rgba(255,130,97,0.4)",
-              "rgba(150,0,0,0.4)",
-              "rgba(150,150,150,0.4)",
+              'rgba(255,0,255,0.4)',
+              'rgba(0,0,255,0.4)',
+              'rgba(0,255,0,0.4)',
+              'rgba(255,130,97,0.4)',
+              'rgba(150,0,0,0.4)',
+              'rgba(150,150,150,0.4)',
             ],
             borderColor: [
-
-              "rgba(255,0,255)",
-              "rgba(0,0,255)",
-              "rgba(0,255,0)",
-              "rgba(255,130,97)",
-              "rgba(150,0,0)",
-              "rgba(150,150,150)",
+              'rgba(255,0,255)',
+              'rgba(0,0,255)',
+              'rgba(0,255,0)',
+              'rgba(255,130,97)',
+              'rgba(150,0,0)',
+              'rgba(150,150,150)',
             ],
             borderWidth: 2,
           },
@@ -96,7 +96,7 @@ const Home = () => {
             },
             title: {
               display: true,
-              text: "จำนวนครุภัณฑ์ทั้งหมด",
+              text: 'จำนวนครุภัณฑ์ทั้งหมด',
             },
           },
         },
@@ -105,6 +105,7 @@ const Home = () => {
       setChartData(chartData);
       setChartOptions(chartOptions);
     });
+    console.log('graph one requrest');
   }, []);
 
   const [userData, setUserData] = useState({
@@ -113,14 +114,14 @@ const Home = () => {
       {
         data: UserData.map((data) => data.totalAmount),
         backgroundColor: [
-          "rgba(0,0,0)",
-          "rgba(75,192,192,1)",
-          "#ecf0f1",
-          "#f3ba2f",
-          "#2a71d0",
-          "rgba(225,75,225,1)",
+          'rgba(0,0,0)',
+          'rgba(75,192,192,1)',
+          '#ecf0f1',
+          '#f3ba2f',
+          '#2a71d0',
+          'rgba(225,75,225,1)',
         ],
-        borderColor: "black",
+        borderColor: 'black',
         borderWidth: 2,
         tension: 0.4,
       },
@@ -191,7 +192,7 @@ const Home = () => {
               type="bar"
               data={chartData}
               options={chartOptions}
-              style={{ width: "1000px", height: "500px" }}
+              style={{ width: '1000px', height: '500px' }}
             />
           </div>
         </div>
