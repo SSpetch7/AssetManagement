@@ -122,6 +122,7 @@ export default function AllAsset() {
   const [images, setImages] = useState([]);
   const [imageURLs, setImageURLs] = useState([]);
 
+  const [stock] = useState(['มีให้ตรวจสอบ', 'ไม่มีให้ตรวจสอบ']);
   const [statuses] = useState(['ใช้งานได้', 'รอซ่อม', 'สิ้นสภาพ']);
   const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
 
@@ -1329,7 +1330,7 @@ export default function AllAsset() {
                   value={asset.asset_stock}
                   placeholder={asset.asset_stock}
                   onChange={(e) => handleOptionChange(e, 'asset_stock')}
-                  options={assetStock}
+                  // options={assetStock}
                   //   optionLabel="name"
                   className="w-full md:w-14rem"
                 />
@@ -1341,7 +1342,7 @@ export default function AllAsset() {
                   สภาพ
                 </label>
                 <div className="card flex justify-content-center">
-                  <Dropdown
+                  {/* <Dropdown
                     id="asset_status"
                     value={asset.asset_status}
                     placeholder={asset.asset_status}
@@ -1349,7 +1350,7 @@ export default function AllAsset() {
                     options={assetStatus}
                     // optionLabel="name"
                     className="w-full md:w-14rem"
-                  />
+                  /> */}
                 </div>
               </div>
             </div>
@@ -1358,7 +1359,7 @@ export default function AllAsset() {
                 การใช้งาน
               </label>
               <div className="card flex justify-content-center">
-                <Dropdown
+                {/* <Dropdown
                   id="asset_useable"
                   value={asset.asset_useable}
                   placeholder={asset.asset_useable}
@@ -1366,7 +1367,7 @@ export default function AllAsset() {
                   options={assetUseable}
                   //   optionLabel="name"
                   className="w-full md:w-14rem"
-                />
+                /> */}
               </div>
             </div>
 
@@ -1375,14 +1376,14 @@ export default function AllAsset() {
                 ประเภทครุภัณฑ์
               </label>
               <div className="card flex justify-content-center">
-                <Dropdown
+                {/* <Dropdown
                   value={asset.category}
                   placeholder={asset.category}
                   onChange={(e) => handleOptionChange(e, 'category')}
                   options={assetType}
                   //   optionLabel="name"
                   className="w-full md:w-14rem"
-                />
+                /> */}
               </div>
             </div>
             <div className="field">
@@ -1390,14 +1391,14 @@ export default function AllAsset() {
                 ประเภทครุภัณฑ์คอมพิวเตอร์
               </label>
               <div className="card flex justify-content-center">
-                <Dropdown
+                {/* <Dropdown
                   disabled={subDisable}
                   value={asset.subcategory}
                   placeholder={asset.subcategory}
                   onChange={(e) => handleOptionChange(e, 'subcategory')}
                   options={assetComType}
                   className="w-full md:w-14rem"
-                />
+                /> */}
               </div>
             </div>
           </div>
