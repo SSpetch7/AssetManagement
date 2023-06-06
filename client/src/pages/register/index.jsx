@@ -58,7 +58,7 @@ export default function Register() {
             <label>อีเมล</label>
             <input
               className="rounded-lg mt-2 p-2 border-2 focus:bg-orange-100 focus:outline-orange-300"
-              type="text" name="admin_email" onChange={e => setValues({...values, admin_email:e.target.value})}
+              type="email" name="admin_email" onChange={e => setValues({...values, admin_email:e.target.value})}
             />
           </div>
           <div className="flex flex-col text-gray-500 py-2">

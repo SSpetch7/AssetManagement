@@ -77,6 +77,13 @@ export default function AddUser() {
   );
   const toast = useRef(null);
 
+  const showSuccess = (message) => {
+    toast.current.show({severity:'success', summary: 'Success', detail:'เพิ่มผู้ดูแลสำเร็จ', life: 3000});
+}
+  const showError = () => {
+  toast.current.show({severity:'error', summary: 'Error', detail:'กรุณาเช็คEmailอีกครั้ง', life: 3000});
+}
+
   const onUpload = () => {
     toast.current.show({
       severity: 'info',
@@ -106,6 +113,7 @@ export default function AddUser() {
         footer={footerContent}
       >
         <div className="flex flex-col pt-6">
+        <Toast ref={toast} />
           <div className="flex justify-center p-2">
             <Image
               //   src="https://media.discordapp.net/attachments/949160978145214484/1001939245566533795/unknown.png"
