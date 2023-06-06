@@ -80,7 +80,7 @@ export default function AddUser() {
   const showSuccess = (message) => {
     toast.current.show({severity:'success', summary: 'Success', detail:'เพิ่มผู้ดูแลสำเร็จ', life: 3000});
 }
-  const showError = () => {
+  const showError = (error) => {
   toast.current.show({severity:'error', summary: 'Error', detail:'กรุณาเช็คEmailอีกครั้ง', life: 3000});
 }
 
