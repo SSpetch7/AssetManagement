@@ -14,8 +14,8 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
-import { Calendar } from 'primereact/calendar';
-import { dataTable } from '../../assets/dummy';
+import downloadImages from '../api/DownLoadImage';
+
 import {
   AssetService,
   AssetOptionService,
@@ -61,6 +61,8 @@ export default function AllAsset() {
     asset_useable: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
+
+  const [assetImages, setAssetImages] = useState([]);
 
   // asset new data
   const [newAssetDialog, setNewAssetDialog] = useState(false);
@@ -270,7 +272,16 @@ export default function AllAsset() {
 
   const showAsset = (rowData) => {
     setAsset({ ...rowData });
+    setAssetImages([]);
     setShowAssetDialog(true);
+    downloadImages(rowData.asset_id)
+      .then((imageURLs) => {
+        setAssetImages(imageURLs);
+        console.log(assetImages);
+      })
+      .catch((error) => {
+        console.log('Error retrieving images:', error);
+      });
     AssetService.getAssetByID(rowData.asset_id)
       .then((data) => {
         setAsset(data);
@@ -580,16 +591,29 @@ export default function AllAsset() {
         // footer={productDialogFooter}
         onHide={hideDialog}
       >
-        {/* <div className="card p-4">
-          <FileUpload
-            name="demo[]"
-            url={'/api/upload'}
-            multiple
-            accept="image/*"
-            maxFileSize={1000000}
-            emptyTemplate={<p className="m-0">อัพโหลดรูปครุภัณฑ์ที่นี่</p>}
-          />
-        </div> */}
+        <div className="card p-4">
+          <label htmlFor="name" className="font-bold">
+            รูปภาพครุภัณฑ์
+          </label>
+          <div className="flex justify-center w-full">
+            {assetImages.map((url, index) => (
+              <img
+                key={index}
+                src={url}
+                alt={`Image ${index}`}
+                style={{
+                  overflow: 'hidden',
+                  padding: '4px',
+                  height: '200px',
+                  width: 'auto',
+                  margin: '10px',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                }}
+              />
+            ))}
+          </div>
+        </div>
 
         <div className="card p-4">
           <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>

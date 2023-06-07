@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage';
 import { storage } from '../../firebaseconfig';
-
+import downloadImages from '../api/DownLoadImage';
 import { classNames } from 'primereact/utils';
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
@@ -17,8 +17,6 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Dialog } from 'primereact/dialog';
 import { Tag } from 'primereact/tag';
 import { InputText } from 'primereact/inputtext';
-import { Calendar } from 'primereact/calendar';
-import { dataTable } from '../../assets/dummy';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import {
@@ -26,8 +24,6 @@ import {
   AssetOptionService,
   UpdateAssetService,
 } from '../../service/AssetService';
-import { gridColumnGroupsLookupSelector } from '@mui/x-data-grid';
-import { Hidden } from '@mui/material';
 
 export default function AllAsset() {
   let emptydataTable = {
@@ -85,6 +81,8 @@ export default function AllAsset() {
     asset_useable: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
+
+  const [assetImages, setAssetImages] = useState([]);
 
   // asset new data
   const [newAssetDialog, setNewAssetDialog] = useState(false);
@@ -144,7 +142,6 @@ export default function AllAsset() {
 
     AssetOptionService.getTypeAsset().then((data) => setAssetType(data));
     AssetOptionService.getTypeCom().then((data) => setAssetComType(data));
-    console.log(assetLstOrder + ' test oder1');
   }, []);
 
   useEffect(() => {
@@ -200,14 +197,14 @@ export default function AllAsset() {
         case 'สำนักงาน':
           _asset[`cate_id`] = 1;
           setSubDisable(true);
-          _asset[`sub_id`] = '';
-          _asset[`subcategory`] = '';
+          _asset[`sub_id`] = null;
+          _asset[`subcategory`] = null;
           break;
         case 'การศึกษา':
           _asset[`cate_id`] = 2;
           setSubDisable(true);
-          _asset[`sub_id`] = '';
-          _asset[`subcategory`] = '';
+          _asset[`sub_id`] = null;
+          _asset[`subcategory`] = null;
           break;
         case 'คอมพิวเตอร์':
           _asset[`cate_id`] = 3;
@@ -216,14 +213,14 @@ export default function AllAsset() {
         case 'อาคารสำนักงาน':
           _asset[`cate_id`] = 4;
           setSubDisable(true);
-          _asset[`sub_id`] = '';
-          _asset[`subcategory`] = '';
+          _asset[`sub_id`] = null;
+          _asset[`subcategory`] = null;
           break;
         case 'อื่น ๆ ':
           _asset[`cate_id`] = 5;
           setSubDisable(true);
-          _asset[`sub_id`] = '';
-          _asset[`subcategory`] = '';
+          _asset[`sub_id`] = null;
+          _asset[`subcategory`] = null;
           break;
       }
     }
@@ -240,16 +237,15 @@ export default function AllAsset() {
           break;
       }
     }
-    console.log('e.value');
-    console.log(e.value);
+
     setAsset(_asset);
   };
 
-  const uploadFiles = (files, assetID) => {
+  const uploadImages = (files, assetID) => {
     if (!files || files.length === 0) return;
     let count = 1;
     files.forEach((file) => {
-      const storageRef = ref(storage, `${assetID}_image${count}`);
+      const storageRef = ref(storage, `${assetID}/${assetID}_image${count}`);
       const uploadTask = uploadBytesResumable(storageRef, file);
       count++;
       uploadTask.on(
@@ -262,22 +258,31 @@ export default function AllAsset() {
         },
         (error) => {
           console.log('Upload error:', error);
-        },
-        () => {
-          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-            console.log('uploadTask.snapshot.ref');
-            console.log(uploadTask.snapshot.ref);
-            console.log('File available at:', downloadURL);
-          });
         }
       );
     });
     count = 0;
   };
 
+  //   async function downloadImages(assetID) {
+  //     try {
+  //       const folderRef = ref(storage, `${assetID}`);
+  //       const folderSnapshot = await listAll(folderRef);
+  //       const imageURLs = await Promise.all(
+  //         folderSnapshot.items.map(async (itemRef) => {
+  //           const downloadURL = await getDownloadURL(itemRef);
+  //           return downloadURL;
+  //         })
+  //       );
+  //       return imageURLs;
+  //     } catch (error) {
+  //       console.error('Error getting images from Firebase Storage:', error);
+  //       throw error;
+  //     }
+  //   }
+
   const openNew = () => {
     // NumService.getLstOrderAsset().then((data) => setAssetLstOrder(data));
-    console.log(assetLstOrder + '');
     setAsset(emptydataTable);
     setSubmitted(false);
     setSubDisable(true);
@@ -302,15 +307,32 @@ export default function AllAsset() {
   };
 
   const saveNewAsset = () => {
-    uploadFiles(images, asset.asset_id);
-    let type = 'NEWASSET';
+    let Duplicate = '';
     setSubmitted(true);
     if (asset.asset_name.trim()) {
       let _assets = [...assets];
       let _asset = { ...asset };
 
-      console.log('_asset');
-      console.log(_asset);
+      console.log('done done 2');
+
+      Duplicate = _assets.some((obj) =>
+        Object.values(obj).includes(_asset['asset_id'])
+      );
+      if (Duplicate) {
+        toast.current.show({
+          severity: 'error',
+          summary: 'Error',
+          detail: 'มีหมายเลขครุภัณฑ์นี้อยู่แล้ว',
+          life: 3000,
+        });
+        setNewAssetDialog(false);
+        setImages([]);
+        setImageURLs([]);
+        setAsset(emptydataTable);
+        return null;
+      }
+
+      uploadImages(images, asset.asset_id);
       _assets.push(_asset);
       toast.current.show({
         severity: 'success',
@@ -319,11 +341,10 @@ export default function AllAsset() {
         life: 3000,
       });
       setAssets(_assets);
-      console.log('push');
-      console.log(_asset);
       setAsset(_asset);
+      console.log('_asset new');
+      console.log(_asset);
       setAssetCreateNew(_asset);
-      setAssetCreateNew('');
       setNewAssetDialog(false);
       setAsset(emptydataTable);
     }
@@ -349,13 +370,6 @@ export default function AllAsset() {
           summary: 'Successful',
           detail: 'อัพเดทครุภัณฑ์สำเร็จ',
           life: 1000,
-        });
-      } else if (asset.asset_id === '0') {
-        toast.current.show({
-          severity: 'success',
-          summary: 'Successful',
-          detail: 'Product Created',
-          life: 3000,
         });
       }
       setAssets(_assets);
@@ -462,6 +476,15 @@ export default function AllAsset() {
 
   const showAsset = (rowData) => {
     setAsset({ ...rowData });
+    setAssetImages([]);
+    downloadImages(rowData.asset_id)
+      .then((imageURLs) => {
+        setAssetImages(imageURLs);
+        console.log(assetImages);
+      })
+      .catch((error) => {
+        console.log('Error retrieving images:', error);
+      });
     setShowAssetDialog(true);
     // AssetService.getAssetByID(rowData.asset_id)
     //   .then((data) => {
@@ -770,18 +793,31 @@ export default function AllAsset() {
         // footer={productDialogFooter}
         onHide={hideDialog}
       >
-        {/* <div>
-          <h2>Upload Images</h2>
-          <div className="server-message"></div>
-        </div>
-        <div className="input-div">
-          <p>
-            Drag & Drop images here to <span className="borwse">Browse</span>
-          </p>
-        </div> */}
-
         <div className="card p-4">
-          <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
+          <label htmlFor="name" className="font-bold">
+            รูปภาพครุภัณฑ์
+          </label>
+          <div className="flex justify-center w-full">
+            {assetImages.map((url, index) => (
+              <img
+                key={index}
+                src={url}
+                alt={`Image ${index}`}
+                style={{
+                  overflow: 'hidden',
+                  padding: '4px',
+                  height: '200px',
+                  width: 'auto',
+                  margin: '10px',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                }}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="card p-4">
+          {/* <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1> */}
           <div className="grid grid-cols-4 gap-4">
             <div className="field col-start-1">
               <label htmlFor="name" className="font-bold">
@@ -935,7 +971,6 @@ export default function AllAsset() {
         footer={newAssetDialogFooter}
         onHide={hideDialog}
       >
-        {/*  
         <div className="card p-4">
           <div class="md:flex">
             <div class="w-full">
@@ -974,10 +1009,13 @@ export default function AllAsset() {
                   <div
                     key={index}
                     style={{
-                      width: '120px',
-                      height: '120px',
                       overflow: 'hidden',
                       padding: '4px',
+                      height: '200px',
+                      width: 'auto',
+                      margin: '10px',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
                     }}
                   >
                     <img
@@ -994,16 +1032,11 @@ export default function AllAsset() {
               </div>
             </div>
           </div>
-           <form onSubmit={formHandler}>
-            <input type="file" className="input" />
-            <button type="submit">Upload</button>
-          </form>{' '}
-          <hr />
-          <h2>Uploading done {progress}%</h2> 
+          {/* <h2>Uploading done {progress}%</h2> */}
         </div>
-*/}
+
         <div className="card p-4">
-          <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
+          {/* <h1 className=" font-bold text-2xl fon py-2">ข้อมูลครุภัณฑ์</h1> */}
           <div className="grid grid-cols-4 gap-4">
             <div className="field col-start-1">
               <label htmlFor="asset_order" className="font-bold">
@@ -1011,9 +1044,8 @@ export default function AllAsset() {
               </label>
               <InputNumber
                 id="asset_order"
-                value={assetLstOrder}
+                value={asset.asset_order}
                 useGrouping={false}
-                placeholder={assetLstOrder}
                 onChange={(e) => onInputChangeNumber(e, 'asset_order')}
                 required
                 // autoFocus
@@ -1022,7 +1054,7 @@ export default function AllAsset() {
                 })}
               />
               {submitted && !asset.asset_order && (
-                <small className="p-error">No. is required.</small>
+                <small className="p-error">กรุณากรอกลำดับที่ครุภัณฑ์</small>
               )}
             </div>
 
@@ -1040,7 +1072,7 @@ export default function AllAsset() {
                 })}
               />
               {submitted && !asset.asset_name && (
-                <small className="p-error">Name is required.</small>
+                <small className="p-error">กรุณากรอกชื่อครุภัณฑ์</small>
               )}
             </div>
 
@@ -1054,7 +1086,13 @@ export default function AllAsset() {
                 value={asset.asset_id}
                 onChange={(e) => onInputChange(e, 'asset_id')}
                 required
+                className={classNames({
+                  'p-invalid': submitted && !asset.asset_id,
+                })}
               />
+              {submitted && !asset.asset_id && (
+                <small className="p-error">กรุณากรอกหมายเลขครุภัณฑ์</small>
+              )}
             </div>
 
             <div className="formgrid grid">
@@ -1086,7 +1124,7 @@ export default function AllAsset() {
                 })}
               />
               {submitted && !asset.room_id && (
-                <small className="p-error">ProductRoom is required.</small>
+                <small className="p-error">กรุณากรอกประจำที่</small>
               )}
             </div>
 
@@ -1243,7 +1281,7 @@ export default function AllAsset() {
         </div> */}
 
         <div className="card p-4">
-          <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1>
+          {/* <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1> */}
           <div className="grid grid-cols-4 gap-4">
             <div className="field col-start-1">
               <label htmlFor="name" className="font-bold">
