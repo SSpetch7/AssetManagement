@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useStateContext } from "../../contexts/ContextProvider";
 import loginImg from "assets/loginlogo.png"
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, NavLink } from "react-router-dom";
 import axios from "axios"
 
 export default function Login() {
@@ -95,12 +95,19 @@ export default function Login() {
               type="password" name="admin_password" onChange={e => setValues({...values, admin_password:e.target.value})}
             />
           </div>
+          <NavLink to='/forgot-password'>
           <div className="flex justify-end text-kmuttColor-500 py-2">
             <p>ลืมรหัสผ่าน?</p>
           </div>
+          </NavLink>
           <button className="w-full my-2 py-2 bg-kmuttColor-800 shadow-lg text-white font-semibold rounded-lg" onClick={() => setLoginOn((loginOn) => !loginOn)}>
             เข้าสู่ระบบ
           </button>
+          <NavLink to='/home'>
+          <div className="flex justify-center text-kmuttColor-500">
+            <p>กลับหน้าแรก</p>
+          </div>
+          </NavLink>
         </form>
       </div>
       <div className="wave flex flex-col ">
