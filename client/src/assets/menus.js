@@ -25,8 +25,8 @@ export const menus = [
     nameTh: 'การจัดการครุภัณฑ์',
     icon: FactCheckIcon,
     menus: [
-      { name: 'remove', nameTh: 'แทงจำหน่ายครุภัณฑ์' },
       { name: 'edit', nameTh: 'แก้ไขข้อมูลครุภัณฑ์' },
+      { name: 'remove', nameTh: 'แทงจำหน่ายครุภัณฑ์' },
     ],
   },
 ];
