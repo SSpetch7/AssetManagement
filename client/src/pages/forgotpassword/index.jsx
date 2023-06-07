@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import pwdlogo from "assets/pwdlogo.png";
+import { NavLink } from "react-router-dom";
 
 const ForgotPassword = () => {
   const [admin_email, setAdmin_Email] = useState("");
@@ -58,9 +59,11 @@ const ForgotPassword = () => {
             <button className="w-full my-2 py-2 bg-kmuttColor-800 shadow-lg text-white font-semibold rounded-lg" onClick={handleForgotPassword}>
               ส่งอีเมลยืนยัน
             </button>
+            <NavLink to="/login">
             <div className="flex justify-center text-kmuttColor-800 py-2">
               <p>กลับหน้าเข้าสู่ระบบ</p>
             </div>
+            </NavLink>
           </form>
         </div>
       

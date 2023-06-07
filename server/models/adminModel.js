@@ -54,31 +54,46 @@ const generateRandomPassword = () => {
 
 const sql =
   'INSERT INTO admin (admin_username, admin_email, admin_password, role) VALUES (?, ?, ?, ?)';
-Admin.createAdmin = (newAdmin, callback) => {
-  const { admin_username, admin_email,} = newAdmin;
-  const admin_password = generateRandomPassword();
-  bcrypt.genSalt(10, (err, salt) => {
-    if (err) {
-      return callback(err, null);
-    }
-
-    bcrypt.hash(admin_password, salt, (err, hash) => {
+  Admin.createAdmin = (newAdmin, callback) => {
+    const { admin_username, admin_email } = newAdmin;
+    const admin_password = generateRandomPassword();
+    const email = admin_email;
+    const emailCheckQuery = 'SELECT admin_email FROM admin WHERE admin_email = ?';
+  
+    db.query(emailCheckQuery, [email], (err, rows) => {
       if (err) {
+        console.log(err);
         return callback(err, null);
       }
-
-      db.query(
-        sql,
-        [admin_username, admin_email, hash, 'admin'],
-        (err, result) => {
+  
+      if (rows.length > 0) {
+        err = new Error('email exists');
+        return callback(err, null);
+      }
+  
+      bcrypt.genSalt(10, (err, salt) => {
+        if (err) {
+          return callback(err, null);
+        }
+  
+        bcrypt.hash(admin_password, salt, (err, hash) => {
           if (err) {
             return callback(err, null);
           }
-          return callback(null, result);
-        }
-      );
+  
+          db.query(
+            sql,
+            [admin_username, admin_email, hash, 'admin'],
+            (err, result) => {
+              if (err) {
+                return callback(err, null);
+              }
+              return callback(null, result);
+            }
+          );
+        });
+      });
     });
-  });
-};
+  };
 
 export default Admin;

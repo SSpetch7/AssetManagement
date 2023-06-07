@@ -9,7 +9,8 @@ export const AdminService = {
   },
   
   createAdmin(adminData) {
-    return axios.post('/admin/create', adminData).then(() => {
+    return axios.post('/admin/create', adminData).then((res) => {
+    console.log(res.data);
     fetch("http://localhost:5000/forgot-password", {
         method: "POST",
         headers: {
