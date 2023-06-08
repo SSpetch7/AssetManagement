@@ -321,7 +321,7 @@ export default function Admin() {
   const imageBodyTemplate = (product) => {
     return (
       <img
-        src={`${product.picture}`}
+        src="https://mindandculture.org/wordpress6/wp-content/uploads/2018/06/Fotolia_188161178_XS.jpg"
         alt={product.picture}
         className="rounded-lg object-cover  w-12 h-12"
       />
@@ -435,12 +435,12 @@ export default function Admin() {
                 body={reformBodyTemplate}
               ></Column>
               <Column
-                body={actionBodyTemplate}
+                // body={actionBodyTemplate}
                 // headerStyle={{ minWidth: '10rem' }}
                 style={{ minWidth: '1rem' }}
               ></Column>
               <Column
-                body={actionDelete}
+                // body={actionDelete}
                 // headerStyle={{ minWidth: '10rem' }}
                 style={{ minWidth: '1rem' }}
               ></Column>
