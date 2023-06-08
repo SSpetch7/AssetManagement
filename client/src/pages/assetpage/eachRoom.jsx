@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { classNames } from 'primereact/utils';
+import downloadImages from '../api/DownLoadImage';
 import { DataTable } from 'primereact/datatable';
 import { FilterMatchMode, FilterOperator } from 'primereact/api';
 import { Column } from 'primereact/column';
@@ -64,19 +64,16 @@ export default function AllAsset() {
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
   const [assets, setAssets] = useState(null);
-  const [productDialog, setProductDialog] = useState(false);
-  const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-  const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-  const [product, setProduct] = useState(emptydataTable);
-  const [selectedProducts, setSelectedProducts] = useState(null);
-  const [submitted, setSubmitted] = useState(false);
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
-  const dt = useRef(null);
   const [dropdownRooms, setDropdownRooms] = useState(null);
   const [dropdownAllRooms, setDropdownAllRooms] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [allType, setAllType] = useState(null);
+
+  const [asset, setAsset] = useState([]);
+  const [assetImages, setAssetImages] = useState([]);
+  const [showAssetDialog, setShowAssetDialog] = useState(false);
 
   useEffect(() => {
     if (selectedRoom == null || selectedRoom == 'ทั้งหมด') {
@@ -93,8 +90,8 @@ export default function AllAsset() {
   useEffect(() => {
     const fetchData = async () => {
       let data;
-        data = await EachRoomService.getNumberTypeAll();
-        console.log(data)
+      data = await EachRoomService.getNumberTypeAll();
+      console.log(data);
       return data;
     };
     fetchData().then((data) => {
@@ -112,16 +109,7 @@ export default function AllAsset() {
   const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
 
   const hideDialog = () => {
-    setSubmitted(false);
-    setProductDialog(false);
-  };
-
-  const hideDeleteProductDialog = () => {
-    setDeleteProductDialog(false);
-  };
-
-  const hideDeleteProductsDialog = () => {
-    setDeleteProductsDialog(false);
+    setShowAssetDialog(false);
   };
 
   const addAllOptionsDropdown = () => {
@@ -213,60 +201,33 @@ export default function AllAsset() {
     }
   };
 
-  const editProduct = (product) => {
-    setProduct({ ...product });
-    setProductDialog(true);
-    console.log('edit product for click');
+  const showAsset = (rowData) => {
+    setAsset({ ...rowData });
+    setAssetImages([]);
+    downloadImages(rowData.asset_id)
+      .then((imageURLs) => {
+        setAssetImages(imageURLs);
+        console.log(assetImages);
+      })
+      .catch((error) => {
+        console.log('Error retrieving images:', error);
+      });
+    setShowAssetDialog(true);
   };
 
-  const confirmDeleteProduct = (product) => {
-    setProduct(product);
-    setDeleteProductDialog(true);
-  };
-
-  const deleteProduct = () => {
-    let _assets = assets.filter((val) => val.id !== product.id);
-
-    setAssets(_assets);
-    setDeleteProductDialog(false);
-    setProduct(emptydataTable);
-    toast.current.show({
-      severity: 'success',
-      summary: 'Successful',
-      detail: 'Product Deleted',
-      life: 3000,
-    });
-  };
-
-  const findIndexById = (id) => {
-    let index = -1;
-
-    for (let i = 0; i < assets.length; i++) {
-      if (assets[i].id === id) {
-        index = i;
-        break;
-      }
-    }
-
-    return index;
-  };
-
-  const confirmDeleteSelected = () => {
-    setDeleteProductsDialog(true);
-  };
-
-  const deleteSelectedProducts = () => {
-    let _assets = assets.filter((val) => !selectedProducts.includes(val));
-
-    setAssets(_assets);
-    setDeleteProductsDialog(false);
-    setSelectedProducts(null);
-    toast.current.show({
-      severity: 'success',
-      summary: 'Successful',
-      detail: 'Products Deleted',
-      life: 3000,
-    });
+  const actionBodyTemplate = (rowData) => {
+    return (
+      <React.Fragment>
+        <Button
+          outlined
+          icon="pi pi-search"
+          //   rounded
+          //   style={{ fontSize: '16px' }}
+          className="firstBnt mr-1 "
+          onClick={() => showAsset(rowData)}
+        />
+      </React.Fragment>
+    );
   };
 
   const header = (
@@ -290,39 +251,6 @@ export default function AllAsset() {
     </div>
   );
 
-  const deleteProductDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="No"
-        icon="pi pi-times"
-        outlined
-        onClick={hideDeleteProductDialog}
-      />
-      <Button
-        label="Yes"
-        icon="pi pi-check"
-        severity="danger"
-        onClick={deleteProduct}
-      />
-    </React.Fragment>
-  );
-  const deleteProductsDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="No"
-        icon="pi pi-times"
-        outlined
-        onClick={hideDeleteProductsDialog}
-      />
-      <Button
-        label="Yes"
-        icon="pi pi-check"
-        severity="danger"
-        onClick={deleteSelectedProducts}
-      />
-    </React.Fragment>
-  );
-
   return (
     <div>
       <Toast ref={toast} />
@@ -336,7 +264,6 @@ export default function AllAsset() {
         <div className="flex justify-center h-full ">
           <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 m-3 ">
             <DataTable
-              ref={dt}
               value={assets}
               dataKey="id"
               paginator
@@ -350,6 +277,11 @@ export default function AllAsset() {
               //   scrollHeight="700px"
               tableStyle={{ minHeight: '10rem' }}
             >
+              <Column
+                body={actionBodyTemplate}
+                // headerStyle={{ minWidth: '10rem' }}
+                style={{ minWidth: '2rem' }}
+              ></Column>
               <Column
                 field="asset_order"
                 header="ลำดับ"
@@ -374,7 +306,6 @@ export default function AllAsset() {
                 filterPlaceholder="ค้นหาชื่อ"
                 style={{ minWidth: '18rem' }}
               ></Column>
-
               <Column
                 field="asset_year"
                 header="ปีงบประมาณ"
@@ -383,7 +314,6 @@ export default function AllAsset() {
                 showFilterMatchModes={false}
                 style={{ minWidth: '4rem' }}
               ></Column>
-
               <Column
                 field="asset_status"
                 header="สภาพ"
@@ -428,7 +358,6 @@ export default function AllAsset() {
         <div className="flex justify-center h-full ">
           <div className=" bg-white h-5/6 rounded-xl w-9/12 labtop:m-0 px-8 pt-8 pb-8 m-3 ">
             <DataTable
-              ref={dt}
               value={allType}
               dataKey="id"
               rows={10}
@@ -456,6 +385,182 @@ export default function AllAsset() {
       <div className="m-16">
         <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
       </div>
+      <Dialog
+        visible={showAssetDialog}
+        style={{ width: '64rem' }}
+        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
+        header="รายละเอียดครุภัณฑ์"
+        modal
+        className="p-fluid"
+        // footer={productDialogFooter}
+        onHide={hideDialog}
+      >
+        <div className="card p-4">
+          <label htmlFor="name" className="font-bold">
+            รูปภาพครุภัณฑ์
+          </label>
+          <div className="flex justify-center w-full">
+            {assetImages.map((url, index) => (
+              <img
+                key={index}
+                src={url}
+                alt={`Image ${index}`}
+                style={{
+                  overflow: 'hidden',
+                  padding: '4px',
+                  height: '200px',
+                  width: 'auto',
+                  margin: '10px',
+                  border: '1px solid #ccc',
+                  borderRadius: '4px',
+                }}
+              />
+            ))}
+          </div>
+        </div>
+        <div className="card p-4">
+          {/* <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1> */}
+          <div className="grid grid-cols-4 gap-4">
+            <div className="field col-start-1">
+              <label htmlFor="name" className="font-bold">
+                ลำดับที่
+              </label>
+              <InputNumber
+                id="no"
+                useGrouping={false}
+                placeholder={asset.asset_order}
+                disabled
+                required
+                autoFocus
+              />
+            </div>
+
+            <div className="field col-start-2 col-end-5">
+              <label htmlFor="name" className="font-bold">
+                ชื่อรายการ
+              </label>
+              <InputText
+                id="name"
+                placeholder={asset.asset_name}
+                disabled
+                required
+              />
+            </div>
+
+            <div className="field">
+              <label htmlFor="id" className="font-bold">
+                หมายเลขครุภัณฑ์
+              </label>
+              <InputText id="id" placeholder={asset.asset_id} disabled />
+            </div>
+
+            <div className="formgrid grid">
+              <div className="field col">
+                <label htmlFor="year" className="font-bold">
+                  ปีงบประมาณ
+                </label>
+                <InputNumber
+                  useGrouping={false}
+                  id="asset_year"
+                  disabled
+                  value={asset.asset_year}
+                />
+              </div>
+            </div>
+
+            <div className="field col-start-3 col-end-5">
+              <label htmlFor="room" className="font-bold">
+                ประจำที่
+              </label>
+              <InputText id="room" placeholder={asset.room_id} disabled />
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                สถานะ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  placeholder={asset.asset_stock}
+                  disabled
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                สภาพ
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  placeholder={asset.asset_status}
+                  disabled
+                  optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                การใช้งาน
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  placeholder={asset.asset_useable}
+                  disabled
+                  optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                ประเภทครุภัณฑ์
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  placeholder={asset.category}
+                  disabled
+                  //   optionLabel="name"
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+            <div className="field">
+              <label htmlFor="description" className="font-bold">
+                ประเภทครุภัณฑ์คอมพิวเตอร์
+              </label>
+              <div className="card flex justify-content-center">
+                <Dropdown
+                  placeholder={asset.subcategory}
+                  disabled
+                  className="w-full md:w-14rem"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="card p-4">
+          <div className="field">
+            <label htmlFor="description" className="font-bold">
+              หมายเหตุ
+            </label>
+            <InputTextarea
+              id="description"
+              disabled
+              //   placeholder={asset.detail}
+              value={asset.detail}
+              required
+              rows={3}
+              cols={20}
+            />
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 }

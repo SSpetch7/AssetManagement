@@ -15,6 +15,8 @@ async function downloadImages(assetID) {
     }
     if (imageURLs.length === 0) {
       imageURLs.push(blankImage);
+      imageURLs.push(blankImage);
+      imageURLs.push(blankImage);
     }
     return imageURLs;
   } catch (error) {

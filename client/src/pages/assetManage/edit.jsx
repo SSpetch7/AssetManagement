@@ -83,7 +83,7 @@ export default function AllAsset() {
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
   const [assetImages, setAssetImages] = useState([]);
-
+  const [selectedImage, setSelectedImage] = useState([]);
   // asset new data
   const [newAssetDialog, setNewAssetDialog] = useState(false);
   const [assetLstOrder, setAssetLstOrder] = useState();
@@ -95,10 +95,6 @@ export default function AllAsset() {
 
   // asset data
   const [assets, setAssets] = useState(null);
-  const [galleries, setGalleries] = useState(null);
-  const [assetStatus, setAssetStatus] = useState();
-  const [assetStock, setAssetStock] = useState(null);
-  const [assetUseable, setAssetUseable] = useState(null);
   const [assetType, setAssetType] = useState(null);
   const [assetComType, setAssetComType] = useState(null);
 
@@ -134,6 +130,10 @@ export default function AllAsset() {
   function onImageChange(e) {
     setImages([...e.target.files]);
   }
+  useEffect(() => {
+    console.log('update image');
+    console.log(selectedImage);
+  }, [selectedImage]);
 
   useEffect(() => {
     AssetService.getAllAsset().then((data) => setAssets(data));
@@ -188,6 +188,21 @@ export default function AllAsset() {
   };
 
   //   const firstState=
+
+  const handleImageChange = (index, e) => {
+    let newImage = '';
+
+    setSelectedImage({ index: index, file: e.target.files[0] });
+    newImage = URL.createObjectURL(e.target.files[0]);
+    const updatedAssetImages = [...assetImages];
+    updatedAssetImages[index] = newImage;
+    console.log('updatedAssetImages');
+    console.log(updatedAssetImages);
+    console.log('assetImages');
+    console.log(assetImages);
+    // setSelectedImage([]);
+    setAssetImages(updatedAssetImages);
+  };
 
   const handleOptionChange = (e, name) => {
     let _asset = { ...asset };
@@ -264,22 +279,22 @@ export default function AllAsset() {
     count = 0;
   };
 
-  //   async function downloadImages(assetID) {
-  //     try {
-  //       const folderRef = ref(storage, `${assetID}`);
-  //       const folderSnapshot = await listAll(folderRef);
-  //       const imageURLs = await Promise.all(
-  //         folderSnapshot.items.map(async (itemRef) => {
-  //           const downloadURL = await getDownloadURL(itemRef);
-  //           return downloadURL;
-  //         })
-  //       );
-  //       return imageURLs;
-  //     } catch (error) {
-  //       console.error('Error getting images from Firebase Storage:', error);
-  //       throw error;
-  //     }
-  //   }
+  const upDateImage = async (assetID) => {
+    let _selectedImage = { ...selectedImage };
+    console.log('_selectedImage');
+    console.log(_selectedImage);
+    const storageRef = ref(
+      storage,
+      `${assetID}/${assetID}_image${_selectedImage.index + 1}`
+    );
+    try {
+      await uploadBytesResumable(storageRef, _selectedImage.file);
+      console.log('success');
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    }
+    return null;
+  };
 
   const openNew = () => {
     // NumService.getLstOrderAsset().then((data) => setAssetLstOrder(data));
@@ -333,6 +348,7 @@ export default function AllAsset() {
       }
 
       uploadImages(images, asset.asset_id);
+
       _assets.push(_asset);
       toast.current.show({
         severity: 'success',
@@ -354,7 +370,7 @@ export default function AllAsset() {
     console.log(assetCreateNew);
   };
 
-  const saveUpDateAsset = () => {
+  const saveUpDateAsset = async () => {
     setSubmitted(true);
     let type = 'UPDATEASSET';
     if (asset.asset_name.trim()) {
@@ -363,8 +379,10 @@ export default function AllAsset() {
 
       if (asset.asset_id) {
         const index = findIndexById(asset.asset_id);
-        console.log(asset.asset_id + ' id');
+        console.log('if asset.asset_id');
         _assets[index] = _asset;
+
+        await upDateImage(asset.asset_id);
         toast.current.show({
           severity: 'success',
           summary: 'Successful',
@@ -380,10 +398,9 @@ export default function AllAsset() {
 
       setAsset(emptydataTable);
     }
+    setSelectedImage([]);
     setImages([]);
     setImageURLs([]);
-    console.log('null ???');
-    console.log(asset);
   };
 
   const statusBodyTemplate = (rowData) => {
@@ -470,6 +487,14 @@ export default function AllAsset() {
   const editAsset = (rowData) => {
     setAsset({ ...rowData });
     console.log(asset.asset_stock);
+    downloadImages(rowData.asset_id)
+      .then((imageURLs) => {
+        setAssetImages(imageURLs);
+        console.log(assetImages);
+      })
+      .catch((error) => {
+        console.log('Error retrieving images:', error);
+      });
     setSubDisable(true);
     setEditAssetDialog(true);
   };
@@ -1018,6 +1043,7 @@ export default function AllAsset() {
                       borderRadius: '4px',
                     }}
                   >
+                    {console.log(imageSrc, 'image new')}
                     <img
                       src={imageSrc}
                       alt={`Image ${index + 1}`}
@@ -1238,47 +1264,61 @@ export default function AllAsset() {
         footer={upDateAssetDialogFooter}
         onHide={hideDialog}
       >
-        {/* <div class="md:flex">
-          <div class="w-full">
-            <div class="p-3">
-              <div class="mb-2">
-                <div class="relative h-40 rounded-lg border-dashed border-2 border-gray-200 bg-white flex justify-center items-center hover:cursor-pointer">
-                  <div class="absolute">
-                    <div class="flex flex-col items-center ">
-                      <i class="fa fa-cloud-upload fa-3x text-gray-200"></i>
-
-                      <span class="block text-blue-400 font-normal">
-                        เลือกรูปภาพ
-                      </span>
-                    </div>
-                  </div>
+        <div className="Edit-Imamge card p-4">
+          <label htmlFor="name" className="font-bold">
+            รูปภาพครุภัณฑ์
+          </label>
+          <div className="flex justify-center w-full">
+            {assetImages.map((url, index) => (
+              <div
+                className="assetImage-upload"
+                key={index}
+                style={{
+                  position: 'relative',
+                  maxWidth: '205px',
+                }}
+              >
+                <div
+                  key={index}
+                  className="assetImage-edit"
+                  style={{
+                    position: 'absolute',
+                    right: '12px',
+                    zIndex: '1',
+                    top: '10px',
+                  }}
+                >
                   <input
+                    id={`imageUpload${index}`}
                     type="file"
-                    class="h-full w-full opacity-0"
-                    multiple="multiple"
                     accept="image/png, image/jpeg, image/jpg"
+                    style={{ display: 'none' }}
+                    onChange={(e) => handleImageChange(index, e)}
+                  />
+                  <label for={`imageUpload${index}`}>
+                    <i className="icon-edit pl-2 pi pi-pencil"></i>
+                  </label>
+                </div>
+                <div className="assetImage-preview">
+                  <img
+                    id="assetImagePreview"
+                    src={url}
+                    alt={`Image ${index}`}
+                    style={{
+                      overflow: 'hidden',
+                      padding: '4px',
+                      height: '200px',
+                      width: 'auto',
+                      margin: '10px',
+                      border: '1px solid #ccc',
+                      borderRadius: '4px',
+                    }}
                   />
                 </div>
-                <div class="flex justify-between items-center text-gray-400">
-                  <span>เฉพาะ *png *jpeg *jpg</span>
-                </div>
               </div>
-
-              <div class="mt-3 text-center pb-3">
-                <button class="w-full h-12 text-lg w-32 bg-blue-600 rounded text-white hover:bg-blue-700">
-                  Create
-                </button>
-              </div>
-              <div>show image</div>
-              <form id="queued-form">
-                <div class="header">
-                  <h3>Queued In Frontend</h3>
-                </div>
-                <div class="queued-div"></div>
-              </form>
-            </div>
+            ))}
           </div>
-        </div> */}
+        </div>
 
         <div className="card p-4">
           {/* <h1 className="text-kmuttColor-800 py-2">ข้อมูลครุภัณฑ์</h1> */}
