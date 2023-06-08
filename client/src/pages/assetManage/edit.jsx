@@ -1275,7 +1275,6 @@ export default function AllAsset() {
                 key={index}
                 style={{
                   position: 'relative',
-                  maxWidth: '205px',
                 }}
               >
                 <div
