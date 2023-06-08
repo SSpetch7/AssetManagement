@@ -92,7 +92,7 @@ export default function AllAsset() {
   const toast = useRef(null);
   const dt = useRef(null);
 
-  const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
+  const [statuses] = useState(['ใช้งานได้', 'รอซ่อม', 'สิ้นสภาพ']);
   const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
 
   useEffect(() => {

@@ -13,11 +13,13 @@ async function downloadImages(assetID) {
       const downloadURL = await getDownloadURL(itemRef);
       imageURLs.push(downloadURL);
     }
-    if (imageURLs.length === 0) {
-      imageURLs.push(blankImage);
-      imageURLs.push(blankImage);
-      imageURLs.push(blankImage);
+    if (imageURLs.length < 4) {
+      let loop = 3 - imageURLs.length;
+      for (let i = 0; i < loop; i++) {
+        imageURLs.push(blankImage);
+      }
     }
+
     return imageURLs;
   } catch (error) {
     console.error('Error getting images from Firebase Storage:', error);
