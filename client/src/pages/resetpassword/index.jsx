@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import pwdlogo from "assets/pwdlogo.png";
+import { NavLink } from "react-router-dom";
 
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
@@ -81,10 +82,11 @@ const [searchParams] = useSearchParams();
           />
         </div>
 
-
+        <NavLink to="/login">
           <button className="w-full my-2 py-2 bg-kmuttColor-800 shadow-lg text-white font-semibold rounded-lg" onClick={handleResetPassword}>
             เปลี่ยนรหัสผ่าน
           </button>
+          </NavLink>
           {resetStatus && <p>{resetStatus}</p>}
         </form>
       </div>
