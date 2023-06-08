@@ -18,7 +18,7 @@ import Userinfo from 'components/UserInfo';
 import { Image } from 'primereact/image';
 import ChangeDataAdmin from 'components/ChangeDataAdmin';
 import { AdminService } from '../../service/AdminService';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 export default function Admin() {
@@ -45,7 +45,8 @@ export default function Admin() {
   const [products, setProducts] = useState(null);
   const [admins, setAdmins] = useState(null);
   const [admin, setAdmin] = useState(null);
-  const [productDialog, setProductDialog] = useState(false);
+  const [editAdminDialog, setEditAdminDialog] = useState(false);
+
   const [deleteProductDialog, setDeleteProductDialog] = useState(false);
   const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
   const [product, setProduct] = useState(emptyAdminTable);
@@ -58,42 +59,39 @@ export default function Admin() {
   useEffect(() => {
     AdminService.getAllAdamin().then((data) => setAdmins(data));
   }, []);
-  
+
   const changeDate = (rowData) => {
-  const date = new Date(rowData)
-  const result = date.toLocaleDateString('th-TH', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-  })
-      return result;
+    const date = new Date(rowData);
+    const result = date.toLocaleDateString('th-TH', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
+    return result;
   };
 
   const changeAdmin = (rowData) => {
-    
     switch (rowData) {
       case 'Head_Admin':
         return 'หัวหน้าผู้ดูแล';
 
       case 'Admin':
         return 'ผู้ดูแล';
-    };}
- 
+    }
+  };
 
-  const reformBodyTemplate = (rowData)=>{
-    return changeDate(rowData.admin_addDate)}
-    
-  
+  const reformBodyTemplate = (rowData) => {
+    return changeDate(rowData.admin_addDate);
+  };
 
   const openNew = () => {
     setProduct(emptyAdminTable);
     setSubmitted(false);
-    setProductDialog(true);
   };
 
   const hideDialog = () => {
     setSubmitted(false);
-    setProductDialog(false);
+    setEditAdminDialog(false);
   };
 
   const hideDeleteProductDialog = () => {
@@ -133,14 +131,12 @@ export default function Admin() {
       }
 
       setAdmins(_products);
-      setProductDialog(false);
       setProduct(emptyAdminTable);
     }
   };
 
   const editProduct = (product) => {
     setProduct({ ...product });
-    setProductDialog(true);
   };
 
   const confirmDeleteProduct = (product) => {
@@ -213,34 +209,45 @@ export default function Admin() {
     setProduct(_product);
   };
 
-  const onInputNumberChange = (e, name) => {
-    const val = e.value || 0;
-    let _product = { ...product };
-
-    _product[`${name}`] = val;
-
-    setProduct(_product);
+  const editAdmin = (rowData) => {
+    setAdmin({ ...rowData });
+    console.log(admin);
+    setEditAdminDialog(true);
   };
 
   const actionBodyTemplate = (rowData) => {
     return (
-      <React.Fragment>
-        <ChangeDataAdmin />
-      </React.Fragment>
+      <>
+        {role === 'Head_Admin' && (
+          <React.Fragment>
+            <Button
+              icon="pi pi-pencil"
+              //   rounded
+              outlined
+              className="editBnt mr-2"
+              onClick={() => editAdmin(rowData)}
+            />
+          </React.Fragment>
+        )}
+      </>
     );
   };
   const actionDelete = (rowData) => {
     return (
-      <React.Fragment>
-        <Button
-          icon="pi pi-trash"
-          //   style={{ scale: ' 70%' }}
-          //   rounded
-          outlined
-          severity="danger"
-          onClick={() => confirmDeleteProduct(rowData)}
-        />
-      </React.Fragment>
+      <>
+        {role === 'Head_Admin' && (
+          <React.Fragment>
+            <Button
+              icon="pi pi-trash"
+              //   style={{ scale: ' 70%' }}
+              //   rounded
+              outlined
+              severity="danger"
+              onClick={() => confirmDeleteProduct(rowData)}
+            />
+          </React.Fragment>
+        )}
+      </>
     );
   };
 
@@ -272,10 +279,10 @@ export default function Admin() {
           setAuth(false);
         }
       })
-      .then((err) => console.log(err))
+      .then((err) => console.log(err));
   }, []);
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get('http://localhost:5000')
@@ -286,9 +293,8 @@ export default function Admin() {
           navigate('/home');
         }
       })
-      .then((err) => console.log(err))
+      .then((err) => console.log(err));
   }, []);
-
 
   const header = (
     <div className="flex  flex-wrap gap-2 align-items-center justify-between">
@@ -304,11 +310,11 @@ export default function Admin() {
           />
         </span>
       </div>
-      { role === 'Head_Admin' && (
-      <div className="flex gap-2">
-        <AddAdmin />
-      </div>
-      )} 
+      {role === 'Head_Admin' && (
+        <div className="flex gap-2">
+          <AddAdmin />
+        </div>
+      )}
     </div>
   );
 
@@ -363,7 +369,12 @@ export default function Admin() {
   );
 
   const roleBodyTemplate = (product) => {
-    return <Tag value={changeAdmin(product.role)} severity={getSeverity(product)}></Tag>;
+    return (
+      <Tag
+        value={changeAdmin(product.role)}
+        severity={getSeverity(product)}
+      ></Tag>
+    );
   };
 
   return (
@@ -482,6 +493,63 @@ export default function Admin() {
       <div className="m-16">
         <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
       </div>
+      <Dialog
+        header="แก้ไขข้อมูลผู้ดูแล"
+        visible={editAdminDialog}
+        style={{ width: '40vw' }}
+        onHide={hideDialog}
+        footer={footerContent}
+      >
+        <div className="flex flex-col pt-6">
+          <div className="flex justify-center p-2"></div>
+          <div className="card flex justify-center">
+            <Toast ref={toast}></Toast>
+          </div>
+
+          <div className="content-evenly mt-4 ">
+            <div className="flex justify-evenly py-4">
+              <div className="mb-2 lg:col-6 lg:mb-0">
+                <span className="p-input-icon-left">
+                  <i className="pi pi-user" />
+                  <InputText
+                    className="inputForm"
+                    // placeholder={admin.admin_username}
+                  />
+                </span>
+              </div>
+              <div className="mb-2 lg:col-6 lg:mb-0">
+                <span className="p-input-icon-left">
+                  <i className="pi pi-envelope" />
+                  <InputText className="inputForm" placeholder="Email" />
+                </span>
+              </div>
+            </div>
+
+            <div className="flex justify-evenly py-4">
+              <div className="col-6 mb-2 lg:col-6 lg:mb-0">
+                <span className="p-input-icon-left">
+                  <i className="pi pi-lock" />
+                  <InputText
+                    disabled
+                    placeholder="Admin"
+                    className="inputForm text-kmuttColor-800"
+                  />
+                </span>
+              </div>
+              <div className="col-6 mb-2 lg:col-6 lg:mb-0">
+                <span className="p-input-icon-left">
+                  <i className="pi pi-calendar" />
+                  <InputText
+                    disabled
+                    placeholder="01/03/2566"
+                    className="inputForm text-kmuttColor-800"
+                  />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 }

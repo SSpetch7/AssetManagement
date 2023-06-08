@@ -41,25 +41,25 @@ export default function AllAsset() {
 
   const [filters, setFilters] = useState({
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    name: {
+    asset_name: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    order: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
+    asset_order: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
     asset_id: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    year: {
+    asset_year: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    status: { value: null, matchMode: FilterMatchMode.EQUALS },
+    asset_status: { value: null, matchMode: FilterMatchMode.EQUALS },
     room_id: {
       operator: FilterOperator.AND,
       constraints: [{ value: null, matchMode: FilterMatchMode.STARTS_WITH }],
     },
-    useable: { value: null, matchMode: FilterMatchMode.EQUALS },
+    asset_useable: { value: null, matchMode: FilterMatchMode.EQUALS },
   });
   const [globalFilterValue, setGlobalFilterValue] = useState('');
 
@@ -105,7 +105,7 @@ export default function AllAsset() {
     setSelectedRoom(e.value);
   };
 
-  const [statuses] = useState(['ใช้งานได้', 'กำลังซ่อม', 'สิ้นสภาพ']);
+  const [statuses] = useState(['ใช้งานได้', 'รอซ่อม', 'สิ้นสภาพ']);
   const [useable] = useState(['ใช้งาน', 'ไม่ได้ใช้งาน']);
 
   const hideDialog = () => {
