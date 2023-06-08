@@ -24,7 +24,10 @@ Home.getNumberNotebook = (result) => {
       result(null, err);
     } else {
       console.log('Asset fetching successfully');
-      result(null, res);
+      const nbValues = res.reduce((values, row) => {
+        return values.concat(Object.values(row));
+      }, []);
+      return result(null, nbValues);
     }
   });
 };
@@ -52,7 +55,10 @@ Home.getNumberTablet = (result) => {
       result(null, err);
     } else {
       console.log('Asset fetching successfully');
-      result(null, res);
+      const tlValues = res.reduce((values, row) => {
+        return values.concat(Object.values(row));
+      }, []);
+      return result(null, tlValues);
     }
   });
 };
