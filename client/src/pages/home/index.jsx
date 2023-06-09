@@ -1,15 +1,43 @@
 import React, { useState, useEffect } from 'react';
+import DevicesIcon from '@mui/icons-material/Devices';
+import AppBlockingIcon from '@mui/icons-material/AppBlocking';
+import BuildCircleIcon from '@mui/icons-material/BuildCircle';
+import CancelIcon from '@mui/icons-material/Cancel';
 import { overviewAsset, mostActivity, roomAtAsset } from '../../assets/dummy';
+import homeData from '../../assets/homeData';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import LineChart from '../../assets/chart/lineChart';
 import { UserData } from '../../assets/data/data';
 import { ChartService } from '../../service/ChartService';
 import { Chart } from 'primereact/chart';
+import { HomeService } from '../../service/HomeService';
+import Homedata from '../../assets/homeData.js';
 
 const Home = () => {
   const [numberAsset, setNumberAsset] = useState(null);
   const [chartData, setChartData] = useState({});
   const [chartOptions, setChartOptions] = useState({});
+
+  const [notebookAll, setNotebookAll] = useState();
+  const [notebookAStatus, setNotebookAStatus] = useState();
+  const [notebookBStatus, setNotebookBStatus] = useState();
+  const [notebookCStatus, setNotebookCStatus] = useState();
+
+  const [tabletAll, setTabletAll] = useState();
+  const [tabletAStatus, setTabletAStatus] = useState();
+  const [tabletBStatus, setTabletBStatus] = useState();
+  const [tabletCStatus, setTabletCStatus] = useState();
+
+  useEffect(() => {
+    HomeService.getAllNotebook().then((data) => setNotebookAll(data));
+    HomeService.getStatusANotebook().then((data) => setNotebookAStatus(data));
+    HomeService.getStatusBNotebook().then((data) => setNotebookBStatus(data));
+    HomeService.getStatusCNotebook().then((data) => setNotebookCStatus(data));
+    HomeService.getAllTablet().then((data) => setTabletAll(data));
+    HomeService.getStatusATablet().then((data) => setTabletAStatus(data));
+    HomeService.getStatusBTablet().then((data) => setTabletBStatus(data));
+    HomeService.getStatusCTablet().then((data) => setTabletCStatus(data));
+  }, []);
 
   useEffect(() => {
     const documentStyle = getComputedStyle(document.documentElement);
@@ -127,6 +155,7 @@ const Home = () => {
       },
     ],
   });
+
   return (
     <div className="mt-12">
       <div className=" pb-10">
@@ -137,49 +166,120 @@ const Home = () => {
         {/* <div className="border-b w-96 pl-42"></div> */}
       </div>
       <div className="pl-36 labtop:pl-20 font-bold text-4xl  text-kmuttColor-800 items-start">
-        ภาพรวมครุภัณฑ์
+        ภาพรวมคอมพิวเตอร์
       </div>
       <div className="flex flex-col justify-center items-center">
-        {overviewAsset.map((item) => (
-          <div
-            key={item.device}
-            className=" bg-kmuttColor-bg-menu min-h-56 rounded-xl labtop:w-10/12 w-9/12 border border-gray-300 px-8 pt-6 pb-5 m-3 "
-          >
-            <div>
-              <div className="flex justify-start item-start pb-4 ">
-                <p className="font-bold text-3xl  text-gray-400">
-                  {item.device}
-                </p>
-              </div>
+        <div className=" bg-kmuttColor-bg-menu min-h-56 rounded-xl labtop:w-10/12 w-9/12 border border-gray-300 px-8 pt-6 pb-5 m-3 ">
+          <div>
+            <div className="flex justify-start item-start pb-4 ">
+              <p className="font-bold text-3xl  text-gray-400">Notebook</p>
+            </div>
 
-              <div className="flex m-3 flex-wrap justify-between gap-1 items-center">
-                {item.datas.map((data) => (
-                  //   <>
-                  <div
-                    key={data.title}
-                    className="flex bg-white h-24 w-48 rounded-xl "
-                  >
-                    <div
-                      style={{ color: data.iconColor }}
-                      className="flex items-end pb-6 pl-4"
-                    >
-                      {data.icon}
-                    </div>
-                    <div className="pl-4 flex flex-col self-center  ">
-                      <div className="text-2xl  text-gray-400 ">
-                        {data.title}
-                      </div>
-                      <div className="text-4xl  font-bold text-gray-500">
-                        {data.number}
-                      </div>
-                    </div>
+            <div className="flex m-3 flex-wrap justify-between gap-1 items-center">
+              <div className="flex bg-white h-24 w-48 rounded-xl ">
+                <div className="flex items-end pb-6 pl-4">
+                  <DevicesIcon sx={{ fontSize: 35, color: '#2CBE66' }} />,
+                </div>
+                <div className="pl-4 flex flex-col self-center  ">
+                  <div className="text-2xl  text-gray-400 ">จำนวนทั้งหมด</div>
+                  <div className="text-4xl  font-bold text-gray-500">
+                    {notebookAll}
                   </div>
-                  //   </>
-                ))}
+                </div>
+              </div>
+              <div className="flex bg-white h-24 w-48 rounded-xl ">
+                <div className="flex items-end pb-6 pl-4">
+                  <DevicesIcon sx={{ fontSize: 35, color: '#2CBE66' }} />
+                </div>
+                <div
+                  className="pl-4 flex flex-col self-center  
+                "
+                >
+                  <div className="text-2xl  text-gray-400 ">ใช้งานได้</div>
+                  <div className="text-4xl  font-bold text-gray-500">
+                    {notebookAStatus}
+                  </div>
+                </div>
+              </div>
+              <div className="flex bg-white h-24 w-48 rounded-xl ">
+                <div className="flex items-end pb-6 pl-4">
+                  <BuildCircleIcon sx={{ fontSize: 35, color: '#FFDD81' }} />
+                </div>
+                <div className="pl-4 flex flex-col self-center  ">
+                  <div className="text-2xl  text-gray-400 ">รอซ่อม</div>
+                  <div className="text-4xl  font-bold text-gray-500">
+                    {notebookBStatus}
+                  </div>
+                </div>
+              </div>{' '}
+              <div className="flex bg-white h-24 w-48 rounded-xl ">
+                <div className="flex items-end pb-6 pl-4">
+                  <CancelIcon sx={{ fontSize: 35, color: '#FF0000' }} />
+                </div>
+                <div className="pl-4 flex flex-col self-center  ">
+                  <div className="text-2xl  text-gray-400 ">สิ้นสภาพ</div>
+                  <div className="text-4xl  font-bold text-gray-500">
+                    {notebookCStatus}
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-        ))}
+        </div>
+        <div className=" bg-kmuttColor-bg-menu min-h-56 rounded-xl labtop:w-10/12 w-9/12 border border-gray-300 px-8 pt-6 pb-5 m-3 ">
+          <div>
+            <div className="flex justify-start item-start pb-4 ">
+              <p className="font-bold text-3xl  text-gray-400">Tablet</p>
+            </div>
+
+            <div className="flex m-3 flex-wrap justify-between gap-1 items-center">
+              <div className="flex bg-white h-24 w-48 rounded-xl ">
+                <div className="flex items-end pb-6 pl-4">
+                  <DevicesIcon sx={{ fontSize: 35, color: '#2CBE66' }} />,
+                </div>
+                <div className="pl-4 flex flex-col self-center  ">
+                  <div className="text-2xl  text-gray-400 ">จำนวนทั้งหมด</div>
+                  <div className="text-4xl  font-bold text-gray-500">
+                    {tabletAll}
+                  </div>
+                </div>
+              </div>
+              <div className="flex bg-white h-24 w-48 rounded-xl ">
+                <div className="flex items-end pb-6 pl-4">
+                  <DevicesIcon sx={{ fontSize: 35, color: '#2CBE66' }} />
+                </div>
+                <div className="pl-4 flex flex-col self-center  ">
+                  <div className="text-2xl  text-gray-400 ">ใช้งานได้</div>
+                  <div className="text-4xl  font-bold text-gray-500">
+                    {tabletAStatus}
+                  </div>
+                </div>
+              </div>
+              <div className="flex bg-white h-24 w-48 rounded-xl ">
+                <div className="flex items-end pb-6 pl-4">
+                  <BuildCircleIcon sx={{ fontSize: 35, color: '#FFDD81' }} />
+                </div>
+                <div className="pl-4 flex flex-col self-center  ">
+                  <div className="text-2xl  text-gray-400 ">รอซ่อม</div>
+                  <div className="text-4xl  font-bold text-gray-500">
+                    {tabletBStatus}
+                  </div>
+                </div>
+              </div>{' '}
+              <div className="flex bg-white h-24 w-48 rounded-xl ">
+                <div className="flex items-end pb-6 pl-4">
+                  <CancelIcon sx={{ fontSize: 35, color: '#FF0000' }} />,
+                </div>
+                <div className="pl-4 flex flex-col self-center  ">
+                  <div className="text-2xl  text-gray-400 ">สิ้นสภาพ</div>
+                  <div className="text-4xl  font-bold text-gray-500">
+                    {tabletCStatus}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div className="font-bold text-4xl flex text-kmuttColor-800  mt-12 pl-36">

@@ -1,4 +1,4 @@
-export { default as Home } from './home/index';
+export { default as Home } from './home';
 export { default as AllAsset } from './assetpage/allAsset';
 export { default as EachRoom } from './assetpage/eachRoom';
 export { default as Addnew } from './assetManage/add';

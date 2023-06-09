@@ -32,16 +32,52 @@ Home.getNumberNotebook = (result) => {
   });
 };
 
-const statusNotebook =
-  'SELECT asset_status, COUNT("asset_status") as status_number_notebook FROM asset_detail WHERE sub_id=2 GROUP BY asset_status';
-Home.getStatusNotebook = (result) => {
-  db.query(statusNotebook, (err, res) => {
+const statusANotebook =
+  'SELECT  COUNT("asset_status") as status_number_notebook FROM asset_detail WHERE sub_id=2 AND asset_status="ใช้งานได้" ';
+Home.getStatusANotebook = (result) => {
+  db.query(statusANotebook, (err, res) => {
     if (err) {
       console.log('Error while fetching asset ', err);
       result(null, err);
     } else {
       console.log('Asset fetching successfully');
-      result(null, res);
+      const nbValues = res.reduce((values, row) => {
+        return values.concat(Object.values(row));
+      }, []);
+      return result(null, nbValues);
+    }
+  });
+};
+
+const statusBNotebook =
+  'SELECT  COUNT("asset_status") as status_number_notebook FROM asset_detail WHERE sub_id=2  AND asset_status="รอซ่อม"';
+Home.getStatusBNotebook = (result) => {
+  db.query(statusBNotebook, (err, res) => {
+    if (err) {
+      console.log('Error while fetching asset ', err);
+      result(null, err);
+    } else {
+      console.log('Asset fetching successfully');
+      const nbValues = res.reduce((values, row) => {
+        return values.concat(Object.values(row));
+      }, []);
+      return result(null, nbValues);
+    }
+  });
+};
+const statusCNotebook =
+  'SELECT  COUNT("asset_status") as status_number_notebook FROM asset_detail WHERE sub_id=2 AND asset_status="สิ้นสภาพ"';
+Home.getStatusCNotebook = (result) => {
+  db.query(statusCNotebook, (err, res) => {
+    if (err) {
+      console.log('Error while fetching asset ', err);
+      result(null, err);
+    } else {
+      console.log('Asset fetching successfully');
+      const nbValues = res.reduce((values, row) => {
+        return values.concat(Object.values(row));
+      }, []);
+      return result(null, nbValues);
     }
   });
 };
@@ -63,16 +99,51 @@ Home.getNumberTablet = (result) => {
   });
 };
 
-const statusTablet =
-  'SELECT asset_status, COUNT("asset_status") as status_number_tablet FROM asset_detail WHERE sub_id=3 GROUP BY asset_status';
-Home.getStatusTablet = (result) => {
-  db.query(statusTablet, (err, res) => {
+const statusATablet =
+  'SELECT  COUNT("asset_status") as status_number_tablet FROM asset_detail WHERE sub_id=3 AND asset_status="ใช้งานได้"';
+Home.getStatusATablet = (result) => {
+  db.query(statusATablet, (err, res) => {
     if (err) {
       console.log('Error while fetching asset ', err);
       result(null, err);
     } else {
       console.log('Asset fetching successfully');
-      result(null, res);
+      const tlValues = res.reduce((values, row) => {
+        return values.concat(Object.values(row));
+      }, []);
+      return result(null, tlValues);
+    }
+  });
+};
+const statusBTablet =
+  'SELECT  COUNT("asset_status") as status_number_tablet FROM asset_detail WHERE sub_id=3 AND asset_status="รอซ่อม"';
+Home.getStatusBTablet = (result) => {
+  db.query(statusBTablet, (err, res) => {
+    if (err) {
+      console.log('Error while fetching asset ', err);
+      result(null, err);
+    } else {
+      console.log('Asset fetching successfully');
+      const tlValues = res.reduce((values, row) => {
+        return values.concat(Object.values(row));
+      }, []);
+      return result(null, tlValues);
+    }
+  });
+};
+const statusCTablet =
+  'SELECT  COUNT("asset_status") as status_number_tablet FROM asset_detail WHERE sub_id=3 AND asset_status="สิ้นสภาพ"';
+Home.getStatusCTablet = (result) => {
+  db.query(statusCTablet, (err, res) => {
+    if (err) {
+      console.log('Error while fetching asset ', err);
+      result(null, err);
+    } else {
+      console.log('Asset fetching successfully');
+      const tlValues = res.reduce((values, row) => {
+        return values.concat(Object.values(row));
+      }, []);
+      return result(null, tlValues);
     }
   });
 };
