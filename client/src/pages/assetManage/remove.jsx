@@ -458,7 +458,7 @@ export default function Remove() {
     });
   };
 
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   useEffect(() => {
     axios
       .get('http://localhost:5000')
@@ -469,7 +469,7 @@ export default function Remove() {
           navigate('/home');
         }
       })
-      .then((err) => console.log(err))
+      .then((err) => console.log(err));
   }, []);
 
   const header = (
@@ -675,7 +675,7 @@ export default function Remove() {
       <div className="mt-12">
         <div className="pb-10">
           <span className="pl-32 font-bold  text-4xl text-gray-600 items-start">
-            Disposaled Asset
+            Disposal Asset
           </span>
           <span className="pl-2  text-gray-400">ครุภัณฑ์ที่แทงจำหน่าย</span>
         </div>
