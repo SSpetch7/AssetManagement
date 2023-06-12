@@ -75,6 +75,14 @@ const verifyUser = (req, res, next) => {
   }
 };
 
+const isEmailExists = async (email) => {
+  const query =
+    'SELECT COUNT(*) AS count FROM asset_detail WHERE admin_email = ?';
+  const values = [email];
+  const [rows] = await connection.query(query, values);
+  const count = rows[0].count();
+  return count > 0;
+};
 
 const transporter = nodemailer.createTransport({
   service: 'Gmail', // Replace with your email service provider's SMTP host
@@ -131,6 +139,12 @@ app.post('/forgot-password', async (req, res) => {
 // Route to handle password reset
 app.post('/reset-password', async (req, res) => {
   const { token, newPassword } = req.body;
+  const emailExists = await isEmailExists(req.body.admin_email);
+  if (emailExists) {
+    return res
+      .status(400)
+      .json({ error: 'Email address is already registered' });
+  }
   console.log(token, newPassword);
   // Verify the token
   try {
@@ -163,23 +177,33 @@ app.post('/reset-password', async (req, res) => {
 });
 
 app.get('/', verifyUser, (req, res) => {
-  return res.json({ Status: 'Success', admin_username: req.admin_username, role : req.role });
+  return res.json({
+    Status: 'Success',
+    admin_username: req.admin_username,
+    role: req.role,
+  });
 });
 
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
   const email = req.body.admin_email;
-  
+  const emailExists = await isEmailExists(email);
+  if (emailExists) {
+    return res
+      .status(400)
+      .json({ error: 'Email address is already registered' });
+  }
+
   const emailCheckQuery = 'SELECT admin_email FROM admin WHERE admin_email = ?';
   connection.query(emailCheckQuery, [email], (err, rows) => {
     if (err) {
       console.log(err);
       return res.json({ Error: 'Error in server' });
     }
-    
+
     if (rows.length > 0) {
       return res.json({ Error: 'Email already exists' });
     }
-  
+
     const sql =
       'INSERT INTO admin (admin_username, admin_email, admin_password) VALUES(?)';
     bcrypt.hash(req.body.admin_password.toString(), salt, (err, hash) => {
@@ -187,14 +211,14 @@ app.post('/register', (req, res) => {
         console.log(err);
         return res.json({ Error: 'Error hashing password' });
       }
-      
+
       const values = [req.body.admin_username, req.body.admin_email, hash];
       connection.query(sql, [values], (err, result) => {
         if (err) {
           console.log(err);
           return res.json({ Error: 'Error inserting data in server' });
         }
-        
+
         return res.json({ Status: 'Success' });
       });
     });

@@ -4,13 +4,13 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyDWYIPcyMs6BFSD86ZqKtEbIJ2rGW7FPig',
-  authDomain: 'assetmanangement-kmutt.firebaseapp.com',
-  projectId: 'assetmanangement-kmutt',
-  storageBucket: 'assetmanangement-kmutt.appspot.com',
-  messagingSenderId: '975454098090',
-  appId: '1:975454098090:web:86aa5a6ec77d7d4938f6d3',
-  measurementId: 'G-NK0D40MTL1',
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGEING_SENDER_ID,
+  appId: process.env.APP_ID,
+  measurementId: process.env.MEASUREMENT_ID,
 };
 
 // Initialize Firebase
