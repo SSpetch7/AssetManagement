@@ -23,10 +23,10 @@ import axios from 'axios';
 
 export default function Admin() {
   let emptyAdminTable = {
-    amdin_id: '',
-    admin_email: '',
-    admin_username: '',
-    addmin_addDate: '',
+    amdin_id: null,
+    admin_email: null,
+    admin_username: null,
+    addmin_addDate: null,
   };
 
   const [visible, setVisible] = useState(false);
@@ -47,8 +47,9 @@ export default function Admin() {
   const [admin, setAdmin] = useState(null);
   const [editAdminDialog, setEditAdminDialog] = useState(false);
 
-  const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-  const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
+  const [newAdminDialog, setNewAdminDialog] = useState(false);
+  const [newAdmin, setNewAdmin] = useState(emptyAdminTable);
+
   const [product, setProduct] = useState(emptyAdminTable);
   const [selectedProducts, setSelectedProducts] = useState(null);
   const [submitted, setSubmitted] = useState(false);
@@ -85,21 +86,15 @@ export default function Admin() {
   };
 
   const openNew = () => {
-    setProduct(emptyAdminTable);
+    setNewAdmin(emptyAdminTable);
+    setNewAdminDialog(true);
     setSubmitted(false);
   };
 
   const hideDialog = () => {
+    setNewAdminDialog(false);
     setSubmitted(false);
     setEditAdminDialog(false);
-  };
-
-  const hideDeleteProductDialog = () => {
-    setDeleteProductDialog(false);
-  };
-
-  const hideDeleteProductsDialog = () => {
-    setDeleteProductsDialog(false);
   };
 
   const saveProduct = () => {
@@ -139,25 +134,6 @@ export default function Admin() {
     setProduct({ ...product });
   };
 
-  const confirmDeleteProduct = (product) => {
-    setProduct(product);
-    setDeleteProductDialog(true);
-  };
-
-  const deleteProduct = () => {
-    let _products = admins.filter((val) => val.id !== product.id);
-
-    setAdmins(_products);
-    setDeleteProductDialog(false);
-    setProduct(emptyAdminTable);
-    toast.current.show({
-      severity: 'success',
-      summary: 'Successful',
-      detail: 'Product Deleted',
-      life: 3000,
-    });
-  };
-
   const findIndexById = (id) => {
     let index = -1;
 
@@ -171,42 +147,9 @@ export default function Admin() {
     return index;
   };
 
-  const exportCSV = () => {
-    dt.current.exportCSV();
-  };
-
-  const confirmDeleteSelected = () => {
-    setDeleteProductsDialog(true);
-  };
-
-  const deleteSelectedProducts = () => {
-    let _products = admins.filter((val) => !selectedProducts.includes(val));
-
-    setAdmins(_products);
-    setDeleteProductsDialog(false);
-    setSelectedProducts(null);
-    toast.current.show({
-      severity: 'success',
-      summary: 'Successful',
-      detail: 'Products Deleted',
-      life: 3000,
-    });
-  };
-
-  const onCategoryChange = (e) => {
-    let _product = { ...product };
-
-    _product['category'] = e.value;
-    setProduct(_product);
-  };
-
-  const onInputChange = (e, name) => {
-    const val = (e.target && e.target.value) || '';
-    let _product = { ...product };
-
-    _product[`${name}`] = val;
-
-    setProduct(_product);
+  const saveNewAdmin = () => {
+    setSubmitted(true);
+    setNewAdminDialog(false);
   };
 
   const editAdmin = (rowData) => {
@@ -226,24 +169,6 @@ export default function Admin() {
               outlined
               className="editBnt mr-2"
               onClick={() => editAdmin(rowData)}
-            />
-          </React.Fragment>
-        )}
-      </>
-    );
-  };
-  const actionDelete = (rowData) => {
-    return (
-      <>
-        {role === 'Head_Admin' && (
-          <React.Fragment>
-            <Button
-              icon="pi pi-trash"
-              //   style={{ scale: ' 70%' }}
-              //   rounded
-              outlined
-              severity="danger"
-              onClick={() => confirmDeleteProduct(rowData)}
             />
           </React.Fragment>
         )}
@@ -312,7 +237,13 @@ export default function Admin() {
       </div>
       {role === 'Head_Admin' && (
         <div className="flex gap-2">
-          <AddAdmin />
+          <Button
+            className="p-Addbutton"
+            label="เพิ่มผู้ดูแล"
+            icon="pi pi-user"
+            onClick={openNew}
+            style={{ width: '120px' }}
+          />
         </div>
       )}
     </div>
@@ -334,39 +265,25 @@ export default function Admin() {
       <Button label="Save" icon="pi pi-check" onClick={saveProduct} />
     </React.Fragment>
   );
-  const deleteProductDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="ยกเลิก"
-        icon="pi pi-times"
-        severity="info"
-        outlined
-        onClick={hideDeleteProductDialog}
-      />
+
+  const newAdminfooter = (
+    <div>
       <Button
         label="ยืนยัน"
+        className="p-Testbutton"
         icon="pi pi-check"
-        severity="danger"
-        onClick={deleteProduct}
+        // text
+        onClick={saveNewAdmin}
       />
-    </React.Fragment>
+    </div>
   );
-  const deleteProductsDialogFooter = (
-    <React.Fragment>
-      <Button
-        label="No"
-        icon="pi pi-times"
-        outlined
-        onClick={hideDeleteProductsDialog}
-      />
-      <Button
-        label="Yes"
-        icon="pi pi-check"
-        severity="danger"
-        onClick={deleteSelectedProducts}
-      />
-    </React.Fragment>
-  );
+  const onInputChange = (e, name) => {
+    const val = (e.target && e.target.value) || '';
+    let _newAdmin = { ...newAdmin };
+    _newAdmin[`${name}`] = val;
+
+    setNewAdmin(_newAdmin);
+  };
 
   const roleBodyTemplate = (product) => {
     return (
@@ -449,50 +366,105 @@ export default function Admin() {
         </div>
       </div>
 
-      <Dialog
-        visible={deleteProductDialog}
-        style={{ width: '32rem' }}
-        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header="Confirm"
-        modal
-        footer={deleteProductDialogFooter}
-        onHide={hideDeleteProductDialog}
-      >
-        <div className="confirmation-content">
-          <i
-            className="pi pi-exclamation-triangle mr-3"
-            style={{ fontSize: '2rem' }}
-          />
-          {product && (
-            <span>
-              Are you sure you want to delete <b>{product.name}</b>?
-            </span>
-          )}
-        </div>
-      </Dialog>
-
-      <Dialog
-        visible={deleteProductsDialog}
-        style={{ width: '32rem' }}
-        breakpoints={{ '960px': '75vw', '641px': '90vw' }}
-        header="Confirm"
-        modal
-        footer={deleteProductsDialogFooter}
-        onHide={hideDeleteProductsDialog}
-      >
-        <div className="confirmation-content">
-          <i
-            className="pi pi-exclamation-triangle mr-3"
-            style={{ fontSize: '2rem' }}
-          />
-          {product && (
-            <span>Are you sure you want to delete the selected products?</span>
-          )}
-        </div>
-      </Dialog>
       <div className="m-16">
         <p className="text-gray-700 text-center  m-16"> 2023 Final Project </p>
       </div>
+      <Dialog
+        header="เพิ่มข้อมูลผู้ดูแล"
+        visible={newAdminDialog}
+        modal
+        style={{ width: '40vw' }}
+        onHide={hideDialog}
+        footer={newAdminfooter}
+      >
+        <div className="flex flex-col pt-6">
+          <Toast ref={toast} />
+          <div className="flex justify-center p-2">
+            <Image
+              //   src="https://media.discordapp.net/attachments/949160978145214484/1001939245566533795/unknown.png"
+              alt="Image"
+              width="250"
+            />
+          </div>
+          <div className="card flex justify-center">
+            <Toast ref={toast}></Toast>
+            <FileUpload
+              mode="basic"
+              name="demo[]"
+              url="/api/upload"
+              accept="image/*"
+              maxFileSize={1000000}
+              //   onUpload={onUpload}
+              auto
+              chooseLabel="อัพโหลดรูป"
+            />
+          </div>
+
+          <div className="content-evenly mt-4 ">
+            <div className="flex justify-evenly py-4 ">
+              <div className="mb-2 lg:col-6 lg:mb-0 field col-start-1">
+                <div className="p-input-icon-left">
+                  <i className="pi pi-user" />
+                  <InputText
+                    required
+                    // className="inputForm"
+                    placeholder="ใส่ชื่อของผู้ดูแล"
+                    value={newAdmin.admin_username}
+                    onChange={(e) => onInputChange(e, 'admin_username')}
+                    className={classNames({
+                      'p-invalid': submitted && !newAdmin.admin_username,
+                    })}
+                  />
+                  {submitted && !newAdmin.admin_username && (
+                    <small className="p-error">user name is required.</small>
+                  )}
+                </div>
+              </div>
+
+              <div className="mb-2 lg:col-6 lg:mb-0">
+                <span className="p-input-icon-left">
+                  <i className="pi pi-envelope" />
+                  <InputText
+                    className="inputForm"
+                    placeholder="Email"
+                    id="email"
+                    // value={newAdmin.admin_email}
+                    // onChange={(e) => {
+                    //   onInputChange(e, 'admin_email');
+                    // }}
+                  />
+                  {/* {submitted && !newAdmin.admin_email && (
+                    <small className="p-error">Email is required.</small>
+                  )} */}
+                </span>
+              </div>
+            </div>
+
+            <div className="flex justify-evenly py-4">
+              <div className="col-6 mb-2 lg:col-6 lg:mb-0">
+                <span className="p-input-icon-left">
+                  <i className="pi pi-lock" />
+                  <InputText
+                    disabled
+                    placeholder="Admin"
+                    className="inputForm text-kmuttColor-800"
+                  />
+                </span>
+              </div>
+              <div className="col-6 mb-2 lg:col-6 lg:mb-0">
+                <span className="p-input-icon-left">
+                  <i className="pi pi-calendar" />
+                  <InputText
+                    disabled
+                    // placeholder={date}
+                    className="inputForm text-kmuttColor-800"
+                  />
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </Dialog>
       <Dialog
         header="แก้ไขข้อมูลผู้ดูแล"
         visible={editAdminDialog}

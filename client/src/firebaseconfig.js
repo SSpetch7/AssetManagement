@@ -1,15 +1,13 @@
 import { initializeApp } from 'firebase/app';
 import { getStorage } from 'firebase/storage';
-import dotenv from 'dotenv';
-dotenv.config();
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyBXaTLk_ps2ZhXsK3riFe1v5UBqkcWpQ9s',
-  authDomain: 'asset-image-76457.firebaseapp.com',
-  projectId: 'asset-image-76457',
-  storageBucket: 'asset-image-76457.appspot.com',
-  messagingSenderId: '834365093510',
-  appId: '1:834365093510:web:893af0805ea927ee8ec307',
+  apiKey: process.env.API_KEY,
+  authDomain: process.env.AUTH_DOMAIN,
+  projectId: process.env.PROJECT_ID,
+  storageBucket: process.env.STORAGE_BUCKET,
+  messagingSenderId: process.env.MESSAGEING_SENDER_ID,
+  appId: process.env.APP_ID,
 };
 
 // Initialize Firebase

@@ -22,9 +22,9 @@ export default function AddUser() {
   const [resetSent, setResetSent] = useState(false);
 
   const current = new Date();
-  const date = `${current.getDate()}/${current.getMonth()+1}/${current.getFullYear()}`;
-
-  
+  const date = `${current.getDate()}/${
+    current.getMonth() + 1
+  }/${current.getFullYear()}`;
 
   const handleInputChange = (e) => {
     const inputValue = e.target.value;
@@ -59,30 +59,39 @@ export default function AddUser() {
     setVisible(false);
   };
 
-
   const createEmail = () => {};
 
   const footerContent = (
     <div>
       <Button
-        label="บันทึก"
+        label="ยืนยัน"
         className="p-Testbutton"
         icon="pi pi-check"
         // text
-        onClick={(e) => { 
-          saveAdmin()
-       }}
+        onClick={(e) => {
+          saveAdmin();
+        }}
       />
     </div>
   );
   const toast = useRef(null);
 
   const showSuccess = (message) => {
-    toast.current.show({severity:'success', summary: 'Success', detail:'เพิ่มผู้ดูแลสำเร็จ', life: 3000});
-}
+    toast.current.show({
+      severity: 'success',
+      summary: 'Success',
+      detail: 'เพิ่มผู้ดูแลสำเร็จ',
+      life: 3000,
+    });
+  };
   const showError = (error) => {
-  toast.current.show({severity:'error', summary: 'Error', detail:'กรุณาเช็คEmailอีกครั้ง', life: 3000});
-}
+    toast.current.show({
+      severity: 'error',
+      summary: 'Error',
+      detail: 'กรุณาเช็คEmailอีกครั้ง',
+      life: 3000,
+    });
+  };
 
   const onUpload = () => {
     toast.current.show({
@@ -94,115 +103,115 @@ export default function AddUser() {
 
   return (
     <>
-    {!resetSent ? (
-    <>
-    <div className="card flex justify-content-center">
-      <Button
-        className="p-Addbutton"
-        label="เพิ่มผู้ดูแล"
-        icon="pi pi-user"
-        onClick={openNew}
-        style={{ width: '120px' }}
-      />
-      <Dialog
-        header="เพิ่มข้อมูลผู้ดูแล"
-        visible={visible}
-        modal
-        style={{ width: '40vw' }}
-        onHide={hideDialog}
-        footer={footerContent}
-      >
-        <div className="flex flex-col pt-6">
-        <Toast ref={toast} />
-          <div className="flex justify-center p-2">
-            <Image
-              //   src="https://media.discordapp.net/attachments/949160978145214484/1001939245566533795/unknown.png"
-              alt="Image"
-              width="250"
-            />
-          </div>
-          <div className="card flex justify-center">
-            <Toast ref={toast}></Toast>
-            <FileUpload
-              mode="basic"
-              name="demo[]"
-              url="/api/upload"
-              accept="image/*"
-              maxFileSize={1000000}
-              onUpload={onUpload}
-              auto
-              chooseLabel="อัพโหลดรูป"
-            />
-          </div>
+      <>
+        <div className="card flex justify-content-center">
+          <Button
+            className="p-Addbutton"
+            label="เพิ่มผู้ดูแล"
+            icon="pi pi-user"
+            onClick={openNew}
+            style={{ width: '120px' }}
+          />
+          <Dialog
+            header="เพิ่มข้อมูลผู้ดูแล"
+            visible={visible}
+            modal
+            style={{ width: '40vw' }}
+            onHide={hideDialog}
+            footer={footerContent}
+          >
+            <div className="flex flex-col pt-6">
+              <Toast ref={toast} />
+              <div className="flex justify-center p-2">
+                <Image
+                  //   src="https://media.discordapp.net/attachments/949160978145214484/1001939245566533795/unknown.png"
+                  alt="Image"
+                  width="250"
+                />
+              </div>
+              <div className="card flex justify-center">
+                <Toast ref={toast}></Toast>
+                <FileUpload
+                  mode="basic"
+                  name="demo[]"
+                  url="/api/upload"
+                  accept="image/*"
+                  maxFileSize={1000000}
+                  onUpload={onUpload}
+                  auto
+                  chooseLabel="อัพโหลดรูป"
+                />
+              </div>
 
-          <div className="content-evenly mt-4 ">
-            <div className="flex justify-evenly py-4 ">
-              <div className="mb-2 lg:col-6 lg:mb-0 field col-start-1">
-                <div className="p-input-icon-left">
-                  <i className="pi pi-user" />
-                  <InputText
-                    required
-                    className="inputForm"
-                    placeholder="ใส่ชื่อของผู้ดูแล"
-                    value={newAdmin.admin_username}
-                    onChange={(e) => onInputChange(e, 'admin_username')}
-                  />
-                  {submitted && !newAdmin.admin_username && (
-                    <small className="p-error">user name is required.</small>
-                  )}
+              <div className="content-evenly mt-4 ">
+                <div className="flex justify-evenly py-4 ">
+                  <div className="mb-2 lg:col-6 lg:mb-0 field col-start-1">
+                    <div className="p-input-icon-left">
+                      <i className="pi pi-user" />
+                      <InputText
+                        required
+                        // className="inputForm"
+                        placeholder="ใส่ชื่อของผู้ดูแล"
+                        value={newAdmin.admin_username}
+                        onChange={(e) => onInputChange(e, 'admin_username')}
+                        className={classNames({
+                          'p-invalid': submitted && !newAdmin.admin_username,
+                        })}
+                      />
+                      {submitted && !newAdmin.admin_username && (
+                        <small className="p-error">
+                          user name is required.
+                        </small>
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mb-2 lg:col-6 lg:mb-0">
+                    <span className="p-input-icon-left">
+                      <i className="pi pi-envelope" />
+                      <InputText
+                        className="inputForm"
+                        placeholder="Email"
+                        id="email"
+                        value={newAdmin.admin_email}
+                        onChange={(e) => {
+                          onInputChange(e, 'admin_email');
+                        }}
+                      />
+                      {submitted && !newAdmin.admin_email && (
+                        <small className="p-error">Email is required.</small>
+                      )}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="flex justify-evenly py-4">
+                  <div className="col-6 mb-2 lg:col-6 lg:mb-0">
+                    <span className="p-input-icon-left">
+                      <i className="pi pi-lock" />
+                      <InputText
+                        disabled
+                        placeholder="Admin"
+                        className="inputForm text-kmuttColor-800"
+                      />
+                    </span>
+                  </div>
+                  <div className="col-6 mb-2 lg:col-6 lg:mb-0">
+                    <span className="p-input-icon-left">
+                      <i className="pi pi-calendar" />
+                      <InputText
+                        disabled
+                        placeholder={date}
+                        className="inputForm text-kmuttColor-800"
+                      />
+                    </span>
+                  </div>
                 </div>
               </div>
-              
-             
-              <div className="mb-2 lg:col-6 lg:mb-0">
-                <span className="p-input-icon-left">
-                  <i className="pi pi-envelope" />
-                  <InputText
-                    className="inputForm"
-                    placeholder="Email"
-                    id="email"
-                    value={newAdmin.admin_email}
-                    onChange={(e) => {onInputChange(e, 'admin_email')
-                  
-                  }}
-                  />
-                  {submitted && !newAdmin.admin_email && (
-                    <small className="p-error">Email is required.</small>
-                  )}
-                </span>
-              </div>
             </div>
-
-            <div className="flex justify-evenly py-4">
-              <div className="col-6 mb-2 lg:col-6 lg:mb-0">
-                <span className="p-input-icon-left">
-                  <i className="pi pi-lock" />
-                  <InputText
-                    disabled
-                    placeholder="Admin"
-                    className="inputForm text-kmuttColor-800"
-                  />
-                </span>
-              </div>
-              <div className="col-6 mb-2 lg:col-6 lg:mb-0">
-                <span className="p-input-icon-left">
-                  <i className="pi pi-calendar" />
-                  <InputText
-                    disabled
-                    placeholder={date}
-                    className="inputForm text-kmuttColor-800"
-                  />
-                </span>
-              </div>
-            </div>
-          </div>
+          </Dialog>
         </div>
-      </Dialog>
-    </div>
-    </>
-    ) : (
-      <h1>Password reset email sent. Please check your email.</h1>
-    )}
+      </>
     </>
   );
 }
